@@ -1,0 +1,21 @@
+
+.or {
+    display: flex;
+    align-items: center;
+}
+
+.or:before {
+   content: "";
+   width: 50%;
+   height: 1px;
+   background: #ccc;
+   display: block;
+}
+
+.or:after {
+    content: "";
+    width: 50%;
+    height: 1px;
+    background: #ccc;
+    display: block;
+ }
