@@ -62,8 +62,8 @@ userController.getMe = function (req, res) {
 userController.getReferredUser = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const ref = yield referrals_1.default.findAll({ where: { ClientUuid: req.id } });
-            const filter = ref.map((res) => {
+            const { data } = yield referrals_1.default.findAll({ where: { ClientUuid: req.id } });
+            const filter = data.map((res) => {
                 return {
                     "firstDeposit": res.firstDeposit,
                     "userName": res.userName,
@@ -129,6 +129,44 @@ userController.updatePasswordByLink = function (req, res) {
         }
     });
 };
+userController.updateUserInfo = function (req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { fullName, country, email, userName, phoneNumber } = req.body;
+            const updateReq = yield users_1.default.update({ fullName, country, email, userName, phoneNumber }, { where: { uuid: req.id } });
+            if (!updateReq[0]) {
+                throw new ApiError_1.default("Update Err", http_status_1.default.BAD_REQUEST, "Can't Update Reuest at the moment.");
+            }
+            res.send("Updated successfully!");
+        }
+        catch (error) {
+            res.send(error);
+        }
+    });
+};
+userController.updatePassword = function (req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { oldPassword, newPassword, } = req.body;
+            const getUser = yield users_1.default.findOne({ where: { uuid: req.id } });
+            console.log(getUser.password);
+            if (!getUser)
+                throw new ApiError_1.default("User not found", http_status_1.default.BAD_REQUEST, "Logout immediately");
+            if (!(yield helpers_1.default.comparePassword(getUser.password, oldPassword))) {
+                throw new ApiError_1.default("Incorrect password", http_status_1.default.BAD_REQUEST, "Incorrect password");
+            }
+            const hashPassword = yield helpers_1.default.hashPassword(newPassword);
+            const update = yield users_1.default.update({ password: hashPassword }, { where: { uuid: req.id } });
+            if (!update[0])
+                throw new ApiError_1.default("Update Err", http_status_1.default.BAD_REQUEST, "Can't Update Reuest at the moment.");
+            res.send("Updated successfully");
+        }
+        catch (error) {
+            res.send(error);
+        }
+    });
+};
+/////////////////////////////// ------- AVATAR --------------/ \\\
 userController.uploadAvatar = function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         const file = req.file;

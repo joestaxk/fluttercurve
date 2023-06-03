@@ -20,6 +20,7 @@ var _Coinbase_instances, _Coinbase_API_KEY, _Coinbase_instance;
 Object.defineProperty(exports, "__esModule", { value: true });
 var coinbase = require('coinbase-commerce-node');
 const config_1 = __importDefault(require("../../config/config"));
+const deposit_1 = __importDefault(require("../../models/Users/deposit"));
 class Coinbase {
     constructor() {
         _Coinbase_instances.add(this);
@@ -39,30 +40,57 @@ class Coinbase {
             }
         });
     }
-    static getAllChargeById(user) {
+    static updateById(chargeID, cb) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            if (!user)
-                return;
+            if (!chargeID)
+                return false;
             try {
-                const { Charge } = __classPrivateFieldGet((_a = (new Coinbase())), _Coinbase_instances, "m", _Coinbase_instance).call(_a);
-                const fetchAllData = yield (yield Charge.all({}));
-                let usefulData = [];
-                fetchAllData.forEach(({ id, name, timeline, metadata, created_at, description, expires_at, hosted_url }) => {
-                    if (metadata.customer_id === user) {
-                        usefulData.push({
-                            id,
-                            name,
-                            status: timeline[timeline.length - 1],
-                            metadata: metadata.customer_name,
-                            created_at,
-                            description,
-                            expires_at,
-                            hosted_url
-                        });
+                const { Charge, CheckOut } = __classPrivateFieldGet((_a = (new Coinbase())), _Coinbase_instances, "m", _Coinbase_instance).call(_a);
+                // retrieve data
+                Charge.retrieve(chargeID, function (error, response) {
+                    if (error)
+                        return cb(error); // return error if any
+                    // check last status
+                    console.log(response);
+                    const checkStatus = response.timeline[response.timeline.length - 1];
+                    // update or delete data
+                    switch (checkStatus.status.toUpperCase()) {
+                        case "EXPIRED":
+                            /// if data expired update
+                            // let config = {
+                            //     method: 'delete',
+                            //     url: `https://api.commerce.coinbase.com/checkouts/${chargeID}`,
+                            //     headers: { 
+                            //       'Content-Type': 'application/json', 
+                            //       'Accept': 'application/json',
+                            //       'X-CC-Version': '2018-03-22',
+                            //       'X-CC-Api-Key': (new Coinbase()).#API_KEY
+                            //     }
+                            //   };
+                            //   console.log(config)
+                            //   axios(config)
+                            //   .then((response) => {
+                            //     console.log(response.data)
+                            deposit_1.default.destroy({ where: { chargeID } }).catch((err) => cb(err));
+                            console.log(chargeID, "Deleted.");
+                            //   })
+                            //   .catch((error) => {
+                            //     // cb(error);
+                            //   });
+                            break;
+                        case "PENDING":
+                            deposit_1.default.update({ status: checkStatus.status }, { where: { chargeID } }).catch((err) => cb(err));
+                            break;
+                        case "COMPLETED":
+                            deposit_1.default.update({ status: "SUCCESSFUL" }, { where: { chargeID } }).catch((err) => cb(err));
+                            break;
+                        default:
+                            deposit_1.default.update({ status: checkStatus.status }, { where: { chargeID } }).catch((err) => cb(err));
+                            break;
                     }
                 });
-                return usefulData;
+                console.log("🦾🦾🦾 Task Completed 🚀🚀🚀🚀🚀🚀");
             }
             catch (error) {
                 throw error;
@@ -75,6 +103,7 @@ _Coinbase_API_KEY = new WeakMap(), _Coinbase_instances = new WeakSet(), _Coinbas
     const Client = coinbase.Client;
     Client.init(__classPrivateFieldGet((new Coinbase()), _Coinbase_API_KEY, "f"));
     return {
-        Charge: coinbase.resources.Charge
+        Charge: coinbase.resources.Charge,
+        CheckOut: new (coinbase.resources.Checkout)
     };
 };

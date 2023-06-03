@@ -3,6 +3,7 @@ interface modeType<T> {
    DB_USER?: T,
    DB_PASS?: T,
    DB_NAME?: T,
+   DB_PORT?: number,
 
    NODE_ENV?:  T,
    MAIL_HOST?: T,
@@ -21,14 +22,23 @@ interface x<T> {
     JWT_REFRESH_EXPIRES_IN: T,
     DB_LOCAL_USER?: T,
     DB_LOCAL_PASS?: T,
+    DB_LOCAL_NAME?: T,
+    DB_LOCAL_PORT?: T,
+
     DB_USER?: T,
     DB_PASS?: T,
     DB_NAME?: T,
+    DB_PORT?: number,
 
     MAIL_TEST_HOST?: T,
     MAIL_TEST_PORT?: T,
     MAIL_TEST_USER?: T,
     MAIL_TEST_PASS?: T,
+
+    MAIL_HOST?: T,
+    MAIL_PORT?: T,
+    MAIL_USER?: T,
+    MAIL_PASS?: T,
 
     ADMIN_USERNAME?: T,
     ADMIN_PASSWORD?:  T,
@@ -57,7 +67,8 @@ const developmentMode:modeType<any> = {
    PORT: _.PORT,
    DB_USER: _.DB_LOCAL_USER,
    DB_PASS: _.DB_LOCAL_PASS,
-   DB_NAME: _.DB_NAME,
+   DB_NAME: _.DB_LOCAL_NAME,
+   DB_PORT: _.DB_LOCAL_PORT as unknown as number,
 
    MAIL_HOST: _.MAIL_TEST_HOST,
    MAIL_PORT: _.MAIL_TEST_PORT,
@@ -70,11 +81,12 @@ const productionMode:modeType<string> = {
    DB_USER: _.DB_USER,
    DB_PASS: _.DB_PASS,
    DB_NAME: _.DB_NAME,
+   DB_PORT: _.DB_PORT,
 
-   MAIL_HOST: _.MAIL_TEST_HOST,
-   MAIL_PORT: _.MAIL_TEST_PORT,
-   MAIL_USER:  _.MAIL_TEST_USER,
-   MAIL_PASS:  _.MAIL_TEST_PASS
+   MAIL_HOST: _.MAIL_HOST,
+   MAIL_PORT: _.MAIL_PORT,
+   MAIL_USER:  _.MAIL_USER,
+   MAIL_PASS:  _.MAIL_PASS
 }
 // smth here
 //validCors: [/^(http|https):\/\/(localhost:517+\d|127.0.0.1:517+\d)+$/],

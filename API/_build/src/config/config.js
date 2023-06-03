@@ -18,7 +18,8 @@ const developmentMode = {
     PORT: _.PORT,
     DB_USER: _.DB_LOCAL_USER,
     DB_PASS: _.DB_LOCAL_PASS,
-    DB_NAME: _.DB_NAME,
+    DB_NAME: _.DB_LOCAL_NAME,
+    DB_PORT: _.DB_LOCAL_PORT,
     MAIL_HOST: _.MAIL_TEST_HOST,
     MAIL_PORT: _.MAIL_TEST_PORT,
     MAIL_USER: _.MAIL_TEST_USER,
@@ -29,10 +30,11 @@ const productionMode = {
     DB_USER: _.DB_USER,
     DB_PASS: _.DB_PASS,
     DB_NAME: _.DB_NAME,
-    MAIL_HOST: _.MAIL_TEST_HOST,
-    MAIL_PORT: _.MAIL_TEST_PORT,
-    MAIL_USER: _.MAIL_TEST_USER,
-    MAIL_PASS: _.MAIL_TEST_PASS
+    DB_PORT: _.DB_PORT,
+    MAIL_HOST: _.MAIL_HOST,
+    MAIL_PORT: _.MAIL_PORT,
+    MAIL_USER: _.MAIL_USER,
+    MAIL_PASS: _.MAIL_PASS
 };
 // smth here
 //validCors: [/^(http|https):\/\/(localhost:517+\d|127.0.0.1:517+\d)+$/],

@@ -6,9 +6,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./src/app"));
 const config_1 = __importDefault(require("./src/config/config"));
 const db_1 = __importDefault(require("./src/database/db"));
+const taskHandler_1 = __importDefault(require("./src/services/cron/taskHandler"));
 function init() {
     (0, db_1.default)()
-        .then(() => console.log(`Server listening to http://localhost:${config_1.default.PORT}`))
+        .then(() => {
+        // Schedule tasks to be run on the server.
+        for (const props in taskHandler_1.default.init) {
+            taskHandler_1.default.init[props]();
+        }
+        taskHandler_1.default.ongoingServices.forEach((cron) => cron);
+        console.log(`Server listening to http://localhost:${config_1.default.PORT}`);
+    })
         .catch(console.error);
 }
 let server = app_1.default.listen(config_1.default.PORT, init);

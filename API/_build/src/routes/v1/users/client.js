@@ -32,7 +32,19 @@ router.post("/logout", auth_1.UserAuth, user_1.default.logout);
     UPDATE PASSWORD
    @method POST
 **/
-router.post("/updatePassword", user_1.default.updatePasswordByLink);
+router.post("/updatePasswordByLink", user_1.default.updatePasswordByLink);
+/**
+    UPDATE PASSWORD FROM auth user
+   @method UPDATE
+**/
+router.post("/updatePassword", auth_1.UserAuth, user_1.default.updatePassword);
+/**
+    UPDATE USER-INFO FROM auth user
+   @method UPDATE
+**/
+router.post("/updateUserInfo", auth_1.UserAuth, user_1.default.updateUserInfo);
+// ------------------------------------------------ AVATAR
+//------------------------------------------------- AVATAR
 /**
     UPDATE Avatar
    @method POST

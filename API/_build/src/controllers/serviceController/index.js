@@ -51,7 +51,7 @@ serviceController.getActiveDeposit = function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // query DB for data
-            const depoData = yield deposit_1.default.findAll({ where: { status: "pending", id: req.id } });
+            const depoData = yield deposit_1.default.findAll({ where: { status: "NEW", clientId: req.id } });
             if (!depoData.length)
                 return res.send(depoData);
             res.send(depoData);
@@ -93,7 +93,7 @@ serviceController.newDepositRequest = function (req, res, next) {
             const create = yield deposit_1.default.create(createDepositRecord);
             yield create.save();
             //    send email.
-            res.send({ message: "Redirecting...", data: { next: "hello" } });
+            res.send({ message: "Redirecting...", data: { next: createDepositRecord.chargeID } });
         }
         catch (error) {
             console.log(error);

@@ -43,7 +43,7 @@ serviceController.getDepositPlans = async function(req,res,next) {
 serviceController.getActiveDeposit = async function(req,res,next) {
     try {
         // query DB for data
-        const depoData = await userDeposit.findAll({where: {status: "pending", id: req.id}});
+        const depoData = await userDeposit.findAll({where: {status: "NEW", clientId: req.id}});
 
         if(!depoData.length) return res.send(depoData);
 
@@ -94,7 +94,7 @@ serviceController.newDepositRequest = async function(req,res,next) {
 
     //    send email.
 
-       res.send({message: "Redirecting...", data: {next: "hello"}})
+       res.send({message: "Redirecting...", data: {next: createDepositRecord.chargeID}})
     } catch (error) {
         console.log(error)
         res.send(error)

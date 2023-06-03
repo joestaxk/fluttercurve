@@ -25,7 +25,7 @@ router.get("/me", UserAuth, userController.getMe)
     @method GET
  **/
 
-    router.get("/getReferredUser", UserAuth, userController.getReferredUser)
+router.get("/getReferredUser", UserAuth, userController.getReferredUser)
 
 
 /**
@@ -38,8 +38,27 @@ router.post("/logout", UserAuth, userController.logout)
     UPDATE PASSWORD
    @method POST
 **/
-router.post("/updatePassword", userController.updatePasswordByLink)
+router.post("/updatePasswordByLink", userController.updatePasswordByLink)
 
+
+/**
+    UPDATE PASSWORD FROM auth user
+   @method UPDATE
+**/
+router.post("/updatePassword", UserAuth, userController.updatePassword)
+
+/**
+    UPDATE USER-INFO FROM auth user
+   @method UPDATE
+**/
+router.post("/updateUserInfo", UserAuth, userController.updateUserInfo)
+
+
+
+
+
+// ------------------------------------------------ AVATAR
+//------------------------------------------------- AVATAR
 /**
     UPDATE Avatar
    @method POST

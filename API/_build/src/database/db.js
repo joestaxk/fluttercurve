@@ -18,6 +18,7 @@ const config_1 = __importDefault(require("../config/config"));
 const user_1 = __importDefault(require("../controllers/adminController/user"));
 exports.sequelize = new sequelize_1.Sequelize(config_1.default.DB_NAME, config_1.default.DB_USER, config_1.default.DB_PASS, {
     host: 'localhost',
+    port: config_1.default.DB_PORT,
     dialect: 'mysql'
 });
 function doThisFirst() {

@@ -2,11 +2,13 @@ import httpStatus from 'http-status'
 import ApiError from '../../utils/ApiError';
 import Client, { ClientInterface } from '../../models/Users/users';
 import helpers from '../../utils/helpers';
-import userAccount from '../../models/Users/userAccount';
+import userAccount, { userAccountInterface } from '../../models/Users/userAccount';
 import Referral from '../../models/Users/referrals';
 
 
 interface userControllerInterface {
+    updateUserInfo: (req: any, res: any, next: any) => Promise<void>;
+    updatePassword: (req: any, res: any, next: any) => Promise<void>;
     uploadAvatar: (req: any, res: any, next: any) => void;
     getReferredUser: (req: any, res: any) => Promise<void>;
     updatePasswordByLink: (req: any, res: any) => Promise<void>;
@@ -60,8 +62,8 @@ userController.getMe = async function(req:any, res:any) {
 
 userController.getReferredUser = async function(req:any, res:any) {
     try {
-        const ref = await Referral.findAll({where: {ClientUuid: req.id}});
-        const filter = ref.map((res:any) => {
+        const {data}:any = await Referral.findAll({where: {ClientUuid: req.id}});
+        const filter = data.map((res:any) => {
             return {
             "firstDeposit": res.firstDeposit,
             "userName": res.userName,
@@ -126,7 +128,54 @@ userController.updatePasswordByLink = async function(req,res) {
 
 }
 
+userController.updateUserInfo = async function(req,res,next) {
+    try {
+        const  {
+            fullName,
+            country,
+            email,
+            userName,
+            phoneNumber
+        }= req.body;
 
+        const updateReq:number[] = await Client.update({fullName, country, email, userName, phoneNumber}, {where: {uuid: req.id}}) as any;
+        
+        if(!updateReq[0]) {
+            throw new ApiError("Update Err", httpStatus.BAD_REQUEST, "Can't Update Reuest at the moment.")
+        }
+        res.send("Updated successfully!")
+    } catch (error) {
+        res.send(error)
+    }
+}
+
+userController.updatePassword = async function(req,res,next) {
+    try {
+        const {
+            oldPassword,
+            newPassword,
+        }  = req.body
+
+        const getUser:ClientInterface<string> = await Client.findOne({where: {uuid: req.id}}) as any;
+        console.log(getUser.password);
+
+        if(!getUser) throw new ApiError("User not found", httpStatus.BAD_REQUEST, "Logout immediately");
+    
+        if(!(await helpers.comparePassword(getUser.password, oldPassword))){
+            throw new ApiError("Incorrect password", httpStatus.BAD_REQUEST, "Incorrect password");
+        }
+        const hashPassword = await helpers.hashPassword(newPassword);
+        const update = await Client.update({password: hashPassword}, {where: {uuid: req.id}});
+
+        if(!update[0]) throw new ApiError("Update Err", httpStatus.BAD_REQUEST, "Can't Update Reuest at the moment.")
+
+        res.send("Updated successfully")
+    } catch (error) {
+        res.send(error)
+    }
+}
+
+/////////////////////////////// ------- AVATAR --------------/ \\\
 userController.uploadAvatar = async function(req,res,next) {
     const file = req.file;
     try {

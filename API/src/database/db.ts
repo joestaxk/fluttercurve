@@ -5,6 +5,7 @@ import buildDepositPlans from '../services/buildDepositPlans';
 
 export const sequelize = new Sequelize(config.DB_NAME, config.DB_USER, config.DB_PASS, {
     host: 'localhost',
+    port: config.DB_PORT,
     dialect: 'mysql'
 })
 
