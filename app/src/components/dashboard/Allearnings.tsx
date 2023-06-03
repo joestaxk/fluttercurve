@@ -14,10 +14,9 @@ export default function AllEarning(){
     useEffect(() => {
       async function fetchData() {
           try {
-              let res: any = await auth.getAllSuccessfulInvesment(cookies['x-access-token']);
-              res = await (res.json())
-              if(res.length) {
-                  setData(res as any)
+              let {data}: any = await auth.getAllSuccessfulInvesment(cookies['x-access-token']);
+              if(data.length) {
+                  setData(data as any)
               }
           } catch (error) {
               console.log(error)
@@ -33,8 +32,9 @@ export default function AllEarning(){
             <div className="flex flex-wrap gap-3">
             {
                 data.length ?
-                data.map((data:any) => (
+                data.map((data:any, i:number) => (
                     <div 
+                        key={i.toString()}
                         style={{borderImage: `linear-gradient(${data.investmentCompleted ? "100deg, #transparent,#3ddc75,transparent" : "20deg, #2626b0df,#2626b0a0,transparent"}) 1 / 1 / 0 stretch`}}
                         className="w-[380px] p-3 border-[1px] rounded-lg bg-[#e8e8e830] border-[#ccc] min-h-[350px]">
                         {data.investmentCompleted ? <div className="">

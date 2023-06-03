@@ -23,15 +23,15 @@ export default function CompoundingInvesmentPlan({state}:{state: userDataStateTy
   useEffect(() => {
     async function fetchData() {
       try {
-        const ref = await auth.getCompoundingPlans(cookies['x-access-token'] as string);
-        return (await ref.json())
+        return await auth.getCompoundingPlans(cookies['x-access-token'] as string);
       } catch (error) {
         console.log(error)
       }
     }
 
-    fetchData().then((res:any) => setCompoundingPlans(res))
+    fetchData().then(({data}:any) => setCompoundingPlans(data))
   }, [])
+  
   let x = (id:number) => {
     return{
       borderImage: "linear-gradient(20deg,transparent,#f3d8b8,transparent) 1 / 1 / 0 stretch",
@@ -40,7 +40,7 @@ export default function CompoundingInvesmentPlan({state}:{state: userDataStateTy
   }
 
     return (
-    <div className="pb-5">
+    <div className="pb-5 p-3">
         <h1 className="text-3xl font-bold text-[#2b2b2b]">Make Deposits</h1>
 
         <div className="mt-5">
@@ -48,8 +48,9 @@ export default function CompoundingInvesmentPlan({state}:{state: userDataStateTy
 
           <div className="flex flex-wrap w-full items-start gap-4 mt-4">
             {
-              compoundingPlans.map(({id, interestRate, plan, duration, minAmt, maxAmt, uuid}:any) => (
+              compoundingPlans.map(({id, interestRate, plan, duration, minAmt, maxAmt, uuid}:any, i:number) => (
                 <div 
+                key={i.toString()}
                 style={x(id)}
                 className="w-[450px] transition-all duration-500 rounded-lg bg-[#fffefe] min-h-[300px]">
                   <div className=" p-4 mb-3 flex flex-col w-full justify-between items-center">

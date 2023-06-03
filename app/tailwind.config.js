@@ -12,6 +12,24 @@ module.exports = {
       },
       fontFamily: {
         'Mont': 'Montserrat Alternates',
+      },
+      theme: {
+        screens: {
+          'sm': "299px",
+
+          'md': '522px',
+
+          "n": "683px",
+
+          'lg': '826px',
+          // => @media (min-width: 826px) { ... }
+    
+          'xl': '1150px',
+          // => @media (min-width: 1150px) { ... }
+    
+          'xxl': '1318px',
+          // => @media (min-width: 1280px) { ... }
+        },
       }
     },
   },

@@ -1,7 +1,7 @@
 "use client"
 import Dashboard, { NormalMode } from "@/components/dashboard/Dashboard";
 import withDashboard from "@/hocs/withDashboard";
-import auth, { PUBLIC_PATH } from "@/lib/auth";
+import auth from "@/lib/auth";
 import { userDataStateType } from "@/rState/initialStates";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -17,28 +17,25 @@ function Page({state}:{state: userDataStateType}) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const ref = await auth.getRefferedUser(cookies['x-access-token'] as string);
-        const data = await ref.json()
-        console.log(data)
-        return data
+        return await auth.getRefferedUser(cookies['x-access-token'] as string);
       } catch (error) {
         console.log(error)
       }
     }
 
-    fetchData().then((res) => setRefferal(res))
+    fetchData().then(({data}:any) => setRefferal(data))
   }, [])
     return (
       <main>
         <Dashboard state={state}>
           <div className="mt-4">
-            <h1 className="text-4xl text-white font-medium">Affiliate Marketing</h1>
+            <h1 className="text-3xl n:text-4xl text-white font-medium">Affiliate Marketing</h1>
              <div className="flex items-center mt-3">
-               <h2 className="text-2xl text-[#e0e0e0] font-light">Home</h2>
+               <h2 className="text-xl n:text-2xl  text-[#ccc] font-medium">Home</h2>
                <span>
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#e0e0e0" d="m14 18l-1.4-1.45L16.15 13H4v-2h12.15L12.6 7.45L14 6l6 6l-6 6Z"/></svg>
                </span>
-              <h2 className="text-2xl text-[#e0e0e0] font-light">Affiliate Marketing</h2>
+              <h2 className="text-xl n:text-2xl  text-[#ccc] font-medium">Affiliate Marketing</h2>
              </div>
           </div>
           <NormalMode />
@@ -64,7 +61,7 @@ function Page({state}:{state: userDataStateType}) {
               </div>
           </div>
 
-          {state?.referral && <div className="bg-white w-[20%] min-h-[200px] shadow rounded-lg p-2 flex justify-center">
+          {state?.referral ? <div className="bg-white w-[20%] min-h-[200px] shadow rounded-lg p-2 flex justify-center">
             <div className="flex flex-col">
                <div className="w-[80px] h-[80px] rounded-full overflow-hidden">
                 <Image className="bg-no-repeat bg-center bg-cover w-full h-full" src={"/avatar-1.png"} width={50} height={50} alt="user image" />
@@ -75,17 +72,17 @@ function Page({state}:{state: userDataStateType}) {
                   <p className="#212121cc">You were referred by {state?.referral}. <span className="text-[#9b9b9b]">You can make 5%, when the refered user do their first deposit.</span></p>
                 </div>
               </div>
-          </div>}
+          </div> : <></>}
          </motion.div>
 
          <div   className="flex flex-col items-center gap-2 flex-wrap justify-center translate-y-[-40%] w-full p-5">
-             <div className="w-[90%] flex flex-wrap gap-2">
+             <div className="w-full flex flex-wrap gap-2">
                {
-                refferal.length && refferal.map(({createdAt, userName,firstDeposit,avatar}) => (
-                  <div title={firstDeposit ? "User have made first deposit!": "User have not made any depost"} className="bg-white mb-4  w-[49%] border-[#ccc] border-[1px] shadow rounded-lg p-4 flex items-center justify-between">
+                refferal.length && refferal.map(({createdAt, userName,firstDeposit,avatar}, i:number) => (
+                  <div key={i.toString()} title={firstDeposit ? "User have made first deposit!": "User have not made any depost"} className="bg-white mb-4  w-[300px] border-[#ccc] border-[1px] shadow rounded-lg p-4 flex items-center justify-between">
                     <div className="flex items-center gap-5">
                       <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
-                        <Image className="bg-no-repeat bg-center bg-cover w-full h-full" src={avatar ?`${PUBLIC_PATH}private/users/${avatar}` : "/avatar-1.png"} width={50} height={50} alt="user image" />
+                        <Image className="bg-no-repeat bg-center bg-cover w-full h-full" src={avatar ?`${process.env.PUBLIC_PATH}/private/users/${avatar}` : "/avatar-1.png"} width={50} height={50} alt="user image" />
                       </div>
 
                       <div className="">

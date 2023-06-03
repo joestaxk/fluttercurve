@@ -84,14 +84,14 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
             variants={container}
             initial="hidden"
             animate="show"
-            className="flex justify-center gap-4 flex-wrap items-start w-full translate-y-[-4rem]">
+            className="flex justify-center gap-4 flex-wrap items-start w-full translate-y-[-4rem] p-3">
                 
-            <motion.div variants={item} className="shadow w-[45%] rounded-lg min-h-[300px] p-4 bg-[#fdffff]">
+            <motion.div variants={item} className="shadow lg:w-[45%] n:w-[65%] md:w-[80%] w-full rounded-lg min-h-[300px] p-4 bg-[#fdffff]">
               <div className="">
                 <form method="POST" onSubmit={handleCalculation}>
                     <div className="">
                         <label htmlFor="font-bold text-[#212121cc] text-xl mb-1">Enter Amount to Invest</label>
-                        <div className={`${validate.amount ? "text-[#d62c2c] border-[#d62c2c]": "border-[#ccc] focus-within:border-[#4385ff]"} transition-all duration-300  border-[1px] w-full flex`}>
+                        <div className={`${validate.amount ? "text-[#d62c2c] border-[#d62c2c]": "border-[#ccc] focus-within:border-[#4385ff]"} min-h-fit border-[1px] w-full flex`}>
                             <div className="w-[80%]">
                                 <input type="number" name="initialAmt" defaultValue={helpers.currencyFormatLong(compoundingPlans?.minAmt as any, state.currency)} className="w-full p-4 outline-none" placeholder="0.0"/>
                             </div>
@@ -100,7 +100,7 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
                                 <div>interest</div>
                             </div>
                         </div>
-                        <div className="flex justify-between">
+                        <div className="flex justify-between mt-2">
                             <div className={`${validate.min ? "text-[#d62c2c]": ""}`}>
                                 Min. of <span className={`font-bold ${validate.min ? "text-[#d62c2c]": "text-[#526288]"}`}>{helpers.currencyFormatLong(compoundingPlans?.minAmt as any, state.currency)}</span>
                             </div>
@@ -124,13 +124,13 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
                   
 
                     <div className="flex justify-between mt-3">
-                        <button name="calculate" className="bg-[#3939ff] flex items-center p-3 gap-2  text-white font-semi-bold rounded-md">
+                        <button type="button" name="calculate" className="bg-[#3939ff] flex items-center p-3 gap-2  text-white font-semi-bold rounded-md">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="white" d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5zm0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zM4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zM7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM7 9.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5h-1z"/></svg>
                             <span>Calculate</span>
                         </button>
 
-                        <button name="continue" className="bg-[#0e802c] flex items-center p-3 gap-2 text-white font-semi-bold rounded-md">
-                            <span>Contunue</span>
+                        <button type="submit" name="continue" className="bg-[#0e802c] flex items-center p-3 gap-2 text-white font-semi-bold rounded-md">
+                            <span>Continue</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none"><path d="M24 0v24H0V0h24ZM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035c-.01-.004-.019-.001-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427c-.002-.01-.009-.017-.017-.018Zm.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093c.012.004.023 0 .029-.008l.004-.014l-.034-.614c-.003-.012-.01-.02-.02-.022Zm-.715.002a.023.023 0 0 0-.027.006l-.006.014l-.034.614c0 .012.007.02.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01l-.184-.092Z"/><path fill="white" d="m15.06 5.283l5.657 5.657a1.5 1.5 0 0 1 0 2.12l-5.656 5.658a1.5 1.5 0 0 1-2.122-2.122l3.096-3.096H4.5a1.5 1.5 0 0 1 0-3h11.535L12.94 7.404a1.5 1.5 0 0 1 2.122-2.121Z"/></g></svg>
                         </button>
                     </div>
@@ -139,7 +139,7 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
 
             </motion.div>
 
-            <motion.div variants={item} className="shadow w-[45%]  min-h-[400px]">
+            <motion.div variants={item} className="shadow lg:w-[45%] n:w-[65%] md:w-[80%] w-full  min-h-[400px]">
               <div className="bg-[#fdffff] p-4 rounded-lg">
                 <h2 className="text-[#526288] text-2xl font-semibold">Calculation Projection</h2>
 
@@ -190,8 +190,8 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
 
                         <tbody>
                             {
-                                multiIntrestCalc.length ? multiIntrestCalc.map((data) => (
-                                    <tr>
+                                multiIntrestCalc.length ? multiIntrestCalc.map((data, i) => (
+                                    <tr key={i.toString()}>
                                         <td className="text-left py-4 pl-2">{data?.period}</td>
                                         <td className="text-left py-4 pl-2">{helpers.currencyFormatLong(data?.FIV as any, state.currency)}</td>
                                         <td className="text-left py-4 pl-2">{helpers.currencyFormatLong(data?.TIE as any, state.currency)}</td>

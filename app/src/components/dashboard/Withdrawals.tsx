@@ -2,7 +2,7 @@ export default function Withdrawal() {
   return (
     <div className="pl-5 mb-5">
       <h1 className="text-3xl mb-1 text-[#333]">Make Withdraw?</h1>
-      <p className="mb-8 text-[#333333ca]">If you don't get recieve any funds after 24hrs make sure you contact our support team.</p>
+      <p className="mb-8 text-[#333333ca]">If you don&apos;t get recieve any funds after 24hrs make sure you contact our support team.</p>
       <div className="flex justify-start">
         <div className="w-[50%]">
           <form action="" method="post">

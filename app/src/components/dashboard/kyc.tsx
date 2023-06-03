@@ -128,7 +128,7 @@ export default function Kyc({state}: {state: userDataStateType}) {
                         <div className="mt-4">
                             <h1 className="text-3xl text-[#526288] font-semibold">Personal Information.</h1>
                             <p className="text-[#212123cc] mb-5">
-                                An official card with your name, date of birth, photograph, or other information on it that proves who you are: A valid driver's license, state ID card, passport or other photo ID is required as proof of identity.
+                                An official card with your name, date of birth, photograph, or other information on it that proves who you are: A valid driver&apos;s license, state ID card, passport or other photo ID is required as proof of identity.
                             </p>
 
                             <div className="">
@@ -164,7 +164,7 @@ export default function Kyc({state}: {state: userDataStateType}) {
                         <div className="mt-4">
                             <h1 className="text-3xl text-[#526288] font-semibold">Upload Identifications.</h1>
                             <p className="text-[#212123cc] mb-5">
-                                An official card with your name, date of birth, photograph, or other information on it that proves who you are: A valid driver's license, state ID card, passport or other photo ID is required as proof of identity.
+                                An official card with your name, date of birth, photograph, or other information on it that proves who you are: A valid driver&apos;s license, state ID card, passport or other photo ID is required as proof of identity.
                             </p>
 
                             <div className="">
@@ -172,7 +172,7 @@ export default function Kyc({state}: {state: userDataStateType}) {
                                     <select  title="Identification card required" name="idType" className="w-full p-3 bg-transparent" required>
                                         <option value="">Choose Identification card</option>
                                         <option value="National ID">National ID card</option>
-                                        <option value="Driver's License">Driver's License</option>
+                                        <option value="Driver's License">Driver&apos;s License</option>
                                         <option value="International Passport">International Passport</option>
                                     </select>
                                 </div>

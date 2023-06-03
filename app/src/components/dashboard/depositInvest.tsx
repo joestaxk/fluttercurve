@@ -32,8 +32,8 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const ref = await auth.getDepositPlans(cookies['x-access-token'] as string);
-        return (await ref.json())
+        const {data}:any = await auth.getDepositPlans(cookies['x-access-token'] as string);
+        return data
       } catch (error) {
         console.log(error)
       }
@@ -120,8 +120,8 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
     }
     
     setLoadingState(true)
-    auth.newDepositRequest(cookies['x-access-token'], {chargeAPIData, depoInfoData}).then((res:any) => {
-      if(res.code === "ETIMEDOUT"){
+    auth.newDepositRequest(cookies['x-access-token'], {chargeAPIData, depoInfoData}).then(({data}:any) => {
+      if(data.code === "ETIMEDOUT"){
         setLoadingState(false)
         return alert("timeout");
       }
@@ -131,8 +131,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
       formVal.amount.value = "";
       setSelectedData({} as any);
       setLoadingState(false)
-      console.log(res.data.data.next, res.data.data, res.data)
-      const constrURI = `https://commerce.coinbase.com/charges/${res.data.data.next}`
+      const constrURI = `https://commerce.coinbase.com/charges/${data.data.next}`
       if(typeof window === "undefined") return;
       window.open(constrURI, '_blank')
     }).catch((err) => {
@@ -141,7 +140,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
     })
   }
     return (
-    <div className="">
+    <div className="p-4">
         <h1 className="text-3xl font-bold text-[#2b2b2b]">Make Deposits</h1>
 
         <div className="mt-5">
@@ -149,9 +148,10 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
 
           <div className="flex flex-wrap w-full gap-4 mt-4">
             {
-              depositPlans.length ? depositPlans.map(({id, dailyInterestRate, plan, guarantee, duration, minAmt, maxAmt}:any) => (
+              depositPlans.length ? depositPlans.map(({id, dailyInterestRate, plan, guarantee, duration, minAmt, maxAmt}:any, i:number) => (
                 <div 
                 style={x(id)}
+                key={i.toString()}
                 className="w-[380px] transition-all duration-500 rounded-lg bg-[#fffefe] min-h-[300px]">
                   <div className=" p-4 mb-3 flex w-full justify-between">
                      <div className="text-2xl font-semi-bold text-[#2b2b2b]">{plan} plan</div>
@@ -198,7 +198,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
           <p className={`${(validate.stat || validate.payMethod) ? 'text-[red]' : 'text-[green]'}  my-2`}>{validate.msg}</p>
           <form method="POST" onSubmit={handleSubmit}>
               <div className="flex flex-wrap w-full gap-2 mt-4">
-                <div className={`border-[1px] ${validate.stat ? "border-[#d20b0b]" : "border-[#ccc]"} w-1/2 rounded-lg overflow-hidden`}>
+                <div className={`border-[1px] ${validate.stat ? "border-[#d20b0b]" : "border-[#ccc]"} md:w-1/2 w-full rounded-lg overflow-hidden`}>
                   <input 
                     type="text"
                    name="amount" 
@@ -206,7 +206,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
                   className="outline-none bg-transparent p-3 w-full"/>
                 </div>
 
-                <div className={`border-[1px] ${validate.payMethod ? "border-[#d20b0b]" : "border-[#ccc]"}  rounded-lg overflow-hidden`}>
+                <div className={`border-[1px] ${validate.payMethod ? "border-[#d20b0b]" : "border-[#ccc]"} md:w-1/2 w-full  rounded-lg overflow-hidden`}>
                   <select name="paymentMethod"  className="p-4 w-full h-full bg-transparent border-none">
                       <option value="" selected>Select Payment Source</option>
                       <option value="account">Account  ({helpers.currencyFormatLong(parseInt(state.userAccount?.totalBalance as any || 0), state.currency)})</option>
@@ -231,8 +231,8 @@ export function DeposkelentonLoader() {
   return (
     <div className="flex flex-wrap w-full gap-4">
       {
-        arr.map(() => (
-          <div className="w-[380px] border-[1px] rounded-lg bg-[#cccccc30] border-[#ccc] h-[350px]">
+        arr.map((el, i:number) => (
+          <div key={i.toString()} className="w-[380px] border-[1px] rounded-lg bg-[#cccccc30] border-[#ccc] h-[350px]">
           </div>
         ))
       }

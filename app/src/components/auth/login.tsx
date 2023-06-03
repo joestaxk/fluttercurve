@@ -40,8 +40,8 @@ export default function LoginComponent() {
    }
   }
   return (
-    <main className='w-full h-full flex justify-center'>
-      <div className='w-[600px] min-h-auto rounded-xl p-8 bg-white'>
+    <main className='w-full h-full flex justify-center p-3'>
+      <div className='md:w-[600px] w-full min-h-auto rounded-xl md:p-8 p-4 bg-white'>
         <div className="">
           <div className="w-full text-center">
             <h1 className='text-[#33406a] text-3xl font-bold mb-1'>Welcome Back!</h1>
@@ -81,7 +81,7 @@ export default function LoginComponent() {
           </div>
 
           <div className="flex mt-3 justify-center text-lg">
-            <p>Don't have an account?</p>
+            <p>Don&apos;t have an account?</p>
             <Link href={"/register"} className='ml-1 font-bold text-[rgb(12,108,242)]'>Sign Up Here</Link>
           </div>
         </div>

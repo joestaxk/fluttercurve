@@ -68,9 +68,7 @@ export default function RegisterComponent() {
    setLoading(true)
    try {
       const res = await instance.post('/client/auth/register', data);
-      setLoading(false)
       setErr(false);
-      console.log(res)
       setMsgDesc(res.data.message)
       setCookie('x-access-token', res.data.data.accessToken, {path: "/",})
       // Do some pop-up modal for redirecting
@@ -84,8 +82,8 @@ export default function RegisterComponent() {
    }
   }
   return (
-    <main className='w-full h-full flex justify-center'>
-      <div className='w-[600px] min-h-auto rounded-xl p-8 bg-white'>
+    <main className='w-full h-full flex justify-center p-3'>
+      <div className='md:w-[600px] w-full min-h-auto rounded-xl md:p-8 p-4 bg-white'>
         <div className="">
           <div className="">
             <h1 className='text-[#33406a] text-3xl font-bold mb-1'>Get Started</h1>
@@ -147,7 +145,7 @@ export default function RegisterComponent() {
             </div>
 
             <div className="w-full flex justify-center mt-3">
-              <div className="flex">
+              <div className="flex items-center">
                 <input type="checkbox" id='radio' className='mr-3' name="agree" />
                 <label htmlFor='radio' className={`font-bold text-[#242424cc] transition-all duration-300 ${validation.agree.status ? 'border-b-[2px] border-dotted border-[red]' : ''}`} >I agree to the Terms & Conditions of service.</label>
               </div>
@@ -287,11 +285,11 @@ export function Select({className}:{className: string}) {
       <option value="KZ">Kazakhstan (KZ)</option>
       <option value="KE">Kenya (KE)</option>
       <option value="KI">Kiribati (KI)</option>
-      <option value="KP">Korea, Democratic People's Republic of (KP)</option>
+      <option value="KP">Korea, Democratic People&apos;s Republic of (KP)</option>
       <option value="KR">Korea, Republic of (KR)</option>
       <option value="KW">Kuwait (KW)</option>
       <option value="KG">Kyrgyzstan (KG)</option>
-      <option value="LA">Lao People's Democratic Republic (LA)</option>
+      <option value="LA">Lao People&apos;s Democratic Republic (LA)</option>
       <option value="LV">Latvia (LV)</option>
       <option value="LB">Lebanon (LB)</option>
       <option value="LS">Lesotho (LS)</option>

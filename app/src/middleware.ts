@@ -7,18 +7,33 @@ export async function middleware(request: NextRequest) {
     try {
       const search = (request.nextUrl.searchParams)
       const access_token:any = request.cookies.get('x-access-token');
-      const req = (await auth.isAuthenticated(access_token?.value));
-      const ifAuth = await req.json();
+        const res = (await auth.isAuthenticated(access_token?.value));
+        const ifAuth = await res.json();
 
       // SET HEADERS
-      const requestHeaders = new Headers(request.headers);
-      request.headers.set('authorization', "access_token");
-      // console.log(request.headers.get('authorization')) 
+      request.headers.set('authorization', access_token);
 
-      // RERWITE
-      if(request.nextUrl.pathname.startsWith('/office/') && ifAuth?.isVerified){
-        return NextResponse.rewrite(new URL(request.nextUrl.pathname, request.url));
+     // RERWITE
+     if(request.nextUrl.pathname.startsWith('/office/') && ifAuth?.isVerified){
+          // if you're not an admin and you're on the admin path.
+          if(!ifAuth?.isAdmin && request.nextUrl.pathname.startsWith('/office/admin')){
+            return NextResponse.rewrite(new URL("/office/dashboard", request.url));
+          }
+
+          // if you're an admin and you are on the client path
+          if(!ifAuth?.isAdmin && request.nextUrl.pathname.startsWith('/office/admin')){
+            return NextResponse.rewrite(new URL("/office/admin", request.url));
+          }
+
+          // Is Admin
+          if(ifAuth?.isAdmin){
+              return NextResponse.rewrite(new URL(request.nextUrl.pathname, request.url));
+          }else {
+            return NextResponse.rewrite(new URL(request.nextUrl.pathname, request.url));
+          }
       }
+
+
 
       // VERIFICATION 
       if (request.nextUrl.pathname.startsWith('/verification')){
@@ -38,7 +53,7 @@ export async function middleware(request: NextRequest) {
       }
 
       if(request.nextUrl.pathname.startsWith('/office') && !ifAuth?.isVerified) {
-          return NextResponse.redirect(new URL('/login  ', request.url));
+          return NextResponse.rewrite(new URL('/login  ', request.url));
       }
 
       // RE-ROUTE UNPROTECTED ROUTE
@@ -48,9 +63,8 @@ export async function middleware(request: NextRequest) {
             checkroutes = true;
         }
       })
+
       if(checkroutes) return NextResponse.redirect(new URL('/office/dashboard', request.url));
-
-
     } catch (error) {
       console.log(error)
       throw error;

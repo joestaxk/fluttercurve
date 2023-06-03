@@ -14,10 +14,9 @@ export default function MyInvestment(){
   useEffect(() => {
     async function fetchData() {
         try {
-            let res: any = await auth.getAllDepositRequest(cookies['x-access-token']);
-            res = await (res.json())
-            if(res.length) {
-                setData(res as any)
+            let {data}: any = await auth.getAllDepositRequest(cookies['x-access-token']);
+            if(data.length) {
+                setData(data as any)
             }
         } catch (error) {
             console.log(error)
@@ -25,15 +24,40 @@ export default function MyInvestment(){
     }
     fetchData()
   }, [])
+    function calculateRemainingTime(expireAt: string): string {
+        const expirationTime = new Date(expireAt);
+        const currentTime = new Date();
 
-   const calcDate = function(expiresAt: any) {
-     const newDate = new Date();
+        const remainingTimeInSeconds = Math.floor((expirationTime.getTime() - currentTime.getTime()) / 1000);
+        const remainingMinutes = Math.floor(remainingTimeInSeconds / 60);
+        const remainingSeconds = remainingTimeInSeconds % 60;
 
-     const getMins = new Date(expiresAt).getMinutes() - newDate.getMinutes()
-     const getSec = new Date(expiresAt).getSeconds() - newDate.getSeconds()
+        const formattedTime = `${remainingMinutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}  `;
 
-     return `${getMins}:${getSec}`
-   }
+        return formattedTime;
+    }
+
+    function UpdateRemainingTime({ expireAt }: { expireAt: string }): React.ReactElement {
+        const [remainingTime, setRemainingTime] = useState('');
+      
+        useEffect(() => {
+          const intervalId = setInterval(() => {
+            const time = calculateRemainingTime(expireAt);
+            setRemainingTime(time);
+      
+            if (time === '00:00 remaining') {
+              clearInterval(intervalId);
+            }
+          }, 1000);
+      
+          return () => {
+            clearInterval(intervalId);
+          };
+        }, [expireAt]);
+      
+        return <div>{remainingTime}</div>;
+      }
+      
     return (
         <div className="pb-6">
             <h1 className="text-3xl mb-8 border-b-[#bdbdbdc0] border-b-[1px] text-[#333]">All Investment</h1>
@@ -75,7 +99,7 @@ export default function MyInvestment(){
 
                                 { data.status == "NEW" &&  <div className="flex justify-between flex-grow text-[#e83131] font-semibold">
                                     <div className="">Expires At: </div>
-                                    <div className="">{Date.now() > (new Date(data.expiresAt) as any) ? "expired" : calcDate(data.expiresAt)}</div>
+                                    <div className="">{Date.now() > (new Date(data.expiresAt) as any) ? "expired" : <UpdateRemainingTime expireAt={data.expiresAt} />}</div>
                                 </div> }
 
                                 { data.status == "SUCCESSFUL" &&  <div className="flex justify-between flex-grow">
