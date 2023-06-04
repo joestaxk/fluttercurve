@@ -1,0 +1,52 @@
+name: production-deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  app:
+    name: app
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout-code
+        uses: actions/checkout@v3
+
+      - name: use-node-js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      - name: install-dependencies
+        run: cd app && npm install
+
+      - name: build-app
+        run: cd app && npm run build
+
+      - name: Create .env file
+        run: |
+          echo "NODE_ENV=production" > app/.env
+          echo "PORT=${{ vars.PORT_APP }}" >> app/.env
+          echo "HOST_NAME=${{ vars.HOST_NAME_APP }}" >> app/.env
+          echo "BASE_URI=${{ vars.BASE_URI }}" >> app/.env
+          echo "PUBLIC_PATH=${{ vars.PUBLIC_PATH }}" >> app/.env
+
+      - name: deploy-app
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        with:
+          server: fluttercurve.com
+          username: ${{ secrets.FTP_USER_APP }}
+          password: ${{ secrets.FTP_PASS_APP }}
+          local-dir: app/
+          exclude: |
+            **/.git*/**
+            **/node_modules/**
+            **/src/**
+            .eslintrc.json
+            .gitignore
+            README.md
+            postcss.config.js
+            tailwind.config.js
+            tsconfig.json
