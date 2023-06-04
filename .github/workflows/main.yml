@@ -20,15 +20,15 @@ jobs:
           cache: 'npm'
 
       - name: install-dependencies
-        working-directory: ./app
+        working-directory: ./fluttercurve/app
         run: npm ci
 
       - name: build-app
-        working-directory: ./app
+        working-directory: ./fluttercurve/app
         run: npm run build
 
       - name: Create .env file
-        working-directory: ./app
+        working-directory: ./fluttercurve/app
         run: |
           echo "NODE_ENV=production" > .env
           echo "PORT=${{ vars.PORT_APP }}" >> .env
@@ -42,7 +42,7 @@ jobs:
           server: fluttercurve.com
           username: ${{ secrets.FTP_USER_APP }}
           password: ${{ secrets.FTP_PASS_APP }}
-          local-dir: ./app/
+          local-dir: ./fluttercurve/app/
           exclude: |
             **/.git*/**
             **/node_modules/**
