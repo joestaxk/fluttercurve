@@ -21,13 +21,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-
-      - name: install-dependencies
-        run: npm install
-
-      - name: build-app
-        run: npm run build
-
+          
       - name: Create .env file
         run: |
           echo "NODE_ENV=production" > .env
@@ -36,13 +30,19 @@ jobs:
           echo "BASE_URI=${{ vars.BASE_URI }}" >> .env
           echo "PUBLIC_PATH=${{ vars.PUBLIC_PATH }}" >> .env
 
+      - name: install-dependencies
+        run: npm install
+
+      - name: build-app
+        run: npm run build
+
       - name: deploy-app
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
           server: fluttercurve.com
           username: ${{ secrets.FTP_USER_APP }}
           password: ${{ secrets.FTP_PASS_APP }}
-          local-dir: ./
+          local-dir: ./app/
           exclude: |
             **/.git*/**
             **/node_modules/**
