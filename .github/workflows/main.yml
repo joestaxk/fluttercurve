@@ -20,21 +20,18 @@ jobs:
           cache: 'npm'
 
       - name: install-dependencies
-        working-directory: ./fluttercurve/app
-        run: npm ci
+        run: cd ./app && npm install
 
       - name: build-app
-        working-directory: ./fluttercurve/app
-        run: npm run build
+        run: cd ./app && npm run build
 
       - name: Create .env file
-        working-directory: ./fluttercurve/app
         run: |
-          echo "NODE_ENV=production" > .env
-          echo "PORT=${{ vars.PORT_APP }}" >> .env
-          echo "HOST_NAME=${{ vars.HOST_NAME_APP }}" >> .env
-          echo "BASE_URI=${{ vars.BASE_URI }}" >> .env
-          echo "PUBLIC_PATH=${{ vars.PUBLIC_PATH }}" >> .env
+          echo "NODE_ENV=production" > ./app/.env
+          echo "PORT=${{ vars.PORT_APP }}" >> ./app/.env
+          echo "HOST_NAME=${{ vars.HOST_NAME_APP }}" >> ./app/.env
+          echo "BASE_URI=${{ vars.BASE_URI }}" >> ./app/.env
+          echo "PUBLIC_PATH=${{ vars.PUBLIC_PATH }}" >> ./app/.env
 
       - name: deploy-app
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
@@ -42,7 +39,7 @@ jobs:
           server: fluttercurve.com
           username: ${{ secrets.FTP_USER_APP }}
           password: ${{ secrets.FTP_PASS_APP }}
-          local-dir: ./fluttercurve/app/
+          local-dir: ./app/
           exclude: |
             **/.git*/**
             **/node_modules/**
