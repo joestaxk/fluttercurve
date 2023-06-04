@@ -6,6 +6,7 @@ import helpers from '../../utils/helpers';
 import userAccount from './userAccount';
 import Referral from './referrals';
 import userCompounding from '../mode/compounding';
+import Kyc from './kyc';
 // import Referral from './referrals';
 
 
@@ -141,6 +142,11 @@ Client.hasMany(Referral, {
     foreignKey: "ClientId"
 });
 Referral.belongsTo(Client)
+
+Client.hasOne(Kyc)
+Kyc.belongsTo(Client)
+
+
 
 export default Client;
 

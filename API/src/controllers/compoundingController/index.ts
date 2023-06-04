@@ -25,7 +25,7 @@ compoundingController.getCompoundingPlans = async function(req,res,next) {
           res.send(ifExist) 
         }
     } catch (error) {
-        res.send(error)
+        res.status(httpStatus.BAD_REQUEST).send(error)
     }
 }
 
@@ -40,7 +40,7 @@ compoundingController.getACompoundingPlans = async function(req,res,next) {
           res.send(ifExist) 
         }
     } catch (error) {
-        res.send(error)
+        res.status(httpStatus.BAD_REQUEST).send(error)
     }
 }
 

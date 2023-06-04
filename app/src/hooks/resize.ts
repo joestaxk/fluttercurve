@@ -9,6 +9,12 @@ export function useResize(): ResizeType {
   });
 
   useEffect(() => {
+    if(resize.width == 0 && resize.height == 0) {
+      setResize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
     function handleResize() {
       setResize({
         width: window.innerWidth,

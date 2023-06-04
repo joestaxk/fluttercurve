@@ -19,6 +19,7 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
         if(state.avatar) setImageData(`${process.env.PUBLIC_PATH}/private/users/${state.avatar}`)
     }, [state.avatar])
 
+    console.log(width)
     return (
         <>
             {(width < 1279) ? (
@@ -58,8 +59,8 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
                         <Image
                           
                            src={imageData}
-                           className="rounded-full"
-                           alt={"user"}
+                           className="rounded-full w-[50px]  h-[50px]"
+                           alt={"user"} 
                            width={50}
                            height={50}
                          />

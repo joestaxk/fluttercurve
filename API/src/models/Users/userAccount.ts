@@ -13,7 +13,7 @@ export interface userAccountInterface<T> {
     id: T,
     uuid: T,
     totalWithdrawal: T,
-    totalDeposit: T
+    totalDeposit: T,
 }
 
 userAccount.init({

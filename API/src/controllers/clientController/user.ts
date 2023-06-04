@@ -4,9 +4,11 @@ import Client, { ClientInterface } from '../../models/Users/users';
 import helpers from '../../utils/helpers';
 import userAccount, { userAccountInterface } from '../../models/Users/userAccount';
 import Referral from '../../models/Users/referrals';
+import Kyc from '../../models/Users/kyc';
 
 
 interface userControllerInterface {
+    setupKyc: (req: any, res: any, next: any) => void;
     updateUserInfo: (req: any, res: any, next: any) => Promise<void>;
     updatePassword: (req: any, res: any, next: any) => Promise<void>;
     uploadAvatar: (req: any, res: any, next: any) => void;
@@ -41,7 +43,7 @@ userController.verifyUserAccount = async function(req:any, res:any) {
          res.status(httpStatus.OK).send({message: "Account has been verified successfully", data: access})
     } catch (error) {
         console.log(error)
-        res.status(httpStatus.BAD_REQUEST).send(error)
+        res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
     }
 }
 
@@ -56,7 +58,7 @@ userController.getMe = async function(req:any, res:any) {
         })
     } catch (error) {
         console.log(error)
-       res.status(httpStatus.BAD_REQUEST).send(error)
+       res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
     }
 }
 
@@ -73,7 +75,7 @@ userController.getReferredUser = async function(req:any, res:any) {
         res.send(filter)
     } catch (error) {
         console.log(error)
-        res.status(httpStatus.BAD_REQUEST).send(error)
+        res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
     }
 }
 
@@ -94,7 +96,7 @@ userController.logout = async function(req:any, res:any) {
         res.send({message: "You've been Logged out successfully!"})
     } catch (error) {
         console.log(error)
-       res.status(httpStatus.BAD_REQUEST).send(error)
+       res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
     }
 }
 
@@ -123,7 +125,7 @@ userController.updatePasswordByLink = async function(req,res) {
         if(updated) res.send({message: "Password has been successfully changed. Go to login"}) 
                 //throw new ApiError("Verification error", httpStatus.BAD_REQUEST,"Couldn't send Verification mail. check network connection")
     } catch (error) {
-        res.status(httpStatus.BAD_REQUEST).send(error)
+        res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
     }
 
 }
@@ -145,7 +147,7 @@ userController.updateUserInfo = async function(req,res,next) {
         }
         res.send("Updated successfully!")
     } catch (error) {
-        res.send(error)
+        res.status(httpStatus.BAD_REQUEST).send(error)
     }
 }
 
@@ -171,7 +173,7 @@ userController.updatePassword = async function(req,res,next) {
 
         res.send("Updated successfully")
     } catch (error) {
-        res.send(error)
+        res.status(httpStatus.BAD_REQUEST).send(error)
     }
 }
 
@@ -193,7 +195,87 @@ userController.uploadAvatar = async function(req,res,next) {
     } catch (error) {
         // if any
         console.log(error)
-        res.send(error);
+        res.status(httpStatus.BAD_REQUEST).send(error);
     }
 }
+
+
+
+userController.setupKyc = function (req, res, next) {
+    const files = req.files;
+    const body = req.body;
+  
+    // Validate request body fields
+    if (!body.fullName || !body.idType || !body.dob || !body.nationality) {
+      return res.status(400).json({ error: 'Missing required fields.' });
+    }
+  
+    // Prepare body and file data
+    const bodyData = {
+      fullName: body.fullName,
+      idType: body.idType,
+      dob: body.dob,
+      nationality: body.nationality,
+      isKyc: false
+    };
+  
+    const fileData = {
+      passport: null,
+      frontID: null,
+      backID: null,
+      livevideo: null
+    };
+  
+    // Map file data based on fieldname
+    Object.keys(files).forEach((fieldname) => {
+        const fileArray = files[fieldname];
+        if (Array.isArray(fileArray) && fileArray.length > 0) {
+          const file = fileArray[0];
+          console.log(file)
+          switch (fieldname) {
+            case 'passport':
+              fileData.passport = file.filename;
+              break;
+            case 'frontID':
+              fileData.frontID = file.filename;
+              break;
+            case 'backID':
+              fileData.backID = file.filename;
+              break;
+            case 'livevideo':
+              fileData.livevideo = file.filename;
+              break;
+            default:
+              break;
+          }
+        }
+      });
+
+ // Ensure all required files are present
+    if (!fileData.frontID || !fileData.backID || !fileData.livevideo) {
+        return res.status(400).json({ error: 'Missing required files.' });
+    }
+    
+    // Save the KYC data in the Kyc table
+    Kyc.create({
+        fullName: bodyData.fullName,
+        passport: fileData.passport,
+        idType: bodyData.idType,
+        frontID: fileData.frontID,
+        backID: fileData.backID,
+        livevideo: fileData.livevideo,
+        dob: bodyData.dob,
+        nationality: bodyData.nationality,
+        isKyc: bodyData.isKyc,
+    })
+    .then((kyc) => {
+        // KYC data saved successfully
+        res.status(200).json({ message: 'KYC data saved successfully' });
+    })
+    .catch((error) => {
+        console.log(error)
+        // Error occurred while saving KYC data
+        res.status(500).json({ error: 'Failed to save KYC data' });
+    });
+};
 export default userController;

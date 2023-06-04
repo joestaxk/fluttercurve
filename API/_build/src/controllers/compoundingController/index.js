@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const http_status_1 = __importDefault(require("http-status"));
 const compoundingPlans_1 = __importDefault(require("../../models/mode/compoundingPlans"));
 var compoundingController = {};
 compoundingController.makeInvestment = function (req, res, next) {
@@ -28,7 +29,7 @@ compoundingController.getCompoundingPlans = function (req, res, next) {
             }
         }
         catch (error) {
-            res.send(error);
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
@@ -44,7 +45,7 @@ compoundingController.getACompoundingPlans = function (req, res, next) {
             }
         }
         catch (error) {
-            res.send(error);
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };

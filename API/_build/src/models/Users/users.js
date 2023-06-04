@@ -43,6 +43,7 @@ const helpers_1 = __importDefault(require("../../utils/helpers"));
 const userAccount_1 = __importDefault(require("./userAccount"));
 const referrals_1 = __importDefault(require("./referrals"));
 const compounding_1 = __importDefault(require("../mode/compounding"));
+const kyc_1 = __importDefault(require("./kyc"));
 // import Referral from './referrals';
 class Client extends sequelize_1.default.Model {
 }
@@ -147,4 +148,6 @@ Client.hasMany(referrals_1.default, {
     foreignKey: "ClientId"
 });
 referrals_1.default.belongsTo(Client);
+Client.hasOne(kyc_1.default);
+kyc_1.default.belongsTo(Client);
 exports.default = Client;

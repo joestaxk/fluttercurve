@@ -17,6 +17,13 @@ buildDepositPlans().then(res => {})
 
 router.get('/getCountryCode',  serviceController.getCountryCode);
 
+
+/**
+    AccountBal []
+    @method GET
+**/
+router.get("/getAccountBalance", UserAuth, serviceController.getAccountBalance)
+
 /**
     Depost-plan []
     @method GET
@@ -28,6 +35,9 @@ router.get('/getDepositPlans',  UserAuth, serviceController.getDepositPlans);
 //  this are active plans, which means it has to be pending or on hold by the client.1
 router.get('/getActiveDeposit',  UserAuth, serviceController.getActiveDeposit);
 
+router.get('/getActiveWithdrawal',  UserAuth, serviceController.getActiveWithdrawal);
+
+
 /**
     Depost []
     @method POST
@@ -38,4 +48,11 @@ router.get("/getAllDepositRequest", UserAuth, serviceController.getAllDepositReq
 
 router.get("/getAllSuccessfulInvesment", UserAuth, serviceController.getAllSuccessfulInvesment)
 
-module.exports = router
+
+/**
+    Withdrawal []
+    @method POST
+**/
+router.post("/newWithdrawalRequest", UserAuth, serviceController.newWithdrawalRequest)
+
+module.exports = router 

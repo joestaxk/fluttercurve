@@ -4,6 +4,7 @@ import { userDataStateType } from "@/rState/initialStates";
 import { useEffect, useState} from "react";
 import { useCookies } from "react-cookie";
 import ButtonSpinner from "../utils/buttonSpinner";
+import useAlert from "@/hooks/alert";
 
 
 type selectedType<T> = {
@@ -27,6 +28,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
     payMethod: false,
   })
   const [loading, setLoadingState] = useState(false)
+  const {AlertComponent, showAlert} = useAlert()
 
   
   useEffect(() => {
@@ -62,8 +64,9 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
     setSelectedData(filterID)
   }
 
-  function handleSubmit(ev:any) {
+  async function handleSubmit(ev:any) {
     ev.preventDefault();
+
 
     const formVal = ev.target;
     const data = {
@@ -71,8 +74,8 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
       paymentMethod: formVal.paymentMethod.value
     };
 
+    // Validations
     if(data.amount < parseInt(selectedData.minAmt)) {
-      // do error
       return setValidation({...validate, stat: true, msg: `minimum amount is ${helpers.currencyFormatLong(selectedData.minAmt, state.currency)}`})
     }else {
       setValidation({...validate, stat: false, msg: ""})
@@ -90,13 +93,28 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
     }else {
       setValidation({...validate, payMethod: false, msg: ""})
     }
+
     if(data.paymentMethod === "account") {
       // check account balance
-      
-    }
+      setLoadingState(true)
+      try {
+        const reqAcctBal = await auth.getAccountBalance(cookies['x-access-token']);
+    
+        if(typeof reqAcctBal.data === "number") {
+          setLoadingState(false)
+          return console.log(reqAcctBal)
+        }
+        return console.log(reqAcctBal)
+      } catch (error:any) {
+        showAlert("error", error.response.data.description.desc)
+        setLoadingState(false)
+        return console.log(error)
+      }
 
-    if(data.paymentMethod === "e-currency") {
+    }else if(data.paymentMethod === "e-currency") {
       setValidation({...validate, stat: false, msg: ""})
+    }else {
+      showAlert("error", "Select Payment Method.")
     }
 
     // make api before continuing process!
@@ -121,21 +139,20 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
     
     setLoadingState(true)
     auth.newDepositRequest(cookies['x-access-token'], {chargeAPIData, depoInfoData}).then(({data}:any) => {
-      if(data.code === "ETIMEDOUT"){
-        setLoadingState(false)
-        return alert("timeout");
-      }
-
-
       // restate all data 
       formVal.amount.value = "";
       setSelectedData({} as any);
       setLoadingState(false)
+      showAlert("success", "Redirecting to payment Gateway");
       const constrURI = `https://commerce.coinbase.com/charges/${data.data.next}`
       if(typeof window === "undefined") return;
       window.open(constrURI, '_blank')
     }).catch((err) => {
       setLoadingState(false)
+      if(err.response.data.code === "ETIMEDOUT"){
+        return showAlert("error", "Timeout. try again :(");
+      }
+
       console.log(err)
     })
   }
@@ -222,6 +239,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
               </button>
           </form>
         </div>
+        {AlertComponent}
       </div>
     )
 }

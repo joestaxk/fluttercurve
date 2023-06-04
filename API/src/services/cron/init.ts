@@ -8,7 +8,7 @@ export default class Cron {
         return {
             minutes : function(remote: boolean) {
                 console.log(' 🔥🔥🔥 MINUTE CRON IN SERVICE 🔥🔥🔥`')
-                return cron.schedule('* * * *  *', function() {
+                return cron.schedule('*/10 * * *  *', function() {
                     task()
                 }, {
                     scheduled: remote

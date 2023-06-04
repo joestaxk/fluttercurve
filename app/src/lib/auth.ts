@@ -1,8 +1,11 @@
-import { user } from "@/context/auth-context";
 import instance from "./requestService";
 
 
 interface authInterface {
+    uploadKyc: any;
+    newWithdrawalRequest: any;
+    getActiveWithdrawal: any;
+    getAccountBalance: any;
     logout: (access_token: string) => Promise<Response>;
     updatePassword: (access_token: string, passwords: any) => Promise<Response>;
     updateUserInfo: (access_token: string, userInfo: any) => Promise<Response>;
@@ -34,6 +37,10 @@ auth.uploadAvatar = async function(access_token: string, imageData: any) {
     return await instance.post(`/client/uploadAvatar`,  imageData, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
+auth.uploadKyc = async function(access_token: string, kycData: any) {
+    return await instance.post(`/client/uploadKyc`,  kycData, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
 auth.getRefferedUser = async function(access_token: string) {
     return await instance.get(`/client/getReferredUser`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
@@ -52,8 +59,17 @@ auth.logout = async function(access_token: string) {
 }
 
 
+auth.getAccountBalance = async function(access_token: string) {
+    return await instance.get(`/service/getAccountBalance`, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
 auth.getActiveDeposit = async function(access_token: string) {
     return await instance.get(`/service/getActiveDeposit`, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
+
+auth.getActiveWithdrawal = async function(access_token: string) {
+    return await instance.get(`/service/getActiveWithdrawal`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
 auth.getDepositPlans = async function(access_token: string) {
@@ -79,5 +95,9 @@ auth.getAllSuccessfulInvesment = async function(access_token: string) {
 
 auth.newDepositRequest = async function(access_token: string, chargeAPIData:any) {
     return await instance.post(`/service/newDepositRequest`, chargeAPIData, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
+auth.newWithdrawalRequest = async function(access_token: string, data:any) {
+    return await instance.post(`/service/newWithdrawalRequest`, data, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 export default auth;

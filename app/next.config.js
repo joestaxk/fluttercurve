@@ -8,16 +8,16 @@ const nextConfig = {
         // PUBLIC_PATH: 'https://api.fluttercurve.com'
     },
     images: {
-        remotePatterns: [
-            {
-                protocol: 'https',
-                hostname: 'api.fluttercurve.com',
-                port: '',
-                pathname: '/private/user/**',
-            },
-        ],
+        // remotePatterns: [
+        //     {
+        //         protocol: 'https',
+        //         hostname: 'api.fluttercurve.com',
+        //         port: '',
+        //         pathname: '/private/user/**',
+        //     },
+        // ],
 
-        // domains: ["localhost"]
+        domains: ["localhost"]
     },
 }
 

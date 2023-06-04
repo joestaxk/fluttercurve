@@ -35,8 +35,7 @@ function Page({state}:{state: userDataStateType}) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const {data}:any = await auth.getActiveDeposit(cookies['x-access-token'] as string);
-        return data
+        return await auth.getActiveDeposit(cookies['x-access-token'] as string);
       } catch (error) {
         console.log(error)
       }

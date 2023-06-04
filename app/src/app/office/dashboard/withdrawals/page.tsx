@@ -29,39 +29,38 @@ function Page({state}:{state: userDataStateType}) {
 
 
   const [cookies, setCookie, removeCookie] = useCookies();
-  const [activeDepo, setActiveDeposit] = useState(0);
+  const [activeWithdraw, setActiveWithdraw] = useState(0);
   const [depositPlans, setDepositPlans] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const {ref}:any = await auth.getActiveDeposit(cookies['x-access-token'] as string);
-        return (await ref.json())
+        return await auth.getActiveWithdrawal(cookies['x-access-token'] as string);
       } catch (error) {
         console.log(error)
       }
     }
 
-    fetchData().then((res:any[]) => {
+    fetchData().then(({data}: any) => {
       let calcAmt = 0;
-      res.forEach(({amount}) => {
+      data.forEach(({amount}: {amount: string}) => {
         calcAmt += parseInt(amount);
       })
-      setActiveDeposit(calcAmt)
+      setActiveWithdraw(calcAmt)
     })
   }, [])
-  
+
     return (
       <main>
         <Dashboard state={state}>
           <div className="mt-4">
-            <h1 className="text-3xl n:text-4xl text-white font-medium">Make Investment</h1>
+            <h1 className="text-3xl n:text-4xl text-white font-medium">My Withdrawal</h1>
              <div className="flex items-center mt-3">
                <h2 className="text-xl n:text-2xl  text-[#ccc] font-medium">Home</h2>
                <span>
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#e0e0e0" d="m14 18l-1.4-1.45L16.15 13H4v-2h12.15L12.6 7.45L14 6l6 6l-6 6Z"/></svg>
                </span>
-              <h2 className="text-xl n:text-2xl  text-[#ccc] font-medium">Make Investment</h2>
+              <h2 className="text-xl n:text-2xl  text-[#ccc] font-medium">Make Withdrawal</h2>
              </div>
           </div>
         </Dashboard>
@@ -93,7 +92,7 @@ function Page({state}:{state: userDataStateType}) {
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Pending Withdrawals</h3>
-                <h1 className="text-2xl font-semibold text-[#4d6ae9]">{helpers.currencyFormat(activeDepo, state?.currency)}</h1>
+                <h1 className="text-2xl font-semibold text-[#4d6ae9]">{helpers.currencyFormat(activeWithdraw, state?.currency)}</h1>
               </div>
 
               <div className="">
@@ -113,7 +112,7 @@ function Page({state}:{state: userDataStateType}) {
           </motion.div>
 
           {/*  */}
-          <Withdrawal />
+          <Withdrawal  state={state}/>
       </main>
     )
   }

@@ -9,17 +9,22 @@ userWithdrawal.init({
         type: sequelize_1.DataTypes.UUID,
         allowNull: false,
     },
-    plan: {
+    walletAddress: {
         type: sequelize_1.DataTypes.STRING,
-        defaultValue: "0"
+        allowNull: true,
+    },
+    currency: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
     },
     amount: {
         type: sequelize_1.DataTypes.STRING,
         defaultValue: 0
     },
     status: {
-        type: sequelize_1.DataTypes.ENUM("pending", "success", "failed"),
-        allowNull: false
+        type: sequelize_1.DataTypes.ENUM("PENDING", "SUCCESSFUL", "FAILED"),
+        allowNull: false,
+        defaultValue: "PENDING"
     }
 }, {
     sequelize: db_1.sequelize,

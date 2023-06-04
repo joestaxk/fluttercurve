@@ -14,6 +14,7 @@ const country:countryType[] = require('../services/country')
 
 
 interface helpersInterface {
+    generateInvoiceId(): unknown;
     countryDialCode: (iso3: string) => void;
     createKeyToken: (user: any, conf: any, id: string) => Promise<any>;
     generateRefreshToken: (accessToken: any, req: any) => Promise<{ accessToken: string; } | undefined>;
@@ -124,4 +125,17 @@ helpers.countryDialCode = function(iso3:string) {
     })
 }
 
+helpers.generateInvoiceId = function() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    const length = 8;
+    let invoiceId = '';
+  
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      invoiceId += characters[randomIndex];
+    }
+  
+    return invoiceId;
+  }
+  
 export default helpers;

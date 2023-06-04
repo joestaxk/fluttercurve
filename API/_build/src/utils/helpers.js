@@ -121,4 +121,14 @@ helpers.countryDialCode = function (iso3) {
         reject(null);
     });
 };
+helpers.generateInvoiceId = function () {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    const length = 8;
+    let invoiceId = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        invoiceId += characters[randomIndex];
+    }
+    return invoiceId;
+};
 exports.default = helpers;

@@ -1,25 +1,29 @@
 "use client"
 import Dashboard, { NormalMode } from "@/components/dashboard/Dashboard";
 import withDashboard from "@/hocs/withDashboard";
+import useAlert from "@/hooks/alert";
 import auth from "@/lib/auth";
 import { userDataStateType } from "@/rState/initialStates";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+
 import { useCookies } from "react-cookie";
 
 function Page({state}:{state: userDataStateType}) {
   const [cookies, setCookie, removeCookie] = useCookies();
   const [refData, setRefData] = useState([]);
   const [refferal, setRefferal] = useState([]);
+  const { AlertComponent, showAlert } = useAlert();
 
   useEffect(() => {
     async function fetchData() {
       try {
         return await auth.getRefferedUser(cookies['x-access-token'] as string);
-      } catch (error) {
-        console.log(error)
+      } catch (error: any) {
+
+        console.log(error.response)
       }
     }
 
@@ -46,7 +50,7 @@ function Page({state}:{state: userDataStateType}) {
         animate={{ opacity:1, y: -90}}
         transition={{ delay: 1, stiffness: ""}}
         className="flex justify-center gap-2 flex-wrap items-start w-full translate-y-[-40%] p-5">
-          <div className={`bg-white ${state?.referral  ? "w-[70%]" : "w-[90%]"}  shadow rounded-lg min-h-[150px] p-4 flex items-center justify-between`}>
+          <div className={`bg-white ${state?.referral  ? "lg:w-[70%] w-full" : "w-[90%]"}  shadow rounded-lg min-h-[150px] p-4 flex items-center justify-between`}>
             <div className="">
                 <h4 className="font-bold text-[#212121] text-3xl mb-3">My Referrals</h4>
 
@@ -61,7 +65,7 @@ function Page({state}:{state: userDataStateType}) {
               </div>
           </div>
 
-          {state?.referral ? <div className="bg-white w-[20%] min-h-[200px] shadow rounded-lg p-2 flex justify-center">
+          {state?.referral ? <div className="bg-white lg:w-[20%] w-full min-h-[200px] shadow rounded-lg p-2 flex justify-center">
             <div className="flex flex-col">
                <div className="w-[80px] h-[80px] rounded-full overflow-hidden">
                 <Image className="bg-no-repeat bg-center bg-cover w-full h-full" src={"/avatar-1.png"} width={50} height={50} alt="user image" />
@@ -78,7 +82,7 @@ function Page({state}:{state: userDataStateType}) {
          <div   className="flex flex-col items-center gap-2 flex-wrap justify-center translate-y-[-40%] w-full p-5">
              <div className="w-full flex flex-wrap gap-2">
                {
-                refferal.length && refferal.map(({createdAt, userName,firstDeposit,avatar}, i:number) => (
+                refferal.length ? refferal.map(({createdAt, userName,firstDeposit,avatar}, i:number) => (
                   <div key={i.toString()} title={firstDeposit ? "User have made first deposit!": "User have not made any depost"} className="bg-white mb-4  w-[300px] border-[#ccc] border-[1px] shadow rounded-lg p-4 flex items-center justify-between">
                     <div className="flex items-center gap-5">
                       <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
@@ -93,11 +97,11 @@ function Page({state}:{state: userDataStateType}) {
 
                     <svg className="" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill={firstDeposit ? "green": "#ccc"} fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 0 0 1.745-.723a3.066 3.066 0 0 1 3.976 0a3.066 3.066 0 0 0 1.745.723a3.066 3.066 0 0 1 2.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 0 1 0 3.976a3.066 3.066 0 0 0-.723 1.745a3.066 3.066 0 0 1-2.812 2.812a3.066 3.066 0 0 0-1.745.723a3.066 3.066 0 0 1-3.976 0a3.066 3.066 0 0 0-1.745-.723a3.066 3.066 0 0 1-2.812-2.812a3.066 3.066 0 0 0-.723-1.745a3.066 3.066 0 0 1 0-3.976a3.066 3.066 0 0 0 .723-1.745a3.066 3.066 0 0 1 2.812-2.812Zm7.44 5.252a1 1 0 0 0-1.414-1.414L9 10.586L7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/></svg>
                   </div>
-                ))
+                )) : <></>
                }
             </div>
-
           </div>
+          {AlertComponent}
       </main>
     )
   }

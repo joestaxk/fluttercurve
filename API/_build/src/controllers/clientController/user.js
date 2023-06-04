@@ -17,6 +17,7 @@ const ApiError_1 = __importDefault(require("../../utils/ApiError"));
 const users_1 = __importDefault(require("../../models/Users/users"));
 const helpers_1 = __importDefault(require("../../utils/helpers"));
 const referrals_1 = __importDefault(require("../../models/Users/referrals"));
+const kyc_1 = __importDefault(require("../../models/Users/kyc"));
 let userController = {};
 userController.verifyUserAccount = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -42,7 +43,7 @@ userController.verifyUserAccount = function (req, res) {
         }
         catch (error) {
             console.log(error);
-            res.status(http_status_1.default.BAD_REQUEST).send(error);
+            res.status(http_status_1.default.BAD_REQUEST).status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
@@ -55,7 +56,7 @@ userController.getMe = function (req, res) {
         }
         catch (error) {
             console.log(error);
-            res.status(http_status_1.default.BAD_REQUEST).send(error);
+            res.status(http_status_1.default.BAD_REQUEST).status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
@@ -75,7 +76,7 @@ userController.getReferredUser = function (req, res) {
         }
         catch (error) {
             console.log(error);
-            res.status(http_status_1.default.BAD_REQUEST).send(error);
+            res.status(http_status_1.default.BAD_REQUEST).status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
@@ -97,7 +98,7 @@ userController.logout = function (req, res) {
         }
         catch (error) {
             console.log(error);
-            res.status(http_status_1.default.BAD_REQUEST).send(error);
+            res.status(http_status_1.default.BAD_REQUEST).status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
@@ -125,7 +126,7 @@ userController.updatePasswordByLink = function (req, res) {
             //throw new ApiError("Verification error", httpStatus.BAD_REQUEST,"Couldn't send Verification mail. check network connection")
         }
         catch (error) {
-            res.status(http_status_1.default.BAD_REQUEST).send(error);
+            res.status(http_status_1.default.BAD_REQUEST).status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
@@ -140,7 +141,7 @@ userController.updateUserInfo = function (req, res, next) {
             res.send("Updated successfully!");
         }
         catch (error) {
-            res.send(error);
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
@@ -162,7 +163,7 @@ userController.updatePassword = function (req, res, next) {
             res.send("Updated successfully");
         }
         catch (error) {
-            res.send(error);
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
@@ -186,8 +187,79 @@ userController.uploadAvatar = function (req, res, next) {
         catch (error) {
             // if any
             console.log(error);
-            res.send(error);
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
+    });
+};
+userController.setupKyc = function (req, res, next) {
+    const files = req.files;
+    const body = req.body;
+    // Validate request body fields
+    if (!body.fullName || !body.idType || !body.dob || !body.nationality) {
+        return res.status(400).json({ error: 'Missing required fields.' });
+    }
+    // Prepare body and file data
+    const bodyData = {
+        fullName: body.fullName,
+        idType: body.idType,
+        dob: body.dob,
+        nationality: body.nationality,
+        isKyc: false
+    };
+    const fileData = {
+        passport: null,
+        frontID: null,
+        backID: null,
+        livevideo: null
+    };
+    // Map file data based on fieldname
+    Object.keys(files).forEach((fieldname) => {
+        const fileArray = files[fieldname];
+        if (Array.isArray(fileArray) && fileArray.length > 0) {
+            const file = fileArray[0];
+            console.log(file);
+            switch (fieldname) {
+                case 'passport':
+                    fileData.passport = file.filename;
+                    break;
+                case 'frontID':
+                    fileData.frontID = file.filename;
+                    break;
+                case 'backID':
+                    fileData.backID = file.filename;
+                    break;
+                case 'livevideo':
+                    fileData.livevideo = file.filename;
+                    break;
+                default:
+                    break;
+            }
+        }
+    });
+    // Ensure all required files are present
+    if (!fileData.frontID || !fileData.backID || !fileData.livevideo) {
+        return res.status(400).json({ error: 'Missing required files.' });
+    }
+    // Save the KYC data in the Kyc table
+    kyc_1.default.create({
+        fullName: bodyData.fullName,
+        passport: fileData.passport,
+        idType: bodyData.idType,
+        frontID: fileData.frontID,
+        backID: fileData.backID,
+        livevideo: fileData.livevideo,
+        dob: bodyData.dob,
+        nationality: bodyData.nationality,
+        isKyc: bodyData.isKyc,
+    })
+        .then((kyc) => {
+        // KYC data saved successfully
+        res.status(200).json({ message: 'KYC data saved successfully' });
+    })
+        .catch((error) => {
+        console.log(error);
+        // Error occurred while saving KYC data
+        res.status(500).json({ error: 'Failed to save KYC data' });
     });
 };
 exports.default = userController;

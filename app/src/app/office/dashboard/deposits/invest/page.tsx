@@ -41,9 +41,10 @@ function Page({state}:{state: userDataStateType}) {
     }
 
     fetchData().then(({data}:any) => {
+      console.log(data)
       let calcAmt = 0;
-      data.forEach(({amount}: any) => {
-        calcAmt += parseInt(amount);
+      data.forEach(({investedAmt}: any) => {
+        calcAmt += parseInt(investedAmt);
       })
       setActiveDeposit(calcAmt)
     })

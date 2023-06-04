@@ -20,17 +20,22 @@ userWithdrawal.init({
         type: DataTypes.UUID,
         allowNull:false,
     },
-    plan: {
+    walletAddress: {
         type: DataTypes.STRING,
-        defaultValue: "0"
+        allowNull: true,
+    },
+    currency: {
+        type: DataTypes.STRING,
+        allowNull: true
     },
     amount: {
         type: DataTypes.STRING,
         defaultValue: 0
     },
     status: {
-        type: DataTypes.ENUM("pending", "success", "failed"),
-        allowNull: false
+        type: DataTypes.ENUM("PENDING", "SUCCESSFUL", "FAILED"),
+        allowNull: false,
+        defaultValue: "PENDING"
     }
   },
   {

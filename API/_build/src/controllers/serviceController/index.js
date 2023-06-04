@@ -18,6 +18,9 @@ const helpers_1 = __importDefault(require("../../utils/helpers"));
 const depositPlans_1 = __importDefault(require("../../models/services/depositPlans"));
 const deposit_1 = __importDefault(require("../../models/Users/deposit"));
 const coinbase_1 = __importDefault(require("../../services/userServices/coinbase"));
+const users_1 = __importDefault(require("../../models/Users/users"));
+const withdrawal_1 = __importDefault(require("../../models/Users/withdrawal"));
+const transactions_1 = __importDefault(require("../../models/Users/transactions"));
 let serviceController = {};
 serviceController.getCountryCode = function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -43,7 +46,7 @@ serviceController.getDepositPlans = function (req, res, next) {
             }
         }
         catch (error) {
-            res.send(error);
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
@@ -57,7 +60,40 @@ serviceController.getActiveDeposit = function (req, res, next) {
             res.send(depoData);
         }
         catch (error) {
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
             console.log(error);
+        }
+    });
+};
+serviceController.getActiveWithdrawal = function (req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            // query DB for data
+            const withdrawData = yield withdrawal_1.default.findAll({ where: { status: "PENDING", userId: req.id } });
+            if (!withdrawData.length)
+                return res.send(withdrawData);
+            res.send(withdrawData);
+        }
+        catch (error) {
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
+            console.log(error);
+        }
+    });
+};
+serviceController.getAccountBalance = function (req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            // query DB for data
+            const getAccount = yield users_1.default.findOne({ where: { uuid: req.id } });
+            const acct = getAccount.userAccount;
+            if (!acct)
+                throw new ApiError_1.default("account balance", http_status_1.default.BAD_REQUEST, { data: 0, desc: "Use E-currency. insufficient funds." });
+            const accountBal = parseInt(acct.totalDeposit) - parseInt(acct.totalWithdrawal);
+            res.send(accountBal);
+        }
+        catch (error) {
+            console.log(error);
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
@@ -97,7 +133,7 @@ serviceController.newDepositRequest = function (req, res, next) {
         }
         catch (error) {
             console.log(error);
-            res.send(error);
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
@@ -111,7 +147,7 @@ serviceController.getAllDepositRequest = function (req, res, next) {
         }
         catch (error) {
             console.log(error);
-            res.send(error);
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
@@ -125,7 +161,35 @@ serviceController.getAllSuccessfulInvesment = function (req, res, next) {
         }
         catch (error) {
             console.log(error);
-            res.send(error);
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
+        }
+    });
+};
+//************* NEW WITHDRAWAL REQUEST */
+serviceController.newWithdrawalRequest = function (req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            // we communicate with a third party api - Coinbase
+            const { amount, currency, walletAddress } = req.body;
+            if (!amount || !currency || !walletAddress)
+                throw new ApiError_1.default("invalid data", http_status_1.default.BAD_REQUEST, { desc: "input contains invalid data" });
+            const create = yield withdrawal_1.default.create({
+                userId: req.id,
+                amount,
+                currency,
+                walletAddress
+            });
+            // Transactions
+            yield transactions_1.default.create({
+                userId: req.id,
+                invoiceID: helpers_1.default.generateInvoiceId(),
+                amount,
+            });
+            //send email.
+            res.status(http_status_1.default.CREATED).send({ message: "Request was successful, Wait for approval." });
+        }
+        catch (error) {
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });
 };
