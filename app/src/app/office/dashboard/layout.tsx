@@ -4,7 +4,6 @@ import  { Suspense } from "react"
 import Loading from "./loading";
 import { motion } from "framer-motion";
 import Router from "next/router";
-import Nprogress from "nprogress"
 
 export default function DashboardLayout({
     children, // will be a page or nested layout
