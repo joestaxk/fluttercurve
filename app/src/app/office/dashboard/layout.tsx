@@ -4,7 +4,6 @@ import  { Suspense } from "react"
 import Loading from "./loading";
 import { motion } from "framer-motion";
 import Router from "next/router";
-import Nprogress from "nprogress"
 
 export default function DashboardLayout({
     children, // will be a page or nested layout
@@ -12,12 +11,7 @@ export default function DashboardLayout({
     children: React.ReactNode;
   }) {
 
-    Router.events.on("routeChangeStart", () => Nprogress.start())
-    Router.events.on("routeChangeStart", () => Nprogress.done())
-    Router.events.on("routeChangeError", () => Nprogress.done())
-    
-    Nprogress.configure({ showSpinner: false })
-    
+
     return (
       <>
         <section>
