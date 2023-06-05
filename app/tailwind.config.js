@@ -8,10 +8,29 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+          'authSkin': "url(/account-bg.jpg)"
       },
+      fontFamily: {
+        'Mont': 'Montserrat Alternates',
+      },
+      theme: {
+        screens: {
+          'sm': "299px",
+
+          'md': '522px',
+
+          "n": "683px",
+
+          'lg': '826px',
+          // => @media (min-width: 826px) { ... }
+    
+          'xl': '1150px',
+          // => @media (min-width: 1150px) { ... }
+    
+          'xxl': '1318px',
+          // => @media (min-width: 1280px) { ... }
+        },
+      }
     },
   },
   plugins: [],
