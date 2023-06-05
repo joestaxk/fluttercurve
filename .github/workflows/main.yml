@@ -36,42 +36,13 @@ jobs:
       - name: build app
         run: npm run build
 
-  babel:
-    name: recompile with Babel
-    runs-on: ubuntu-latest
-    
-    defaults:
-      run:
-        working-directory: app
-
-    needs: [build]
-
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v3
-
-      - name: use nodejs 14
-        uses: actions/setup-node@v3
-        with:
-          node-version: 14
-          
-      - name: create .babelrc file
-        run: |
-          echo '{ "presets": [ [ "@babel/preset-env", { "targets": { "node": "14" } } ], "@babel/preset-react" ] }' > .babelrc
-
-      - name: install babel dependencies
-        run: npm install --save-dev @babel/cli @babel/core @babel/preset-env @babel/preset-react babel-loader
-
-      - name: recompile with babel
-        run: npx babel . --out-dir ./babel-output --copy-files
-
       - name: deploy app
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
           server: fluttercurve.com
           username: ${{ secrets.FTP_USER_APP }}
           password: ${{ secrets.FTP_PASS_APP }}
-          local-dir: ./babel-output/
+          local-dir: ./app/
           exclude: |
             **/.git*/**
             **/node_modules/**
