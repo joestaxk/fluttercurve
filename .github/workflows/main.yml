@@ -8,6 +8,10 @@ jobs:
   build:
     name: build app
     runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: app
 
     steps:
       - name: checkout code
