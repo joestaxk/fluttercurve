@@ -248,7 +248,6 @@
 //   );
 // }
 
-// export default LiveVideoRecording;
 
 
 import { motion } from "framer-motion";
@@ -399,3 +398,6 @@ useEffect(() => {
       </motion.div>
   )
 }
+
+
+export default LiveVideoRecording;
