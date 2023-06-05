@@ -60,7 +60,7 @@ jobs:
           echo '{ "presets": [ [ "@babel/preset-env", { "targets": { "node": "14" } } ], "@babel/preset-react" ] }' > .babelrc
 
       - name: install babel dependencies
-        run: npm install --save-dev @babel/cli @babel/preset-env @babel/preset-react babel-loader
+        run: npm install --save-dev @babel/cli @babel/core @babel/preset-env @babel/preset-react babel-loader
 
       - name: recompile with babel
         run: npx babel . --out-dir ./babel-output --copy-files
