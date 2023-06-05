@@ -11,12 +11,7 @@ export default function DashboardLayout({
     children: React.ReactNode;
   }) {
 
-    Router.events.on("routeChangeStart", () => Nprogress.start())
-    Router.events.on("routeChangeStart", () => Nprogress.done())
-    Router.events.on("routeChangeError", () => Nprogress.done())
-    
-    Nprogress.configure({ showSpinner: false })
-    
+
     return (
       <>
         <section>
