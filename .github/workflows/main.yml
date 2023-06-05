@@ -14,10 +14,10 @@ jobs:
         working-directory: app
 
     steps:
-      - name: checkout-code
+      - name: checkout code
         uses: actions/checkout@v3
 
-      - name: use-node-js
+      - name: use nodejs
         uses: actions/setup-node@v3
         with:
           node-version: 14
@@ -29,14 +29,21 @@ jobs:
           echo "HOST_NAME=${{ vars.HOST_NAME_APP }}" >> .env
           echo "BASE_URI=${{ vars.BASE_URI }}" >> .env
           echo "PUBLIC_PATH=${{ vars.PUBLIC_PATH }}" >> .env
+      
+      - name: Create .babelrc file
+        run: |
+          echo '{ "presets": [ [ "@babel/preset-env", { "targets": { "node": "14" } } ], "@babel/preset-react" ] }' > .babelrc
 
-      - name: install-dependencies
+      - name: install dependencies
         run: npm install
+        
+      - name: install babel dependencies
+        run: npm install --save-dev @babel/core @babel/preset-env @babel/preset-react babel-loader
 
-      - name: build-app
+      - name: build app
         run: npm run build
 
-      - name: deploy-app
+      - name: deploy app
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
           server: fluttercurve.com
