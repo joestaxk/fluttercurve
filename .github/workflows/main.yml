@@ -5,8 +5,8 @@ on:
     branches: [main]
 
 jobs:
-  app:
-    name: app
+  build:
+    name: build app
     runs-on: ubuntu-latest
     
     defaults:
@@ -17,29 +17,22 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v3
 
-      - name: use nodejs
+      - name: use nodejs 16
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16
           
-      - name: Create .env file
+      - name: create .env file
         run: |
           echo "NODE_ENV=production" > .env
           echo "PORT=${{ vars.PORT_APP }}" >> .env
           echo "HOST_NAME=${{ vars.HOST_NAME_APP }}" >> .env
           echo "BASE_URI=${{ vars.BASE_URI }}" >> .env
           echo "PUBLIC_PATH=${{ vars.PUBLIC_PATH }}" >> .env
-      
-      - name: Create .babelrc file
-        run: |
-          echo '{ "presets": [ [ "@babel/preset-env", { "targets": { "node": "14" } } ], "@babel/preset-react" ] }' > .babelrc
 
       - name: install dependencies
         run: npm install
         
-      - name: install babel dependencies
-        run: npm install --save-dev @babel/core @babel/preset-env @babel/preset-react babel-loader
-
       - name: build app
         run: npm run build
 
@@ -62,4 +55,3 @@ jobs:
             tailwind.config.js
             tsconfig.json
             yarn.lock
-            
