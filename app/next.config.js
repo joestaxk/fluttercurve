@@ -9,6 +9,16 @@ const nextConfig = {
     images: {
         domains: ["api.fluttercurve.com"]
     },
+    webpack: (config) => {
+      config.module.rules.push({
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        },
+      });
+      return config;
+    },
 }
 
 module.exports = nextConfig
