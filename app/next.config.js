@@ -9,9 +9,6 @@ const nextConfig = {
          BASE_URI: 'https://api.fluttercurve.com/v1',
         PUBLIC_PATH: 'https://api.fluttercurve.com'
     },
-    images: {
-        domains: ["api.fluttercurve.com"]
-    },
     webpack: (config) => {
       config.module.rules.push({
         test: /\.js$/,
