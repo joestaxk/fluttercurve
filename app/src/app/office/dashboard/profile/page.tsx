@@ -137,7 +137,7 @@ function Page({state}:{state: userDataStateType}) {
         <div className="bg-white lg:w-[83%] w-full shadow rounded-lg min-h-[150px] md:p-4 p-1 flex items-center md:gap-0 gap-4 justify-between">
           <div className="flex flex-col items-center justify-center">
             <div className="w-[80px] group h-[80px] rounded-full overflow-hidden relative">
-              <Image className="bg-no-repeat bg-center bg-cover w-full h-full" src={imageData} width={50} height={50} alt="user image" />
+              <img className="bg-no-repeat bg-center bg-cover w-full h-full" src={imageData} width={50} height={50} alt="user image" />
           
                 <label  htmlFor="avatar" className="bg-[#2121217f] transition-all duration-500 delay-200 ease-linear group-hover:bg-[#212121ce] cursor-pointer group-hover:w-full group-hover:h-full w-fit h-fit rounded-tl-lg rounded-bl-lg p-1 absolute group-hover:right-0 group-hover:bottom-0 group-hover:flex justify-center items-center">
                 <input type="file" className="hidden" name="avatar" accept="image/*" onChange={handleAvatarUpload} id="avatar" />

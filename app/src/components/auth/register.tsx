@@ -87,53 +87,53 @@ export default function RegisterComponent() {
         <div className="">
           <div className="">
             <h1 className='text-[#33406a] text-3xl font-bold mb-1'>Get Started</h1>
-            <p className='text-xl text-[#55658a]'>Open account for free and start investing now!</p>
+            <p className='xxl:text-xl md:text-lg text-sm text-[#55658a]'>Open account for free and start investing now!</p>
           </div>
           <form method="POST" onSubmit={handleRegister} className='mt-10'>
             <p className={`${err ? 'text-[red]' : 'text-[green]'}  my-2`}>{msgDesc}</p>
-            <div className={`bg-[#f4f4f4] rounded-md transition-all duration-300 ${validation.fullname.status ? 'border-[1px] border-[red]' : ''}`}>
+            <div className={`bg-[#f4f4f4] md:text-lg text-sm rounded-md transition-all duration-300 ${validation.fullname.status ? 'border-[1px] border-[red]' : ''}`}>
               <input  className='bg-transparent font-medium text-[#526288] w-full p-3 border-0 outline-none' name="fullname" type="text" placeholder="Your Fullname *" required/>
             </div>
 
-            <div className='bg-[#f4f4f4] rounded-md mt-3'>
+            <div className='bg-[#f4f4f4] rounded-md mt-3 md:text-lg text-sm'>
               <input  className='bg-transparent font-medium text-[#526288] w-full p-3 border-0 outline-none' name='username' pattern="[a-z]*(\d|[a-z]){4,8}$" title="4 to 8 lowercase letters" type="text" placeholder="Your Username *" required/>
             </div>
 
-            <div className='w-full flex gap-2 mt-3'>
+            <div className='w-full flex gap-2 mt-3 md:text-lg text-sm'>
               <div className='w-1/2 bg-[#f4f4f4] rounded-md'>
                 <input  className='bg-transparent font-medium text-[#526288] w-full p-3 border-0 outline-none' type="email" name='email' placeholder="Email Address *" required/>
               </div>
 
 
-              <div className='w-1/2 bg-[#f4f4f4] rounded-md'>
+              <div className='w-1/2 bg-[#f4f4f4] rounded-md md:text-lg text-sm'>
                 <input  className='bg-transparent font-medium text-[#526288] w-full p-3 border-0 outline-none' type="tel" name='phone' pattern='[0-9]{10,10}' title='Enter phone number. 10 digit long' placeholder="Phone Number *" required/>
               </div>
             </div>
 
             <div className='border-[1px] border-[#ccc] my-3'>
-              <Select className='w-full' />
+              <Select className='w-full md:text-lg text-sm' />
             </div>
 
             <div className="flex my-3 items-center gap-2">
               <div className="border-[1px] border-[#ccc]">
-                <select className="w-full p-3 bg-transparent" name="currency" required>
+                <select className="w-full p-3 bg-transparent md:text-lg text-sm" name="currency" required>
                   <option value="GBP">£</option>
                   <option value="USD">$</option>
                 </select>
               </div>
 
-              <div className='bg-[#f4f4f4] rounded-md w-full'>
+              <div className='bg-[#f4f4f4] rounded-md w-full md:text-lg text-sm'>
                 <input className='bg-transparent font-medium text-[#526288] w-full p-3 border-0 outline-none' min={1} title="Your Annual Income can't be zero" name='annual' type="number" placeholder="Annual Income *" required/>
               </div>
             </div>
 
 
-            <div className='bg-[#f4f4f4] rounded-md mt-3 w-full'>
+            <div className='bg-[#f4f4f4] rounded-md mt-3 w-full md:text-lg text-sm'>
                 <input className='bg-transparent font-medium text-[#526288] w-full p-3 border-0 outline-none' defaultValue={router?.get('ref') as string}  name='referral' type="text" autoComplete='off' placeholder="Referral Username (Optional)"/>
             </div>
 
             {/* PASSWORDS */}
-            <div className='w-full flex gap-2 mt-3'>
+            <div className='w-full flex gap-2 mt-3 md:text-lg text-sm'>
               <div className='w-1/2 bg-[#f4f4f4] rounded-md'>
                 <input className='bg-transparent font-medium text-[#526288] w-full p-3 border-0 outline-none' type="password" name='password' placeholder="Password *" autoComplete='off' required/>
               </div>
@@ -144,7 +144,7 @@ export default function RegisterComponent() {
               </div>
             </div>
 
-            <div className="w-full flex justify-center mt-3">
+            <div className="w-full flex justify-center mt-3 md:text-lg text-sm">
               <div className="flex items-center">
                 <input type="checkbox" id='radio' className='mr-3' name="agree" />
                 <label htmlFor='radio' className={`font-bold text-[#242424cc] transition-all duration-300 ${validation.agree.status ? 'border-b-[2px] border-dotted border-[red]' : ''}`} >I agree to the Terms & Conditions of service.</label>
@@ -159,7 +159,7 @@ export default function RegisterComponent() {
             <div className={style.or}><span className='p-3 font-bold text-[#242424cc]'>Or</span></div>
           </div>
 
-          <div className="flex mt-3 justify-center text-lg">
+          <div className="flex md:gap-0 gap-1 mt-3 justify-center md:text-lg text-sm">
             <p>Already have an account?</p>
             <Link href={"/login"} className='ml-1 font-bold text-[rgb(12,108,242)]'>Login</Link>
           </div>

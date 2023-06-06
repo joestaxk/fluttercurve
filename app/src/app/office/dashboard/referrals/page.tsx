@@ -68,7 +68,7 @@ function Page({state}:{state: userDataStateType}) {
           {state?.referral ? <div className="bg-white lg:w-[20%] w-full min-h-[200px] shadow rounded-lg p-2 flex justify-center">
             <div className="flex flex-col">
                <div className="w-[80px] h-[80px] rounded-full overflow-hidden">
-                <Image className="bg-no-repeat bg-center bg-cover w-full h-full" src={"/avatar-1.png"} width={50} height={50} alt="user image" />
+                <img className="bg-no-repeat bg-center bg-cover w-full h-full" src={"/avatar-1.png"} width={50} height={50} alt="user image" />
                </div>
 
                 <div className="">
@@ -86,7 +86,7 @@ function Page({state}:{state: userDataStateType}) {
                   <div key={i.toString()} title={firstDeposit ? "User have made first deposit!": "User have not made any depost"} className="bg-white mb-4  w-[300px] border-[#ccc] border-[1px] shadow rounded-lg p-4 flex items-center justify-between">
                     <div className="flex items-center gap-5">
                       <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
-                        <Image className="bg-no-repeat bg-center bg-cover w-full h-full" src={avatar ?`${process.env.PUBLIC_PATH}/private/users/${avatar}` : "/avatar-1.png"} width={50} height={50} alt="user image" />
+                        <img className="bg-no-repeat bg-center bg-cover w-full h-full" src={avatar ?`${process.env.PUBLIC_PATH}/private/users/${avatar}` : "/avatar-1.png"} width={50} height={50} alt="user image" />
                       </div>
 
                       <div className="">
@@ -95,7 +95,7 @@ function Page({state}:{state: userDataStateType}) {
                       </div>
                     </div>
 
-                    <svg className="" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill={firstDeposit ? "green": "#ccc"} fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 0 0 1.745-.723a3.066 3.066 0 0 1 3.976 0a3.066 3.066 0 0 0 1.745.723a3.066 3.066 0 0 1 2.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 0 1 0 3.976a3.066 3.066 0 0 0-.723 1.745a3.066 3.066 0 0 1-2.812 2.812a3.066 3.066 0 0 0-1.745.723a3.066 3.066 0 0 1-3.976 0a3.066 3.066 0 0 0-1.745-.723a3.066 3.066 0 0 1-2.812-2.812a3.066 3.066 0 0 0-.723-1.745a3.066 3.066 0 0 1 0-3.976a3.066 3.066 0 0 0 .723-1.745a3.066 3.066 0 0 1 2.812-2.812Zm7.44 5.252a1 1 0 0 0-1.414-1.414L9 10.586L7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/></svg>
+                    <svg className="" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill={firstDeposit ? "green": "#ccc"} fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 0 0 1.745-.723a3.066 3.066 0 0 1 3.976 0a3.066 3.066 0 0 0 1.745.723a3.066 3.066 0 0 1 2.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 0 1 0 3.976a3.066 3.066 0 0 0-.723 1.745a3.066 3.066 0 0 1-2.812 2.812a3.066 3.066 0 0 0-1.745.723a3.066 3.066 0 0 1-3.976 0a3.066 3.066 0 0 0-1.745-.723a3.066 3.066 0 0 1-2.812-2.812a3.066 3.066 0 0 0-.723-1.745a3.066 3.066 0 0 1 0-3.976a3.066 3.066 0 0 0 .723-1.745a3.066 3.066 0 0 1 2.812-2.812Zm7.44 5.252a1 1 0 0 0-1.414-1.414L9 10.586L7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clipRule="evenodd"/></svg>
                   </div>
                 )) : <></>
                }

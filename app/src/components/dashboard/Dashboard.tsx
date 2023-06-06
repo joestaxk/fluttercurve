@@ -19,20 +19,29 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
         if(state.avatar) setImageData(`${process.env.PUBLIC_PATH}/private/users/${state.avatar}`)
     }, [state.avatar])
 
-    console.log(width)
+    useEffect(() => {
+        if(nav) {
+            const body = document.querySelector('body') as HTMLBodyElement
+            body.style.cssText="overflow-y: hidden"
+        }else {
+            const body = document.querySelector('body') as HTMLBodyElement
+            body.style.cssText="overflow-y: auto"
+        }
+    }, [nav])
+
     return (
         <>
             {(width < 1279) ? (
                 <>
-                   {nav && <>
+                   {nav && <div>
                      <Navigation nav={nav} setNav={setNav}/>
                     <DropdownOverlay cb={() => setNav(false)} />
-                   </>}
+                   </div>}
                 </>
-            ): <>
+            ): <div>
                 <Navigation nav={nav} setNav={setNav}/>
-            <DropdownOverlay cb={() => setNav(false)} />
-            </>}
+                <DropdownOverlay cb={() => setNav(false)} />
+            </div>}
             <main>
            <div className="min-h-[350px] p-5 bg-[url(/gradient.svg)] bg-[100%] bg-cover bg-no-repeat rounded-br-[2rem] rounded-bl-[2rem]">
               <div className="flex items-center justify-between">
@@ -49,38 +58,38 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
                     </div>
                     <div className="md:flex gap-1 hidden ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#ccc" d="M4 20q-.825 0-1.413-.588T2 18V6q0-.825.588-1.413T4 4h16q.825 0 1.413.588T22 6v12q0 .825-.588 1.413T20 20H4Zm8-7l8-5V6l-8 5l-8-5v2l8 5Z"/></svg>
-                        <Link href={"mailto:info@gencapitals.com"}>info@gencapitals.com</Link>
+                        <Link href={"mailto:info@fluttercuve.com"}>info@fluttercurve.com</Link>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3 relative">
                     <div className="relative" id="show">
-                        <div  onClick={() => setShow(!show)} className="cursor-pointer">
-                        <Image
-                          
-                           src={imageData}
-                           className="rounded-full w-[50px]  h-[50px]"
-                           alt={"user"} 
-                           width={50}
-                           height={50}
-                         />
-                        {
-                            state?.isVerified && <svg className="absolute right-0 bottom-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="blue" fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 0 0 1.745-.723a3.066 3.066 0 0 1 3.976 0a3.066 3.066 0 0 0 1.745.723a3.066 3.066 0 0 1 2.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 0 1 0 3.976a3.066 3.066 0 0 0-.723 1.745a3.066 3.066 0 0 1-2.812 2.812a3.066 3.066 0 0 0-1.745.723a3.066 3.066 0 0 1-3.976 0a3.066 3.066 0 0 0-1.745-.723a3.066 3.066 0 0 1-2.812-2.812a3.066 3.066 0 0 0-.723-1.745a3.066 3.066 0 0 1 0-3.976a3.066 3.066 0 0 0 .723-1.745a3.066 3.066 0 0 1 2.812-2.812Zm7.44 5.252a1 1 0 0 0-1.414-1.414L9 10.586L7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/></svg>
-                        }
+                        <div className="cursor-pointer flex gap-1" onClick={() => setShow(!show)}>
+                            <div className="relative">
+                                <img
+                                src={imageData}
+                                className="rounded-full w-[50px]  h-[50px] border-[1px] border-gray-700"
+                                alt={"user"} 
+                                width={50}
+                                height={50}
+                                />
+                                {
+                                    state?.isVerified && <svg className="absolute right-0 bottom-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="blue" fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 0 0 1.745-.723a3.066 3.066 0 0 1 3.976 0a3.066 3.066 0 0 0 1.745.723a3.066 3.066 0 0 1 2.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 0 1 0 3.976a3.066 3.066 0 0 0-.723 1.745a3.066 3.066 0 0 1-2.812 2.812a3.066 3.066 0 0 0-1.745.723a3.066 3.066 0 0 1-3.976 0a3.066 3.066 0 0 0-1.745-.723a3.066 3.066 0 0 1-2.812-2.812a3.066 3.066 0 0 0-.723-1.745a3.066 3.066 0 0 1 0-3.976a3.066 3.066 0 0 0 .723-1.745a3.066 3.066 0 0 1 2.812-2.812Zm7.44 5.252a1 1 0 0 0-1.414-1.414L9 10.586L7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clipRule="evenodd"/></svg>
+                                }
+                            </div>
+                            <div className="text-[#f3f1f1] md:block hidden">
+                                <div className="font-semi-bold first-letter:capitalize">{state?.userName}</div> 
+                                <div className="text-[#59ef5e]">{state?.email}</div>
+                            </div>
+
+                            {show && (
+                                <>
+                                    <ProfileMenu/>
+                                    <DropdownOverlay cb={() => setShow(false)} />
+                                </>
+                            )}
                         </div>
-
-
-                       {show && (
-                        <>
-                            <ProfileMenu/>
-                            <DropdownOverlay cb={() => setShow(false)} />
-                        </>
-                       )}
                     </div>  
-                    <div className="text-[#f3f1f1]">
-                        <div className="font-semi-bold first-letter:capitalize">{state?.userName}</div> 
-                        <div className="text-[#59ef5e]">{state?.email}</div>
-                    </div>
                 </div>
               </div>
 
@@ -112,13 +121,13 @@ export function DropdownOverlay({ cb }: {cb: () => void}) {
 function ProfileMenu() {
     const [cookies, setCookies, removeCookies] = useCookies()
     async function handleLogout() {
-        try {
-        const logout = await (await auth.logout(cookies["x-access-token"]));
-        removeCookies("x-access-token", {path: "/login"})
-        if(logout){
-            console.log(logout)
-            window.location.replace("/login")
-        }
+      try {
+            const logout = await auth.logout(cookies["x-access-token"]);
+            removeCookies("x-access-token", {path: "/login"})
+            if(logout){
+                console.log(logout)
+                window.location.replace("/login")
+            }
         } catch (error) {
             console.log(error)
         }
@@ -134,16 +143,15 @@ function ProfileMenu() {
          display: "block",
          opacity: 1
         }}
-
-        className="absolute left-[-8rem] mt-2 w-[200px] min-h-[150px] rounded-lg p-2 bg-[#fcfcfc] z-[51]">
+        className="absolute top-10 right-0 mt-2 w-[200px] min-h-[150px] rounded-lg p-2 bg-[#fcfcfc] z-[51]">
             <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2 p-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="rgba(33, 33, 33, 0.5)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2Z"/><path d="M4.271 18.346S6.5 15.5 12 15.5s7.73 2.846 7.73 2.846M12 12a3 3 0 1 0 0-6a3 3 0 0 0 0 6Z"/></g></svg>
+                <div className="flex items-center gap-2 p-2 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="rgba(33, 33, 33, 0.5)" strokeLinecap="round" strokeLinejoin="round"  strokeWidth="1.5"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2Z"/><path d="M4.271 18.346S6.5 15.5 12 15.5s7.73 2.846 7.73 2.846M12 12a3 3 0 1 0 0-6a3 3 0 0 0 0 6Z"/></g></svg>
                     <Link href="office/dashboard/profile">My Profile</Link>
                 </div>
 
-                <div className="flex items-center gap-2 p-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15"><path fill="rgba(33, 33, 33, 0.5)" d="M2 1h5v1H2V1Zm6 7.5a1.5 1.5 0 1 1 3 0a1.5 1.5 0 0 1-3 0Z"/><path fill="rgba(33, 33, 33, 0.5)" fill-rule="evenodd" d="M0 12.5A1.5 1.5 0 0 0 1.5 14h12a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 13.5 3h-12A1.5 1.5 0 0 0 0 4.5v8ZM9.5 6a2.5 2.5 0 1 0 0 5a2.5 2.5 0 0 0 0-5Z" clip-rule="evenodd"/></svg>
+                <div className="flex items-center gap-2 p-2 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 15 15"><path fill="rgba(33, 33, 33, 0.5)" d="M2 1h5v1H2V1Zm6 7.5a1.5 1.5 0 1 1 3 0a1.5 1.5 0 0 1-3 0Z"/><path fill="rgba(33, 33, 33, 0.5)" fillRule="evenodd" d="M0 12.5A1.5 1.5 0 0 0 1.5 14h12a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 13.5 3h-12A1.5 1.5 0 0 0 0 4.5v8ZM9.5 6a2.5 2.5 0 1 0 0 5a2.5 2.5 0 0 0 0-5Z" clipRule="evenodd"/></svg>
                     <Link href="office/dashboard/profile/kyc">KYC verification</Link> 
                 </div>
 

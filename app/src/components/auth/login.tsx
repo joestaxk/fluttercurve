@@ -1,17 +1,19 @@
 "use client"
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import style from "./auth.module.css"
 import ButtonSpinner from '../utils/buttonSpinner'
 import instance from '@/lib/requestService'
 import { useCookies } from 'react-cookie';
+import PageLoader from 'next/dist/client/page-loader'
 
 export default function LoginComponent() {
   const [loading, setLoading] = useState(false)
   const [msgDesc, setMsgDesc] = useState("");
   const [err, setErr] = useState(false);
   const [cookies, setCookie] = useCookies([] as any);
-  
+
+
   async function handleLogin(ev: any) {
    ev.preventDefault();
    const targ = ev.target;
@@ -30,7 +32,7 @@ export default function LoginComponent() {
       setErr(false);
       setMsgDesc(res.data.message)
       setCookie('x-access-token', res.data.data.accessToken, {path: "/",})
-      location.reload()
+      location.href = "/office/dashboard"
    } catch (error:any) {
     setLoading(false)
     if(error.response.data.description) {
@@ -48,23 +50,23 @@ export default function LoginComponent() {
           </div>
 
           <form method='POST' onSubmit={handleLogin} className='mt-8'>
-          <p className={`${err ? 'text-[red]' : 'text-[green]'}  my-2`}>{msgDesc}</p>
-            <label htmlFor="email">Your Email</label>
+          <p className={`${err ? 'text-[red]' : 'text-[green]'} md:text-lg text-sm my-2`}>{msgDesc}</p>
+            <label htmlFor="email" className='md:text-lg text-sm'>Your Email</label>
             <div className='bg-[#f4f4f4] rounded-md mb-3'>
               <input id='email' className='bg-transparent font-medium text-[#526288] w-full p-3 border-0 outline-none' type="email" name='email' required/>
             </div>
 
-            <label htmlFor="pass">Password</label>
+            <label htmlFor="pass" className='md:text-lg text-sm'>Password</label>
             <div className='bg-[#f4f4f4] rounded-md'>
               <input id='pass' className='bg-transparent font-medium text-[#526288] w-full p-3 border-0 outline-none' name='password' type="password" required/>
             </div>
-            <div className="flex mt-3">
+            <div className="flex mt-3  md:text-lg text-sm md:gap-0 gap-1">
                 <p>Forgot your password?</p>
                 <Link href={"/forget-password"} className='ml-1 font-bold text-[#3e4553cc]'>Recover password</Link>
             </div>
 
 
-            <div className="w-full flex mt-3">
+            <div className="w-full flex mt-3 md:text-lg text-sm">
               <div className="flex">
                 <input type="checkbox" className='mr-3' id="agree" name="agree" />
                 <label htmlFor='agree' className='font-bold text-[#3e4553cc]'> Keep me logged in</label>
@@ -80,7 +82,7 @@ export default function LoginComponent() {
             <div className={style.or}><span className='p-3 font-bold text-[#3e4553cc]'>OR</span></div>
           </div>
 
-          <div className="flex mt-3 justify-center text-lg">
+          <div className="flex md:gap-0 gap-1 mt-3 justify-center md:text-lg text-sm">
             <p>Don&apos;t have an account?</p>
             <Link href={"/register"} className='ml-1 font-bold text-[rgb(12,108,242)]'>Sign Up Here</Link>
           </div>

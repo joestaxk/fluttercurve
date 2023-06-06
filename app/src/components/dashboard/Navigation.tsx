@@ -1,21 +1,21 @@
 import { motion } from "framer-motion";
 import ActiveLink from "./activeLink";
-import { useEffect } from "react";
-import { useResize } from "@/hooks/resize";
+
 
 export default function Navigation({nav, setNav}: {nav: boolean, setNav: (arg0:boolean) => void}) {
   return (
     <>
-       <motion.main
+        <svg onClick={() => setNav(false)} className="fixed top-0 z-[51] block xl:hidden cursor-pointer right-2" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="#ccc" d="M20 6.91L17.09 4L12 9.09L6.91 4L4 6.91L9.09 12L4 17.09L6.91 20L12 14.91L17.09 20L20 17.09L14.91 12L20 6.91Z"/></svg>
+       <motion.aside
         initial={{x: -100}}
         animate={{x: 0, transition: { duration: .3}}}
-        className="xl:block  xxl:w-[330px] transition-all duration-300 w-[300px] xl:pr-3 min-h-[100vh] xl:fixed absolute xl:z-0 z-[51] bg-white xl:bg-transparent top-0 left-0">
-          <div className="relative ">
-            <svg onClick={() => setNav(false)} className="block xl:hidden absolute top-[-2rem] cursor-pointer right-2" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="#ccc" d="M20 6.91L17.09 4L12 9.09L6.91 4L4 6.91L9.09 12L4 17.09L6.91 20L12 14.91L17.09 20L20 17.09L14.91 12L20 6.91Z"/></svg>
-            <div className="text-[#4874ebed] md:text-2xl text-lg font-extrabold mt-[2.5rem] p-3">FLUTTERCURVE<span className="text-[#4b57f57f]">.COM</span></div>
+        style={{maxWidth: 'calc(100vw - 50px)'}}
+        className="xl:block xxl:w-[330px] w-[300px] h-[100vh] xl:fixed absolute xl:z-0 z-[51] bg-white xl:bg-transparent top-0 left-0">
+          <div className="relative px-2 py-4">
+            <div className="text-[#4874ebed] md:text-2xl text-lg font-extrabold">FLUTTERCURVE<span className="text-[#4b57f57f]">.COM</span></div>
           </div>
 
-          <div className="w-full flex flex-col mt-[2.5rem] gap-4 border-r-[1px] xl:border-r-[#ccc]">
+          <div className="w-full flex flex-col gap-4 border-r-[1px] xl:border-r-[#ccc]" style={{overflow: 'auto', height: 'calc(100vh - 60px)'}}>
             <ActiveLink href="/office/dashboard">
               <div className="flex gap-2 xxl:text-xl text-lg hover:font-medium items-center ">
                   <div className="">
@@ -27,7 +27,7 @@ export default function Navigation({nav, setNav}: {nav: boolean, setNav: (arg0:b
             <ActiveLink href="/office/dashboard/profile">
               <div className="flex gap-2 xxl:text-xl text-lg hover:font-medium items-center ">
                   <div className="">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 48 48"><g fill="#4d6ae9"><path d="M32 20a8 8 0 1 1-16 0a8 8 0 0 1 16 0Z"/><path fill-rule="evenodd" d="M23.184 43.984C12.517 43.556 4 34.772 4 24C4 12.954 12.954 4 24 4s20 8.954 20 20s-8.954 20-20 20a21.253 21.253 0 0 1-.274 0c-.181 0-.362-.006-.542-.016ZM11.166 36.62a3.028 3.028 0 0 1 2.523-4.005c7.796-.863 12.874-.785 20.632.018a2.99 2.99 0 0 1 2.498 4.002A17.942 17.942 0 0 0 42 24c0-9.941-8.059-18-18-18S6 14.059 6 24c0 4.916 1.971 9.373 5.166 12.621Z" clip-rule="evenodd"/></g></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 48 48"><g fill="#4d6ae9"><path d="M32 20a8 8 0 1 1-16 0a8 8 0 0 1 16 0Z"/><path fillRule="evenodd" d="M23.184 43.984C12.517 43.556 4 34.772 4 24C4 12.954 12.954 4 24 4s20 8.954 20 20s-8.954 20-20 20a21.253 21.253 0 0 1-.274 0c-.181 0-.362-.006-.542-.016ZM11.166 36.62a3.028 3.028 0 0 1 2.523-4.005c7.796-.863 12.874-.785 20.632.018a2.99 2.99 0 0 1 2.498 4.002A17.942 17.942 0 0 0 42 24c0-9.941-8.059-18-18-18S6 14.059 6 24c0 4.916 1.971 9.373 5.166 12.621Z" clipRule="evenodd"/></g></svg>
                   </div>
                   <div className="">My Profile</div>
               </div>
@@ -77,13 +77,13 @@ export default function Navigation({nav, setNav}: {nav: boolean, setNav: (arg0:b
             <ActiveLink href="/office/dashboard/compounding/">
               <div className="flex gap-2 xxl:text-xl text-lg hover:font-medium items-center ">
                   <div className="">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 14 14"><g fill="none" stroke="#4d6ae9" stroke-linecap="round" stroke-linejoin="round"><rect width="13" height="11.5" x=".5" y=".5" rx="1"/><circle cx="8.5" cy="6.25" r="1.75"/><path d="M8.5 3.25V4.5m0 3.5v1.25m3-3h-1.25m-3.5 0H5.5m5.12-2.12l-.88.88M7.26 7.49l-.88.88m4.24 0l-.88-.88M7.26 5.01l-.88-.88M3 4.5V8m-1 4v1.5m9.5-1.5v1.5"/></g></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 14 14"><g fill="none" stroke="#4d6ae9" strokeLinecap="round" strokeLinejoin="round"><rect width="13" height="11.5" x=".5" y=".5" rx="1"/><circle cx="8.5" cy="6.25" r="1.75"/><path d="M8.5 3.25V4.5m0 3.5v1.25m3-3h-1.25m-3.5 0H5.5m5.12-2.12l-.88.88M7.26 7.49l-.88.88m4.24 0l-.88-.88M7.26 5.01l-.88-.88M3 4.5V8m-1 4v1.5m9.5-1.5v1.5"/></g></svg>
                   </div>
                   <div className="">Compounding</div>
               </div>
             </ActiveLink>
           </div>
-       </motion.main>
+       </motion.aside>
     </>
   )
 }

@@ -147,7 +147,7 @@ export default function Kyc({state}: {state: userDataStateType}) {
                             <div className="w-full">
                                 <label htmlFor="" className="text-[#526288] text-xl">Upload Passport.</label>
                                 <div className="md:w-[400px] w-full rounded-lg mb-3 overflow-hidden mt-2">
-                                    <Image 
+                                    <img 
                                     src={photos.passport}
                                     className="rounded-md"
                                     height={100}
@@ -193,7 +193,7 @@ export default function Kyc({state}: {state: userDataStateType}) {
                                 <div className="flex md:flex-row flex-col gap-3">
                                     <div className="md:w-[400px] w-full border-[1px] bg-[#212212] border-[#cccc] min-h-[400px] rounded-lg">
                                         <div className="w-full h-[350px]">
-                                            <Image src={photos.frontID} width={100} height={100} alt="" className="border-none w-full object-cover h-full bg-transparent rounded-lg" />
+                                            <img src={photos.frontID} width={100} height={100} alt="" className="border-none w-full object-cover h-full bg-transparent rounded-lg" />
                                         </div>
                                         
                                         <div className="w-full mt-3 p-1 font-bold">
@@ -205,7 +205,7 @@ export default function Kyc({state}: {state: userDataStateType}) {
                                     {/* BACK */}
                                     <div className="md:w-[400px] w-full border-[1px] bg-[#212212] border-[#cccc] min-h-[400px] rounded-lg">
                                         <div className="w-full h-[350px]">
-                                            <Image src={photos.backID} width={100} height={100} alt=""  className="border-none w-full object-cover h-full bg-transparent rounded-lg" />
+                                            <img src={photos.backID} width={100} height={100} alt=""  className="border-none w-full object-cover h-full bg-transparent rounded-lg" />
                                         </div>
                                         
                                         <div className="w-full mt-3 p-1 font-bold">

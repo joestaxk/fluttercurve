@@ -31,7 +31,7 @@ export default function Compounding({state}:{state: userDataStateType}) {
                 <h1 className="text-2xl font-semibold text-[#4d6ae9]">{!state.compounding ? "0.00" : !state.compounding.totalBalance(state.compounding.totalDeposit as string, state.compounding.totalDeposit as string)} {state.currency}</h1>
               </div>
 
-              <Image src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
+              <img src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
             </motion.div>
 
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
@@ -40,7 +40,7 @@ export default function Compounding({state}:{state: userDataStateType}) {
                 <h1 className="text-2xl font-semibold text-[#4d6ae9]">{state.compounding?.totalDeposit || "0.00"} {state.currency}</h1>
               </div>
 
-              <Image src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
+              <img src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
             </motion.div>
 
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
@@ -50,7 +50,7 @@ export default function Compounding({state}:{state: userDataStateType}) {
               </div>
 
               <div className="">
-                <Image src={`/${state.currency}.png`} width={50} height={50} alt="refer"/>
+                <img src={`/${state.currency}.png`} width={50} height={50} alt="refer"/>
               </div>
             </motion.div>
 
@@ -61,7 +61,7 @@ export default function Compounding({state}:{state: userDataStateType}) {
                 <h1 className="text-2xl font-semibold text-[#4d6ae9]">{state.compounding?.totalEarning || "0.00"} {state.currency}</h1>
               </div>
 
-              <Image src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
+              <img src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
             </motion.div>
           </motion.div>
 

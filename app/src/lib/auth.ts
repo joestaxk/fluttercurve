@@ -24,11 +24,10 @@ interface authInterface {
 var auth = {} as authInterface;
 
 auth.checkVerifedUser = async function(token: string) {
-    return await instance.get(`/client/verifyUserAccount?token=${token}`)
+    return await fetch(`${process.env.BASE_URI}/client/verifyUserAccount?token=${token}`, {method: "GET", headers: {Authorization: `Bearer ${token}`}})
 }
 
 auth.isAuthenticated = async function(access_token: string) {
-    console.log(`${process.env.BASE_URI}/client/me`)
     return await fetch(`${process.env.BASE_URI}/client/me`, {method: "GET", headers: {Authorization: `Bearer ${access_token}`}})
 }
 
