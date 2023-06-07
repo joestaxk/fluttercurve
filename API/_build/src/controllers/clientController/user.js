@@ -19,6 +19,21 @@ const helpers_1 = __importDefault(require("../../utils/helpers"));
 const referrals_1 = __importDefault(require("../../models/Users/referrals"));
 const kyc_1 = __importDefault(require("../../models/Users/kyc"));
 let userController = {};
+userController.getRefreshToken = function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const accessToken = req.body.token;
+            if (!accessToken)
+                throw new Error("Logout");
+            const response = yield helpers_1.default.generateRefreshToken(accessToken, req);
+            res.send(response);
+        }
+        catch (error) {
+            console.log(error);
+            res.status(400).send(error);
+        }
+    });
+};
 userController.verifyUserAccount = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {

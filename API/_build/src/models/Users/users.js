@@ -93,10 +93,6 @@ Client.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    referralImage: {
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
-    },
     isAdmin: {
         type: sequelize_1.DataTypes.BOOLEAN,
         defaultValue: false,

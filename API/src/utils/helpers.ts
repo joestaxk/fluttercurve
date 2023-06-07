@@ -85,13 +85,11 @@ helpers.comparePassword = async function(oldPassword, newPassword) {
 helpers.generateRefreshToken = async function({accessToken}, req) {
     // verify token
     const decoded:{id: string, email: string} = await jwt.verify(accessToken, config.JWT_SECRETKEY) as any;
-    console.log(decoded.id, req.id)
     if(decoded.id === req.id) {
         const data:ClientInterface<string> = await Client.findOne({where: {uuid: decoded.id}}) as any;
         if(!data) throw new ApiError(`Can't grant request of unauthenticated user`, httpStatus.NOT_FOUND);
         // get fresh token
         const freshtoken = this.generateToken(data, data.uuid, data.email);
-        console.log(freshtoken)
         // Permission granted: Log that accessToken out.
         let convertToJson:any = JSON.parse(data.tokens);
         convertToJson.filter((findAccessToken: {accessToken: string}, i:number) => {

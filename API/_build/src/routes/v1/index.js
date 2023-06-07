@@ -13,7 +13,7 @@ const router = express_1.default.Router();
 const definePath = [
     {
         path: "/client/auth",
-        route: require("./auth/client")
+        route: require("./auth/user")
     },
     {
         path: "/client",

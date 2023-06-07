@@ -23,6 +23,7 @@ const UserAuth = function (req, res, next) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const bearerToken = (_a = req.headers['authorization']) === null || _a === void 0 ? void 0 : _a.replace("Bearer ", "");
+        console.log(bearerToken);
         // DO SOME JWT VERIFICATION
         try {
             if (bearerToken) {
@@ -32,6 +33,15 @@ const UserAuth = function (req, res, next) {
                 if (!ifUserExist) {
                     throw new ApiError_1.default("Unauthorized user", http_status_1.default.NOT_FOUND, "We couldn't find user");
                 }
+                const currentTimestamp = Math.floor(Date.now() / 1000); // Get the current timestamp in seconds
+                // Calculate the remaining time until expiration in minutes
+                const remainingMinutes = Math.floor((decoded.exp - currentTimestamp) / 60);
+                // if (remainingMinutes <= 20) {
+                //     console.log('Token is expiring within the next 20 minutes.');
+                //     //  send off refresh token
+                // } else {
+                //     console.log('Token is still valid or has more than 20 minutes remaining until expiration.');
+                // }
                 //  // check if token is registered
                 const convertToJson = JSON.parse(ifUserExist.tokens);
                 if (!convertToJson.length) {
@@ -56,6 +66,7 @@ const UserAuth = function (req, res, next) {
             }
         }
         catch (error) {
+            console.log(error);
             res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });

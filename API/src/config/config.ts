@@ -1,5 +1,14 @@
+/**
+ * @todo
+ *  Before i deploy i must change some stting on app uri.
+ * for the mail. esp.
+ */
+
+
 interface modeType<T> {
    PORT?:    string|number,
+   APP_NAME?: T,
+   APP_URI?: T,
    DB_USER?: T,
    DB_PASS?: T,
    DB_NAME?: T,
@@ -16,6 +25,9 @@ interface x<T> {
     ProcessEnv: T,
     PORT: number|string,
     APP_NAME?: T,
+    APP_URI?: T,
+    APP_DEV_URI?: T,
+
     NODE_ENV?: "production"|"development",
     JWT_SECRETKEY: T,
     JWT_EXPIRES_IN: T,
@@ -65,6 +77,8 @@ const ADMIN_DATA = {
 
 const developmentMode:modeType<any> = {
    PORT: _.PORT,
+   APP_NAME: _.APP_NAME,
+   APP_URI: _.APP_DEV_URI,
    DB_USER: _.DB_LOCAL_USER,
    DB_PASS: _.DB_LOCAL_PASS,
    DB_NAME: _.DB_LOCAL_NAME,
@@ -78,6 +92,8 @@ const developmentMode:modeType<any> = {
 
 const productionMode:modeType<string> = {
    PORT: _.PORT,
+   APP_NAME: _.APP_NAME,
+   APP_URI: _.APP_URI,
    DB_USER: _.DB_USER,
    DB_PASS: _.DB_PASS,
    DB_NAME: _.DB_NAME,
@@ -93,7 +109,6 @@ const productionMode:modeType<string> = {
 export default Object.assign({
     validCors: "*",
     mode:  _.NODE_ENV === "production" ? "production" : "development",
-    APP_NAME: _.APP_NAME,
     COINBASE_APIKEY: _.COINBASE_API,
     JWT_SECRETKEY: _.JWT_SECRETKEY,
     JWT_EXPIRES_IN: _.JWT_EXPIRES_IN,

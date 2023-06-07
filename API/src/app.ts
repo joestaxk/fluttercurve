@@ -37,13 +37,20 @@ const corsOptions = {
    	methods: ["GET", "POST", "PUT", "DELETE"],
 	origin: config.validCors,
 	optionSuccessStatus: 200,
-	headers: ["Content-Type", "Authorization", "x-access-token"],
+	headers: ["Content-Type", "Authorization", "xat"],
 	// credentials: true, 
 	maxAge: 3600,
 	preflightContinue: true, 
 }
 app.use(cors(corsOptions))
 app.options("*", cors(corsOptions));
+
+// app.use((req, res, next) => {
+// 	res.header('Access-Control-Allow-Origin', '*');
+// 	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+// 	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, xat');
+// 	next();
+// });
 
 // limit number of request per timing to api route.
 if(config.NODE_ENV === "production") {

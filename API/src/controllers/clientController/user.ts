@@ -8,6 +8,7 @@ import Kyc from '../../models/Users/kyc';
 
 
 interface userControllerInterface {
+    getRefreshToken: (req: any, res: any) => Promise<void>;
     setupKyc: (req: any, res: any, next: any) => void;
     updateUserInfo: (req: any, res: any, next: any) => Promise<void>;
     updatePassword: (req: any, res: any, next: any) => Promise<void>;
@@ -21,6 +22,20 @@ interface userControllerInterface {
 
 let userController = {} as userControllerInterface;
  
+userController.getRefreshToken =async function(req:any, res:any) {
+    try {
+        const accessToken = req.body.token;
+        if(!accessToken) throw new Error("Logout");
+        
+        const response = await helpers.generateRefreshToken(accessToken, req);
+        
+        res.send(response)
+    } catch (error) {
+         console.log(error)
+        res.status(400).send(error)        
+    }
+}
+
 userController.verifyUserAccount = async function(req:any, res:any) {
     try {
         // get userId
@@ -49,7 +64,7 @@ userController.verifyUserAccount = async function(req:any, res:any) {
 
 userController.getMe = async function(req:any, res:any) {
     try {
-        const me:{Referrals: any} & ClientInterface<string> = await Client.findOne({where: {uuid: req.id},  include:['Referrals', 'userAccount', 'Compounding']}) as any;
+        const me: ClientInterface<string> = await Client.findOne({where: {uuid: req.id},  include:['Referrals', 'userAccount', 'Compounding']}) as any;
         res.send({
             ...helpers.filterObjectData(me), 
             noRefferedUser: me.Referrals?.length, 

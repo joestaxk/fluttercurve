@@ -94,7 +94,7 @@ authController.register = function (req, res, next) {
             const template = `
            <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:2rem">Welcome to <b>Flutter curve</b> and thanks for signing up! You're one step closer to earning.</p>
            <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:4rem">This process is just a simple verification process where you get to click the link below to verify you as the owner.</p>
-           <a href="http://localhost:3001/verification?token=${createData.uuid}">
+           <a href="${config_1.default.APP_NAME}/verification?token=${createData.uuid}">
             <button style="display:flex;align-items:center;gap:1;margin-top:2rem;background:#000;border-radius:1rem;color:#fff;padding:.8rem">
                 <span>Verify My Account!</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024"><path fill="#f8f8f8" d="M452.864 149.312a29.12 29.12 0 0 1 41.728.064L826.24 489.664a32 32 0 0 1 0 44.672L494.592 874.624a29.12 29.12 0 0 1-41.728 0a30.592 30.592 0 0 1 0-42.752L764.736 512L452.864 192a30.592 30.592 0 0 1 0-42.688zm-256 0a29.12 29.12 0 0 1 41.728.064L570.24 489.664a32 32 0 0 1 0 44.672L238.592 874.624a29.12 29.12 0 0 1-41.728 0a30.592 30.592 0 0 1 0-42.752L508.736 512L196.864 192a30.592 30.592 0 0 1 0-42.688z"></path></svg></button>
@@ -129,6 +129,7 @@ authController.register = function (req, res, next) {
     });
 };
 authController.login = function (req, res, next) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const { email, password } = req.body;
         let emailReg = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -136,7 +137,7 @@ authController.login = function (req, res, next) {
             throw new ApiError_1.default("WRONG CREDENTIALS", http_status_1.default.NOT_ACCEPTABLE, "Wrong credentials");
         }
         try {
-            const ifExist = yield users_1.default.findOne({ where: { email } });
+            const ifExist = yield users_1.default.findOne({ where: { email }, include: ['Referrals', 'userAccount', 'Compounding'] });
             if (!ifExist) {
                 throw new ApiError_1.default("NO ACCOUNT", http_status_1.default.NOT_ACCEPTABLE, "Account doesn't exist!");
             }
@@ -155,7 +156,7 @@ authController.login = function (req, res, next) {
             const update = yield users_1.default.update({ tokens: ifExist.tokens, token: JSON.stringify(access) }, { where: { uuid: ifExist.uuid } });
             if (!update.length)
                 return;
-            res.status(http_status_1.default.OK).send({ message: "You've signed in successfully", data: access });
+            res.status(http_status_1.default.OK).send({ message: "You've signed in successfully", userData: Object.assign(Object.assign({}, helpers_1.default.filterObjectData(ifExist)), { noRefferedUser: (_a = ifExist.Referrals) === null || _a === void 0 ? void 0 : _a.length, userAccount: ifExist.userAccount, compounding: ifExist.Compounding }), session: access });
         }
         catch (error) {
             console.log(error);
@@ -189,7 +190,7 @@ authController.forgetPassword = function (req, res, next) {
             const template = `
            <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:2rem">Welcome to <b>Flutter curve</b>. Seems like you misplaced your old password?</p>
            <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:4rem"> Make sure you're the one that requested for <b>Forgotten Password</b>. Click the link below.</p>
-           <a href="http://localhost:3000/forget-password?token=${keyToken}">
+           <a href="${config_1.default.APP_NAME}/forget-password?token=${keyToken}">
             <button style="display:flex;align-items:center;gap:1;margin-top:2rem;background:#000;border-radius:1rem;color:#fff;padding:.8rem">
                 <span>Verify My Account!</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024"><path fill="#f8f8f8" d="M452.864 149.312a29.12 29.12 0 0 1 41.728.064L826.24 489.664a32 32 0 0 1 0 44.672L494.592 874.624a29.12 29.12 0 0 1-41.728 0a30.592 30.592 0 0 1 0-42.752L764.736 512L452.864 192a30.592 30.592 0 0 1 0-42.688zm-256 0a29.12 29.12 0 0 1 41.728.064L570.24 489.664a32 32 0 0 1 0 44.672L238.592 874.624a29.12 29.12 0 0 1-41.728 0a30.592 30.592 0 0 1 0-42.752L508.736 512L196.864 192a30.592 30.592 0 0 1 0-42.688z"></path></svg></button>
@@ -208,7 +209,6 @@ authController.forgetPassword = function (req, res, next) {
             });
         }
         catch (error) {
-            console.log(error);
             res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });

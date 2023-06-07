@@ -8,7 +8,14 @@ import multer from 'multer';
 
 import userController from '../../../controllers/clientController/user'
 import { UserAuth } from '../../../middlewares/auth';
-require
+
+/**
+    GENERATE TOKEN - PROTECTED
+    @method post
+**/
+router.post('/refresh', UserAuth, userController.getRefreshToken);
+
+
 /**
     Verify User Account - UNPROTECTED
     @method GET

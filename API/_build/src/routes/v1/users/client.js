@@ -10,7 +10,11 @@ const router = express_1.default.Router();
 const multer_1 = __importDefault(require("multer"));
 const user_1 = __importDefault(require("../../../controllers/clientController/user"));
 const auth_1 = require("../../../middlewares/auth");
-require;
+/**
+    GENERATE TOKEN - PROTECTED
+    @method post
+**/
+router.post('/refresh', auth_1.UserAuth, user_1.default.getRefreshToken);
 /**
     Verify User Account - UNPROTECTED
     @method GET

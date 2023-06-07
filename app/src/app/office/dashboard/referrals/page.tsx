@@ -13,7 +13,6 @@ import { useCookies } from "react-cookie";
 
 function Page({state}:{state: userDataStateType}) {
   const [cookies, setCookie, removeCookie] = useCookies();
-  const [refData, setRefData] = useState([]);
   const [refferal, setRefferal] = useState([]);
   const { AlertComponent, showAlert } = useAlert();
 
@@ -22,7 +21,6 @@ function Page({state}:{state: userDataStateType}) {
       try {
         return await auth.getRefferedUser(cookies['xat'] as string);
       } catch (error: any) {
-
         console.log(error.response)
       }
     }

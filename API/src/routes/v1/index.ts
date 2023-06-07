@@ -11,7 +11,7 @@ const router = Router.Router();
 const definePath = [
  {
      path: "/client/auth",
-     route: require("./auth/client")
+     route: require("./auth/user")
  },
  {
     path: "/client",

@@ -81,14 +81,12 @@ helpers.generateRefreshToken = function ({ accessToken }, req) {
     return __awaiter(this, void 0, void 0, function* () {
         // verify token
         const decoded = yield jsonwebtoken_1.default.verify(accessToken, config_1.default.JWT_SECRETKEY);
-        console.log(decoded.id, req.id);
         if (decoded.id === req.id) {
             const data = yield users_1.default.findOne({ where: { uuid: decoded.id } });
             if (!data)
                 throw new ApiError_1.default(`Can't grant request of unauthenticated user`, http_status_1.default.NOT_FOUND);
             // get fresh token
             const freshtoken = this.generateToken(data, data.uuid, data.email);
-            console.log(freshtoken);
             // Permission granted: Log that accessToken out.
             let convertToJson = JSON.parse(data.tokens);
             convertToJson.filter((findAccessToken, i) => {

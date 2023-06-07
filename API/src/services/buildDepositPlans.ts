@@ -1,5 +1,4 @@
 import httpStatus from "http-status";
-import ApiError from "../utils/ApiError";
 import DepositPlan from "../models/services/depositPlans";
 import compoundingPlans from "../models/mode/compoundingPlans";
 

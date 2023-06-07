@@ -21,14 +21,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          
-      - name: create .env file
-        run: |
-          echo "NODE_ENV=production" > .env
-          echo "PORT=${{ vars.PORT_APP }}" >> .env
-          echo "HOST_NAME=${{ vars.HOST_NAME_APP }}" >> .env
-          echo "BASE_URI=${{ vars.BASE_URI }}" >> .env
-          echo "PUBLIC_PATH=${{ vars.PUBLIC_PATH }}" >> .env
 
       - name: install dependencies
         run: npm install
@@ -42,7 +34,7 @@ jobs:
           server: fluttercurve.com
           username: ${{ secrets.FTP_USER_APP }}
           password: ${{ secrets.FTP_PASS_APP }}
-          local-dir: ./app/
+          local-dir: ./app/out/
           exclude: |
             **/.git*/**
             **/node_modules/**

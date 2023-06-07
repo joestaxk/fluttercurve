@@ -15,6 +15,7 @@ class Client extends Sequelize.Model {}
 export interface ClientInterface<T> {
     userAccount: any,
     Compounding: any,
+    Referrals: any,
     id: T,
     uuid: T,
     fullName: T,
@@ -25,7 +26,6 @@ export interface ClientInterface<T> {
     annualIncome: T,
     currency: T,
     referral: T,
-    referralImage: T,
     password:T,
     isAdmin: Boolean,
     tokens: string,
@@ -79,10 +79,6 @@ Client.init({
         allowNull: false,
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    referralImage:  {
         type: DataTypes.STRING,
         allowNull: false,
     },
