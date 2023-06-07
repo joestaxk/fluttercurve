@@ -22,6 +22,9 @@ jobs:
         with:
           node-version: 16
           
+      - name: Clear npm cache
+        run: npm cache clean --force
+          
       - name: create .env file
         run: |
           echo "NODE_ENV=production" > .env
@@ -42,7 +45,7 @@ jobs:
           server: fluttercurve.com
           username: ${{ secrets.FTP_USER_APP }}
           password: ${{ secrets.FTP_PASS_APP }}
-          local-dir: ./app/
+          local-dir: ./app/out/
           exclude: |
             **/.git*/**
             **/node_modules/**
