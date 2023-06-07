@@ -121,26 +121,23 @@ userController.updatePasswordByLink = function (req, res) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const token = (_a = req.query) === null || _a === void 0 ? void 0 : _a.token;
-        const { newPassword, confirmPassword } = req.body;
+        const { password } = req.body;
         try {
-            if (newPassword.length < 8 || confirmPassword !== newPassword)
-                throw new ApiError_1.default("Invalid password", http_status_1.default.NOT_ACCEPTABLE, "Password is not valid, password should be >= 8 and equal");
+            if (!password || password.length < 5)
+                throw new ApiError_1.default("Invalid password", http_status_1.default.NOT_ACCEPTABLE, "Weak Password");
             if (!token)
                 throw new ApiError_1.default("Invalid link", http_status_1.default.NOT_ACCEPTABLE, "Invalid forget password link");
             const findToken = yield users_1.default.findOne({ where: { oneTimeKeyToken: token } });
             if (!findToken)
                 throw new ApiError_1.default("User not found", http_status_1.default.NOT_FOUND, "User is not found");
-            // compare password
-            /** if(!(await comparePassword(oldPassword.trim(), findToken.password)))  {
-                 throw new ApiError("Incorrect password", httpStatus.NOT_ACCEPTABLE, "Password is not wrong")
-             } **/
-            // update password once every 24hrs
-            const updated = yield users_1.default.update({ password: (yield helpers_1.default.hashPassword(newPassword)) }, { where: { uuid: findToken.uuid } });
-            if (updated)
-                res.send({ message: "Password has been successfully changed. Go to login" });
-            //throw new ApiError("Verification error", httpStatus.BAD_REQUEST,"Couldn't send Verification mail. check network connection")
+            const hashPassword = yield helpers_1.default.hashPassword(password);
+            const update = yield users_1.default.update({ password: hashPassword, oneTimeKeyToken: null }, { where: { uuid: findToken.uuid } });
+            if (!update[0])
+                throw new ApiError_1.default("Update Err", http_status_1.default.BAD_REQUEST, "Can't Update Reuest at the moment.");
+            res.send({ message: "Password changed. Login now." });
         }
         catch (error) {
+            console.log(error);
             res.status(http_status_1.default.BAD_REQUEST).status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });

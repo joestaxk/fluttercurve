@@ -16,7 +16,7 @@ const country:countryType[] = require('../services/country')
 interface helpersInterface {
     generateInvoiceId(): unknown;
     countryDialCode: (iso3: string) => void;
-    createKeyToken: (user: any, conf: any, id: string) => Promise<any>;
+    createKeyToken: (id: string) => Promise<any>;
     generateRefreshToken: (accessToken: any, req: any) => Promise<{ accessToken: string; } | undefined>;
     comparePassword(oldPassword: string, password: any): unknown;
     toJsonString: (obj?: any, str?: string | undefined) => any;
@@ -106,8 +106,8 @@ helpers.generateRefreshToken = async function({accessToken}, req) {
 }
 
 
-helpers.createKeyToken = async function(user,conf, id:string) {
-    let token = await crypto.createHash("SHA256").update(conf.JWT_SECRETKEY + (Date.now())).digest("hex")
+helpers.createKeyToken = async function(id:string) {
+    var token:any = await jwt.sign({id}, config.JWT_SECRETKEY, {expiresIn: '45m'});
     if(id){
         await Client.update({oneTimeKeyToken: token}, {where: {uuid: id}})
     }

@@ -11,7 +11,7 @@ export default function withDashboard(
     const {appContextData} = useContext(AuthContext)
     
     useEffect(() => {
-      if(!appContextData?.userData.email && !appContextData?.userSession) {
+      if(!appContextData?.userData || !appContextData?.userSession) {
        helpers.forceLogoutUser()
       }
     }, [appContextData]);

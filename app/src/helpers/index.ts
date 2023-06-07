@@ -28,12 +28,11 @@ helpers.forceLogoutUser = async function() {
 helpers.logoutUser = async function() {
     try {
         const logout = await auth.logout(helpers.getCookie("xat") as any);
-        console.log(logout)
         if(logout){
             helpers.deleteCookie("xat")
+            helpers.deleteLocalItem('user_data')
             location.href = "/login"
         }
-
         } catch (error) {
             console.log(error)
         }
@@ -86,7 +85,7 @@ helpers.getLocalItem = function(key:string) {
 
 helpers.deleteLocalItem = function(key:string) {
     try{
-        localStorage.removeItem(key)
+       localStorage.removeItem(key)
     }catch(error:any) {
         console.log(error)
     }

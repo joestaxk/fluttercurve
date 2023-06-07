@@ -117,10 +117,9 @@ userController.logout = async function(req:any, res:any) {
 
 userController.updatePasswordByLink = async function(req,res) {
     const token = req.query?.token;
-    const { newPassword, confirmPassword } = req.body;
-
+    const { password} = req.body;
     try {
-        if(newPassword.length < 8 || confirmPassword !== newPassword) throw new ApiError("Invalid password", httpStatus.NOT_ACCEPTABLE, "Password is not valid, password should be >= 8 and equal")
+        if(!password || password.length < 5) throw new ApiError("Invalid password", httpStatus.NOT_ACCEPTABLE, "Weak Password")
 
         if(!token) throw new ApiError("Invalid link", httpStatus.NOT_ACCEPTABLE, "Invalid forget password link");
 
@@ -128,21 +127,15 @@ userController.updatePasswordByLink = async function(req,res) {
 
         if(!findToken) throw new ApiError("User not found", httpStatus.NOT_FOUND, "User is not found");
 
-        // compare password
-       /** if(!(await comparePassword(oldPassword.trim(), findToken.password)))  {
-            throw new ApiError("Incorrect password", httpStatus.NOT_ACCEPTABLE, "Password is not wrong")
-        } **/
+        const hashPassword = await helpers.hashPassword(password);
+        const update = await Client.update({password: hashPassword, oneTimeKeyToken: null}, {where: {uuid: findToken.uuid}});
 
-
-        // update password once every 24hrs
-        const updated = await Client.update({password: (await helpers.hashPassword(newPassword))}, { where: {uuid: findToken.uuid}})
-
-        if(updated) res.send({message: "Password has been successfully changed. Go to login"}) 
-                //throw new ApiError("Verification error", httpStatus.BAD_REQUEST,"Couldn't send Verification mail. check network connection")
+        if(!update[0]) throw new ApiError("Update Err", httpStatus.BAD_REQUEST, "Can't Update Reuest at the moment.")
+        res.send({message: "Password changed. Login now."}) 
     } catch (error) {
+        console.log(error)
         res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
     }
-
 }
 
 userController.updateUserInfo = async function(req,res,next) {

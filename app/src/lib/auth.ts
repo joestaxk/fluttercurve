@@ -64,7 +64,7 @@ auth.updatePasswordByLink = async function(url_token:string, password: any) {
 }
 
 auth.logout = async function(access_token: string) {
-    return await instance.post(`/client/logout`, {headers: {Authorization: `Bearer ${access_token}`}})
+    return await instance.post(`/client/logout`, {}, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
 

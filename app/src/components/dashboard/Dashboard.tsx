@@ -121,7 +121,6 @@ export function DropdownOverlay({ cb }: {cb: () => void}) {
 }
 
 function ProfileMenu() {
-    const [cookies, setCookies, removeCookies] = useCookies()
     return (
         <motion.div 
          initial={{display: "none", opacity: 0}}

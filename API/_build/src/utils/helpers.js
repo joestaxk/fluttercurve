@@ -18,7 +18,6 @@ const config_1 = __importDefault(require("../config/config"));
 const users_1 = __importDefault(require("../models/Users/users"));
 const ApiError_1 = __importDefault(require("./ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
-const node_crypto_1 = __importDefault(require("node:crypto"));
 const country = require('../services/country');
 let helpers = {};
 helpers.hashPassword = function (password) {
@@ -101,9 +100,9 @@ helpers.generateRefreshToken = function ({ accessToken }, req) {
         }
     });
 };
-helpers.createKeyToken = function (user, conf, id) {
+helpers.createKeyToken = function (id) {
     return __awaiter(this, void 0, void 0, function* () {
-        let token = yield node_crypto_1.default.createHash("SHA256").update(conf.JWT_SECRETKEY + (Date.now())).digest("hex");
+        var token = yield jsonwebtoken_1.default.sign({ id }, config_1.default.JWT_SECRETKEY, { expiresIn: '45m' });
         if (id) {
             yield users_1.default.update({ oneTimeKeyToken: token }, { where: { uuid: id } });
         }

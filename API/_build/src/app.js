@@ -47,18 +47,18 @@ const corsOptions = {
     preflightContinue: true,
 };
 app.use((0, cors_1.default)(corsOptions));
-app.options("*", (0, cors_1.default)(corsOptions));
+// app.options("*", cors(corsOptions));
 // app.use((req, res, next) => {
-// 	res.header('Access-Control-Allow-Origin', '*');
+// 	res.header('Access-Control-Allow-Origin', 'http://localhost:3002/');
 // 	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-// 	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, xat');
+// 	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 // 	next();
 // });
 // limit number of request per timing to api route.
 if (config_1.default.NODE_ENV === "production") {
     app.use("/v1", rate_limiter_1.default);
 }
-// when parent url request
+// when parent url requestss
 app.get('/', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(200).send("Please request our api at /v1");
 }));

@@ -33,6 +33,7 @@ export interface ClientInterface<T> {
     isVerified: Boolean,
     isKyc: Boolean,
     isBlacklisted: Boolean,
+    oneTimeKeyToken: T,
     avatar: T
 }
 
@@ -100,6 +101,10 @@ Client.init({
     },
     token: {
         type: DataTypes.STRING,
+        allowNull: true,
+    },
+    oneTimeKeyToken: {
+        type: DataTypes.TEXT,
         allowNull: true,
     },
     avatar: {

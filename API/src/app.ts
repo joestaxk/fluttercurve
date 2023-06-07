@@ -43,12 +43,12 @@ const corsOptions = {
 	preflightContinue: true, 
 }
 app.use(cors(corsOptions))
-app.options("*", cors(corsOptions));
+// app.options("*", cors(corsOptions));
 
 // app.use((req, res, next) => {
-// 	res.header('Access-Control-Allow-Origin', '*');
+// 	res.header('Access-Control-Allow-Origin', 'http://localhost:3002/');
 // 	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-// 	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, xat');
+// 	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 // 	next();
 // });
 
@@ -57,7 +57,7 @@ if(config.NODE_ENV === "production") {
     app.use("/v1", limiter);
 }
 
-// when parent url request
+// when parent url requestss
 app.get('/', async (req:any,res:any,next: any) => {
    res.status(200).send("Please request our api at /v1")
 })

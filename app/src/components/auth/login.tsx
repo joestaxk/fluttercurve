@@ -32,7 +32,7 @@ export default function LoginComponent() {
       const {data}: {data: {message: string, userData: userDataStateType, session: {accessToken: string}}} = await instance.post('/client/auth/login', userBodyData);
       setErr(false);
       setMsgDesc(data.message)
-      setCookie('xat', data.session.accessToken, {path: "/",})
+      setCookie('xat', data.session.accessToken, {path: "/"})
       helpers.storeLocalItem("user_data", data.userData);
       location.href = "/office/dashboard"
    } catch (error:any) {

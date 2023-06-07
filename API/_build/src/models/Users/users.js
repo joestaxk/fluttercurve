@@ -113,6 +113,10 @@ Client.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: true,
     },
+    oneTimeKeyToken: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true,
+    },
     avatar: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true
