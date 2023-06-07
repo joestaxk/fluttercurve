@@ -30,14 +30,14 @@ export default function Withdrawal({state}: {state: userDataStateType}) {
        return showAlert("error", "Deposit funds.")
       }
     try {
-      const reqAcctBal = await auth.getAccountBalance(cookies['x-access-token']);
+      const reqAcctBal = await auth.getAccountBalance(cookies['xat']);
 
       if(typeof reqAcctBal.data !== "number") {
         setLoadingState(false)
         return;
       }
       
-      const res = await auth.newWithdrawalRequest(cookies['x-access-token'], data)
+      const res = await auth.newWithdrawalRequest(cookies['xat'], data)
       // if(res.status === 201) {
         setLoadingState(false)
         tar.amount.value = ""

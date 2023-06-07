@@ -6,6 +6,8 @@ import ButtonSpinner from '../utils/buttonSpinner'
 import instance from '@/lib/requestService'
 import { useCookies } from 'react-cookie';
 import PageLoader from 'next/dist/client/page-loader'
+import { userDataStateType } from '@/rState/initialStates'
+import helpers from '@/helpers'
 
 export default function LoginComponent() {
   const [loading, setLoading] = useState(false)
@@ -18,7 +20,7 @@ export default function LoginComponent() {
    ev.preventDefault();
    const targ = ev.target;
 
-   const data = {
+   const userBodyData = {
     email: targ.email.value,
     password: targ.password.value,
    }
@@ -26,13 +28,12 @@ export default function LoginComponent() {
    //  set loading
    setLoading(true)
    try {
-      const res = await instance.post('/client/auth/login', data);
-      // setLoading(false)
-      // Do some pop-up modal for redirecting
+      const {data}: {data: {message: string, userData: userDataStateType, session: {accessToken: string}}} = await instance.post('/client/auth/login', userBodyData);
       setErr(false);
-      setMsgDesc(res.data.message)
-      setCookie('x-access-token', res.data.data.accessToken, {path: "/",})
-      location.href = "/office/dashboard"
+      setMsgDesc(data.message)
+      setCookie('xat', data.session.accessToken, {path: "/",})
+      helpers.storeLocalItem("user_data", data.userData);
+      // location.href = "/office/dashboard"
    } catch (error:any) {
     setLoading(false)
     if(error.response.data.description) {

@@ -2,6 +2,7 @@ import instance from "./requestService";
 
 
 interface authInterface {
+    refresh: any;
     uploadKyc: any;
     newWithdrawalRequest: any;
     getActiveWithdrawal: any;
@@ -24,11 +25,15 @@ interface authInterface {
 var auth = {} as authInterface;
 
 auth.checkVerifedUser = async function(token: string) {
-    return await fetch(`${process.env.BASE_URI}/client/verifyUserAccount?token=${token}`, {method: "GET", headers: {Authorization: `Bearer ${token}`}})
+    return await instance.get(`/client/verifyUserAccount?token=${token}`, { headers: {Authorization: `Bearer ${token}`}})
+}
+
+auth.refresh = async function(token: string) {
+    return await instance.post(`/client/refresh`, {token}, {headers: {Authorization: `Bearer ${token}`}})
 }
 
 auth.isAuthenticated = async function(access_token: string) {
-    return await fetch(`${process.env.BASE_URI}/client/me`, {method: "GET", headers: {Authorization: `Bearer ${access_token}`}})
+    return await instance.get(`/client/me`, { headers: {Authorization: `Bearer ${access_token}`}})
 }
 
 

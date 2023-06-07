@@ -35,7 +35,7 @@ function Page({state}:{state: userDataStateType}) {
   useEffect(() => {
     async function fetchData() {
       try {
-        return await auth.getActiveWithdrawal(cookies['x-access-token'] as string);
+        return await auth.getActiveWithdrawal(cookies['xat'] as string);
       } catch (error) {
         console.log(error)
       }

@@ -29,12 +29,11 @@ function Page({state}:{state: userDataStateType}) {
 
   const [cookies, setCookie, removeCookie] = useCookies();
   const [activeDepo, setActiveDeposit] = useState(0);
-  const [depositPlans, setDepositPlans] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        return await auth.getActiveDeposit(cookies['x-access-token'] as string);
+        return await auth.getActiveDeposit(cookies['xat'] as string);
       } catch (error) {
         console.log(error)
       }

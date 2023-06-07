@@ -14,7 +14,7 @@ export default function AllEarning(){
     useEffect(() => {
       async function fetchData() {
           try {
-              let {data}: any = await auth.getAllSuccessfulInvesment(cookies['x-access-token']);
+              let {data}: any = await auth.getAllSuccessfulInvesment(cookies['xat']);
               if(data.length) {
                   setData(data as any)
               }

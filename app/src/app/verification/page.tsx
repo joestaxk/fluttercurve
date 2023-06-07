@@ -20,7 +20,7 @@ export default function Verification(){
           if(!res.data?.accessToken) {
             router.push('/login')
           }else {
-            setCookie("x-access-token", res.data?.accessToken)
+            setCookie("xat", res.data?.accessToken)
             router.push('/office/dashboard')
           }
           })
@@ -30,7 +30,7 @@ export default function Verification(){
       
     <>
       {
-        !cookies['x-access-token'] ? <Pageloader /> : 
+        !cookies['xat'] ? <Pageloader /> : 
           <main className="bg-authSkin min-h-[100vh] w-full">
             <div className="w-full flex justify-start p-[2rem]">
                 <div className="w-full flex justify-between">

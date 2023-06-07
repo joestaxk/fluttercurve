@@ -34,7 +34,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const {data}:any = await auth.getDepositPlans(cookies['x-access-token'] as string);
+        const {data}:any = await auth.getDepositPlans(cookies['xat'] as string);
         return data
       } catch (error) {
         console.log(error)
@@ -98,7 +98,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
       // check account balance
       setLoadingState(true)
       try {
-        const reqAcctBal = await auth.getAccountBalance(cookies['x-access-token']);
+        const reqAcctBal = await auth.getAccountBalance(cookies['xat']);
     
         if(typeof reqAcctBal.data === "number") {
           setLoadingState(false)
@@ -138,7 +138,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
     }
     
     setLoadingState(true)
-    auth.newDepositRequest(cookies['x-access-token'], {chargeAPIData, depoInfoData}).then(({data}:any) => {
+    auth.newDepositRequest(cookies['xat'], {chargeAPIData, depoInfoData}).then(({data}:any) => {
       // restate all data 
       formVal.amount.value = "";
       setSelectedData({} as any);

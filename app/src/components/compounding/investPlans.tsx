@@ -23,7 +23,7 @@ export default function CompoundingInvesmentPlan({state}:{state: userDataStateTy
   useEffect(() => {
     async function fetchData() {
       try {
-        return await auth.getCompoundingPlans(cookies['x-access-token'] as string);
+        return await auth.getCompoundingPlans(cookies['xat'] as string);
       } catch (error) {
         console.log(error)
       }

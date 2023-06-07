@@ -27,7 +27,6 @@ function Page({state}:{state: userDataStateType}) {
   })
   const { AlertComponent, showAlert } = useAlert();
 
-
   useEffect(() => {
       setClipBoard(state.userName)
       if(state.avatar) setImageData(`${process.env.PUBLIC_PATH}/private/users/${state.avatar}`)
@@ -44,7 +43,7 @@ function Page({state}:{state: userDataStateType}) {
     const formData = new FormData();
       formData.append('avatar', fileData[0]);
 
-      auth.uploadAvatar(cookies['x-access-token'], formData).then((res:any) => {
+      auth.uploadAvatar(cookies['xat'], formData).then((res:any) => {
         showAlert("success", res.data.message)
       }).catch((err) => {
         console.log(err)
@@ -75,7 +74,7 @@ function Page({state}:{state: userDataStateType}) {
 
     setLoading((prev) => { return {...prev, loadingForm1: true}})
     try {
-      const res:any = await auth.updateUserInfo(cookies['x-access-token'], data);
+      const res:any = await auth.updateUserInfo(cookies['xat'], data);
       showAlert("success", res.data)
     setLoading((prev) => { return {...prev, loadingForm1: false}})
     } catch (error:any) {
@@ -104,7 +103,7 @@ function Page({state}:{state: userDataStateType}) {
     // make backend response
     setLoading((prev) => { return {...prev, loadingForm2: true}})
     try {
-      const res: any = await auth.updatePassword(cookies['x-access-token'], {oldPassword: data.oldPassword,  newPassword: data.newPassword});
+      const res: any = await auth.updatePassword(cookies['xat'], {oldPassword: data.oldPassword,  newPassword: data.newPassword});
       console.log(res)
       showAlert("success", res.data)
       setLoading((prev) => { return {...prev, loadingForm2: false}})

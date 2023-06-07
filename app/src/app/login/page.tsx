@@ -1,11 +1,8 @@
-'use client'
-
 import LoginComponent from "@/components/auth/login";
 import withDashboard from "@/hocs/withDashboard";
-import { Metadata } from "next";
 import Link from "next/link";
 
-function Login(){
+function Page(){
     return (
       <main className="bg-authSkin min-h-[100vh] w-full">
           <div className="w-full flex justify-start p-[2rem]">
@@ -27,6 +24,5 @@ function Login(){
 }
 
 
-const WithLogin = withDashboard(Login);
 
-export default WithLogin;
+export default Page;

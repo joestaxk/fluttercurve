@@ -4,7 +4,7 @@ import withDashboard from "@/hocs/withDashboard";
 import { Metadata } from "next";
 import Link from "next/link";
 
-function Register(){
+function Page(){
     return (
       <main className="bg-authSkin min-h-[100vh] w-full">
           <div className="w-full flex justify-start p-[2rem]">
@@ -26,6 +26,6 @@ function Register(){
 }
 
 
-const WithRegister = withDashboard(Register);
+// const WithRegister = withDashboard(Register);
 
-export default WithRegister;
+export default Page;

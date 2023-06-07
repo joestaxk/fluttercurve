@@ -24,7 +24,7 @@ function CompoundingInvesmentPlan({state, params}:{state: userDataStateType,para
   useEffect(() => {
     async function fetchData() {
       try {
-        const {data}:any = await auth.getACompoundingPlans(cookies['x-access-token'] as string, params.calculate);
+        const {data}:any = await auth.getACompoundingPlans(cookies['xat'] as string, params.calculate);
         return data
       } catch (error) {
         console.log(error)

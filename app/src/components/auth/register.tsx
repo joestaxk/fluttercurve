@@ -70,7 +70,7 @@ export default function RegisterComponent() {
       const res = await instance.post('/client/auth/register', data);
       setErr(false);
       setMsgDesc(res.data.message)
-      setCookie('x-access-token', res.data.data.accessToken, {path: "/",})
+      setCookie('xat', res.data.data.accessToken, {path: "/",})
       // Do some pop-up modal for redirecting
       setTimeout(() => {location.reload()}, 1500)
    } catch (error:any) {

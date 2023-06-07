@@ -39,7 +39,7 @@ export default function Kyc({state}: {state: userDataStateType}) {
         formData.append("backID", tar.backID.files[0]);
         formData.append("livevideo", videoData);
 
-        auth.uploadKyc(cookies['x-access-token'], formData).then(({data}:any) => {
+        auth.uploadKyc(cookies['xat'], formData).then(({data}:any) => {
             showAlert("success", data.message)
             console.log(data)
         }).catch((error:any) => {

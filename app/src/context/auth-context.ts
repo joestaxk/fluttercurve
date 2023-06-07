@@ -1,11 +1,14 @@
 import auth from "@/lib/auth"
+import { userDataStateType } from "@/rState/initialStates"
 import React from "react"
 
-export const user = {
-    fullName: '',
-    userName: '',
-    email: '',
-    isAdmin: null
+interface contextInterface {
+    appContextData?: {userData: userDataStateType},
+    updateContext?: () => void
 }
+export const user = {
+    appContextData: {},
+    updateContext: () => {}
+} as contextInterface
 
-export const AuthContext = React.createContext(user, )
+export const AuthContext = React.createContext(user)

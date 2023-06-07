@@ -20,7 +20,7 @@ function Page({state}:{state: userDataStateType}) {
   useEffect(() => {
     async function fetchData() {
       try {
-        return await auth.getRefferedUser(cookies['x-access-token'] as string);
+        return await auth.getRefferedUser(cookies['xat'] as string);
       } catch (error: any) {
 
         console.log(error.response)

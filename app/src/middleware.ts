@@ -13,7 +13,7 @@
 //       // }
 
 //       const search = (request.nextUrl.searchParams)
-//       const access_token:any = request.cookies.get('x-access-token');
+//       const access_token:any = request.cookies.get('xat');
 //         const res = (await auth.isAuthenticated(access_token?.value));
 //         const ifAuth = await res.json();
 
@@ -56,7 +56,7 @@
 //           return NextResponse.redirect(new URL('/login  ', request.url));
 //         }
 
-//         request.cookies.set("x-access-token", isAuth.data?.accessToken)
+//         request.cookies.set("xat", isAuth.data?.accessToken)
 //       }
 
 //       if(request.nextUrl.pathname.startsWith('/office') && !ifAuth?.isVerified) {
