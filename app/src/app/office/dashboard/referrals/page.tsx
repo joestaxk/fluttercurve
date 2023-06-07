@@ -66,7 +66,7 @@ function Page({state}:{state: userDataStateType}) {
           {state?.referral ? <div className="bg-white lg:w-[20%] w-full min-h-[200px] shadow rounded-lg p-2 flex justify-center">
             <div className="flex flex-col">
                <div className="w-[80px] h-[80px] rounded-full overflow-hidden">
-                <img className="bg-no-repeat bg-center bg-cover w-full h-full" src={"/avatar-1.png"} width={50} height={50} alt="user image" />
+                <Image className="bg-no-repeat bg-center bg-cover w-full h-full" src={"/avatar-1.png"} width={50} height={50} alt="user image" />
                </div>
 
                 <div className="">
@@ -84,7 +84,7 @@ function Page({state}:{state: userDataStateType}) {
                   <div key={i.toString()} title={firstDeposit ? "User have made first deposit!": "User have not made any depost"} className="bg-white mb-4  w-[300px] border-[#ccc] border-[1px] shadow rounded-lg p-4 flex items-center justify-between">
                     <div className="flex items-center gap-5">
                       <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
-                        <img className="bg-no-repeat bg-center bg-cover w-full h-full" src={avatar ?`${process.env.PUBLIC_PATH}/private/users/${avatar}` : "/avatar-1.png"} width={50} height={50} alt="user image" />
+                        <Image className="bg-no-repeat bg-center bg-cover w-full h-full" src={avatar ?`${process.env.PUBLIC_PATH}/private/users/${avatar}` : "/avatar-1.png"} width={50} height={50} alt="user image" />
                       </div>
 
                       <div className="">

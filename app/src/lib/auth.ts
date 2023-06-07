@@ -2,6 +2,7 @@ import instance from "./requestService";
 
 
 interface authInterface {
+    updatePasswordByLink: any;
     refresh: any;
     uploadKyc: any;
     newWithdrawalRequest: any;
@@ -56,6 +57,10 @@ auth.updateUserInfo = async function(access_token: string, userInfo: any) {
 
 auth.updatePassword = async function(access_token: string, passwords: any) {
     return await instance.post(`/client/updatePassword`, passwords, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
+auth.updatePasswordByLink = async function(url_token:string, password: any) {
+    return await instance.post(`/client/updatePasswordByLink?token=${url_token}`, password)
 }
 
 auth.logout = async function(access_token: string) {

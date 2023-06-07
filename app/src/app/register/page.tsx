@@ -1,6 +1,7 @@
 'use client'
 import RegisterComponent from "@/components/auth/register";
 import withDashboard from "@/hocs/withDashboard";
+import withUnProtected from "@/hocs/withUnProctected";
 import { Metadata } from "next";
 import Link from "next/link";
 
@@ -26,6 +27,5 @@ function Page(){
 }
 
 
-// const WithRegister = withDashboard(Register);
 
-export default Page;
+export default withUnProtected(Page);

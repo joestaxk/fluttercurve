@@ -3,7 +3,7 @@ import { userDataStateType } from "@/rState/initialStates"
 import React from "react"
 
 interface contextInterface {
-    appContextData?: {userData: userDataStateType},
+    appContextData?: {userData: userDataStateType, userSession: string},
     updateContext?: () => void
 }
 export const user = {

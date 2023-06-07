@@ -1,5 +1,7 @@
+'use client'
 import LoginComponent from "@/components/auth/login";
 import withDashboard from "@/hocs/withDashboard";
+import withUnProtected from "@/hocs/withUnProctected";
 import Link from "next/link";
 
 function Page(){
@@ -25,4 +27,4 @@ function Page(){
 
 
 
-export default Page;
+export default withUnProtected(Page);

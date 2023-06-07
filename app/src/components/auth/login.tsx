@@ -15,6 +15,7 @@ export default function LoginComponent() {
   const [err, setErr] = useState(false);
   const [cookies, setCookie] = useCookies([] as any);
 
+  
 
   async function handleLogin(ev: any) {
    ev.preventDefault();
@@ -33,7 +34,7 @@ export default function LoginComponent() {
       setMsgDesc(data.message)
       setCookie('xat', data.session.accessToken, {path: "/",})
       helpers.storeLocalItem("user_data", data.userData);
-      // location.href = "/office/dashboard"
+      location.href = "/office/dashboard"
    } catch (error:any) {
     setLoading(false)
     if(error.response.data.description) {

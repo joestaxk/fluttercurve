@@ -67,12 +67,13 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
                     <div className="relative" id="show">
                         <div className="cursor-pointer flex gap-1" onClick={() => setShow(!show)}>
                             <div className="relative">
-                                <img
+                                <Image
                                 src={imageData}
                                 className="rounded-full w-[50px]  h-[50px] border-[1px] border-gray-700"
                                 alt={"user"} 
                                 width={50}
                                 height={50}
+                                crossOrigin="anonymous"
                                 />
                                 {
                                     state?.isVerified && <svg className="absolute right-0 bottom-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="blue" fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 0 0 1.745-.723a3.066 3.066 0 0 1 3.976 0a3.066 3.066 0 0 0 1.745.723a3.066 3.066 0 0 1 2.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 0 1 0 3.976a3.066 3.066 0 0 0-.723 1.745a3.066 3.066 0 0 1-2.812 2.812a3.066 3.066 0 0 0-1.745.723a3.066 3.066 0 0 1-3.976 0a3.066 3.066 0 0 0-1.745-.723a3.066 3.066 0 0 1-2.812-2.812a3.066 3.066 0 0 0-.723-1.745a3.066 3.066 0 0 1 0-3.976a3.066 3.066 0 0 0 .723-1.745a3.066 3.066 0 0 1 2.812-2.812Zm7.44 5.252a1 1 0 0 0-1.414-1.414L9 10.586L7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clipRule="evenodd"/></svg>

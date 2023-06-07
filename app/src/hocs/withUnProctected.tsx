@@ -2,26 +2,28 @@ import { Pageloader } from "@/components/utils/buttonSpinner";
 import { AuthContext } from "@/context/auth-context";
 import helpers from "@/helpers";
 import { userDataStateType } from "@/rState/initialStates";
-import {  Suspense, useContext, useEffect} from "react";
+import { useRouter } from "next/navigation";
+import {  Suspense, useEffect, } from "react";
 
-export default function withDashboard(
+export default function withUnProtected(
   WrappedComponent: React.FC<{ state: userDataStateType }>
 ) {
   return function AuthDashboard(props: any) {
-    const {appContextData} = useContext(AuthContext)
-    
+    const router = useRouter()
+    const appContextData:userDataStateType = helpers.getLocalItem('user_data') as any
+
     useEffect(() => {
-      if(!appContextData?.userData.email && !appContextData?.userSession) {
-       helpers.forceLogoutUser()
+      if(appContextData?.email && helpers.getCookie('xat') && helpers.getCookie('xat')?.split('.').length === 3) {
+        router.push("/office/dashboard")
       }
     }, [appContextData]);
+
     return (
       <>
         {
           <Suspense fallback={<Pageloader />}>
             {
-              !appContextData?.userData ? <div className="w-full h-[100vh] flex "><Pageloader /></div>:
-              <WrappedComponent state={appContextData?.userData} {...props} />              
+              <WrappedComponent {...props} />              
             }
           </Suspense>
         }

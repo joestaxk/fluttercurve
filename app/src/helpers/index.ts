@@ -20,14 +20,15 @@ helpers.forceLogoutUser = async function() {
         helpers.deleteCookie("xat")
         helpers.deleteLocalItem('user_data')
         location.href = "/login"
-        } catch (error) {
-            console.log(error)
-        }
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 helpers.logoutUser = async function() {
     try {
         const logout = await auth.logout(helpers.getCookie("xat") as any);
+        console.log(logout)
         if(logout){
             helpers.deleteCookie("xat")
             location.href = "/login"

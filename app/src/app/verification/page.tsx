@@ -1,12 +1,13 @@
 'use client'
 import { Pageloader } from "@/components/utils/buttonSpinner";
+import withUnProtected from "@/hocs/withUnProctected";
 import auth from "@/lib/auth";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
-export default function Verification(){
+function Page(){
   const search = useSearchParams();
   const router = useRouter();
   const [cookies, setCookie] = useCookies()
@@ -64,3 +65,6 @@ export default function Verification(){
     </>
     )
 }
+
+
+export default withUnProtected(Page)

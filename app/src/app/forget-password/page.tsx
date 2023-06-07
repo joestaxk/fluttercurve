@@ -1,5 +1,6 @@
 "use client"
 import ForgetPasswordComponent from "@/components/auth/forget-password";
+import withUnProtected from "@/hocs/withUnProctected";
 import { Metadata } from "next";
 import Link from "next/link";
 
@@ -8,12 +9,12 @@ import Link from "next/link";
 //   title: 'Become a member | Fluttercurve',
 // };
 
-export default function ForgetPassword(){
+function Page(){
     return (
       <main className="bg-authSkin min-h-[100vh] w-full">
          <div className="w-full flex justify-start p-[2rem]">
             <div className="w-full flex justify-between">
-                <Link href={"/"} className="flex gap-2 group">
+            <Link href={process.env.MAIN_URL as string} className="flex gap-2 group">
                   <svg xmlns="http://www.w3.org/2000/svg" className="group-hover:scale-110" width="24" height="24" viewBox="0 0 1024 1024"><path fill="currentColor" d="M685.248 104.704a64 64 0 0 1 0 90.496L368.448 512l316.8 316.8a64 64 0 0 1-90.496 90.496L232.704 557.248a64 64 0 0 1 0-90.496l362.048-362.048a64 64 0 0 1 90.496 0z"/></svg>
                   <span className="md:block hidden">Go back</span>
                 </Link>
@@ -28,3 +29,7 @@ export default function ForgetPassword(){
       </main>
     )
 }
+
+
+
+export default withUnProtected(Page);

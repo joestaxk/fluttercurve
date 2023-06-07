@@ -55,7 +55,7 @@ function Page({state}:{state: userDataStateType}) {
                 <h1 className="text-2xl font-semibold text-[#4d6ae9]">{!state.userAccount ? "0.00" : !state.userAccount.totalBalance(state.userAccount.totalDeposit as string, state.userAccount.totalDeposit as string)} {state.currency}</h1>
               </div>
 
-              <img className="" src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
+              <Image className="" src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
             </motion.div>
 
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center shadow lg:w-[23%] n:w-[48%] w-full rounded-lg h-[150px] p-4 flex items-center justify-between">
@@ -64,7 +64,7 @@ function Page({state}:{state: userDataStateType}) {
                 <h1 className="text-2xl font-semibold text-[#4d6ae9]">{state.userAccount?.totalDeposit || "0.00"} {state.currency}</h1>
               </div>
 
-              <img className="" src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
+              <Image className="" src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
             </motion.div>
 
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center shadow lg:w-[23%] n:w-[48%] w-full rounded-lg h-[150px] p-4 flex items-center justify-between">
@@ -74,7 +74,7 @@ function Page({state}:{state: userDataStateType}) {
               </div>
 
               <div className="">
-                <img className="" src={"/users.svg"} width={50} height={50} alt="refer"/>
+                <Image className="" src={"/users.svg"} width={50} height={50} alt="refer"/>
               </div>
             </motion.div>
 
@@ -85,7 +85,7 @@ function Page({state}:{state: userDataStateType}) {
                 <h1 className="text-2xl font-semibold text-[#4d6ae9]">{state.userAccount?.totalDeposit || "0.00"} {state.currency}</h1>
               </div>
 
-              <img className="" src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
+              <Image className="" src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
             </motion.div>
           </motion.div>
 
