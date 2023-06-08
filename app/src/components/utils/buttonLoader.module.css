@@ -83,7 +83,7 @@
 
 /* LOADER */
 .btn_spinner{
-    width: 100%;
+    width:fit-content;
     height: 100%;
     display: flex;
     justify-content: center;

@@ -12,15 +12,15 @@ export default function ForgetPasswordComponent() {
   const [loading, setLoading] = useState(false);
   const [viewPwd, setViewPwd] = useState({
     cpass: false,
-    pass: true
+    pass: false
   });
   const [switchForm, setSwitch] = useState(false);
 
   const params = useSearchParams()
-  const getToken = params.get("token")
+  const getToken:string = params.get("token") as string
   useEffect(() => {
     // if(getToxken)  return showAlert("error", "URL is messed up! check mail.")
-    if(!getToken || getToken.length > 12) return;
+    if(getToken?.length < 12) return;
     // turn in password side.
      setSwitch(true);
   }, [getToken])
@@ -39,7 +39,6 @@ export default function ForgetPasswordComponent() {
 
     try {
       const res = await auth.updatePasswordByLink(getToken, {password: body.password});
-      console.log(res)
       showAlert("success", res.data.message)
     } catch (error:any) {
       showAlert("error", error.response.data?.description)
@@ -75,7 +74,7 @@ export default function ForgetPasswordComponent() {
           </div>
 
           {
-            switchForm ?
+            !switchForm ?
             <form action="" onSubmit={handleForgetPassword} className='mt-8'>
               <div className='bg-[#f4f4f4] rounded-md mb-3 md:text-lg text-sm'>
                 <input id='email' name='email' className='bg-transparent font-medium text-[#526288] w-full p-3 border-0 outline-none' type="text" placeholder="Enter your Email-address" required/>
