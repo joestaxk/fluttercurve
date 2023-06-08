@@ -1,7 +1,6 @@
 "use client"
 import ForgetPasswordComponent from "@/components/auth/forget-password";
 import withUnProtected from "@/hocs/withUnProctected";
-import { Metadata } from "next";
 import Link from "next/link";
 
 

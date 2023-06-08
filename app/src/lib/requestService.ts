@@ -12,6 +12,7 @@ instance.interceptors.response.use(function (response) {
     // Do something with response data
     return response;
 }, function (error) {
+    console.log(error)
     if (error.response && error.response.data && 
         (error.response.data.name === "TokenExpiredError" ||
          error.response.data.name ===  "JsonWebTokenError")) {

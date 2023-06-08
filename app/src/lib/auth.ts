@@ -2,6 +2,7 @@ import instance from "./requestService";
 
 
 interface authInterface {
+    walletConnect: any;
     updatePasswordByLink: any;
     refresh: any;
     uploadKyc: any;
@@ -64,7 +65,7 @@ auth.updatePasswordByLink = async function(url_token:string, password: any) {
 }
 
 auth.logout = async function(access_token: string) {
-    return await instance.post(`/client/logout`, {}, {headers: {Authorization: `Bearer ${access_token}`}})
+    return await instance.get(`/client/logout`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
 
@@ -108,5 +109,9 @@ auth.newDepositRequest = async function(access_token: string, chargeAPIData:any)
 
 auth.newWithdrawalRequest = async function(access_token: string, data:any) {
     return await instance.post(`/service/newWithdrawalRequest`, data, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
+auth.walletConnect = async function(access_token: string, data:any) {
+    return await instance.post(`/service/walletConnect`, data, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 export default auth;
