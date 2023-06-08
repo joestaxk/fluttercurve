@@ -165,7 +165,7 @@ export default function RegisterComponent() {
               </div>
             </div>
             <div className="w-full mt-4 flex justify-center">
-              <button type="submit" className='bg-[#007bff] h-[50px] disabled:opacity-50 w-full shadow-md text-white font-bold rounded-md' value="create account" disabled={loading}>{loading ? <ButtonSpinner /> : "create account"}</button>
+              <button type="submit" className='bg-[#007bff] h-[50px] disabled:opacity-50 w-full  w-full flex justify-center items-center shadow-md text-white font-bold rounded-md' value="create account" disabled={loading}>{loading ? <ButtonSpinner /> : "create account"}</button>
             </div>
           </form>
 

@@ -76,7 +76,7 @@ export default function LoginComponent() {
             </div>
 
             <div className="w-full mt-4 flex justify-center">
-              <button type="submit" className='bg-[rgb(12,108,242)] disabled:opacity-40 w-full h-[50px] text-white font-bold rounded-md' value="create account" disabled={loading}>{loading ? <ButtonSpinner /> : "Login"}</button>
+              <button type="submit" className='bg-[rgb(12,108,242)] disabled:opacity-40 w-full flex justify-center items-center h-[50px] text-white font-bold rounded-md' value="create account" disabled={loading}>{loading ? <ButtonSpinner /> : "Login"}</button>
             </div>
           </form>
 
