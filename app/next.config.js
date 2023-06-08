@@ -5,7 +5,7 @@ const nextConfig = {
         unoptimized: true,
         // domains: ["localhost"]
     },
-    output: 'export',
+    // output: 'export',
     env: {
         BASE_URI: 'http://localhost:3000/v1',
        PUBLIC_PATH: 'http://localhost:3000',
