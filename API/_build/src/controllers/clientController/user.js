@@ -103,7 +103,6 @@ userController.logout = function (req, res) {
             let convertToJson = JSON.parse(logoutUser.tokens);
             convertToJson.filter(({ accessToken }, i) => {
                 if (JSON.parse(logoutUser.token).accessToken === accessToken) {
-                    console.log(i);
                     convertToJson.splice(i, 1);
                     convertToJson = JSON.stringify(convertToJson);
                 }

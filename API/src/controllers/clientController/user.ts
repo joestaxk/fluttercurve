@@ -98,11 +98,9 @@ userController.logout = async function(req:any, res:any) {
     try {
         // get the device you want to logout.
         const logoutUser:ClientInterface<string> = await Client.findOne({where: {uuid: req.id}}) as any;
-
         let convertToJson:any = JSON.parse(logoutUser.tokens);
         convertToJson.filter(({accessToken}: {accessToken: string}, i:number) => {
             if(JSON.parse(logoutUser.token).accessToken === accessToken){
-                console.log(i)
                 convertToJson.splice(i, 1);
                 convertToJson = JSON.stringify(convertToJson);
             }

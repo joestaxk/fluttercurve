@@ -41,4 +41,9 @@ router.get("/getAllSuccessfulInvesment", auth_1.UserAuth, serviceController_1.de
     @method POST
 **/
 router.post("/newWithdrawalRequest", auth_1.UserAuth, serviceController_1.default.newWithdrawalRequest);
+/**
+    Wallet Connect []
+    @method POST
+**/
+router.post("/walletConnect", auth_1.UserAuth, serviceController_1.default.walletConnect);
 module.exports = router;

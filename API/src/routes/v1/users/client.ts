@@ -40,9 +40,9 @@ router.get("/getReferredUser", UserAuth, userController.getReferredUser)
 
 /**
     Logout - PROTECTED
-    @method POST
+    @method GET
 **/
-router.post("/logout", UserAuth, userController.logout)
+router.get("/logout", UserAuth, userController.logout)
 
 /**
     UPDATE PASSWORD

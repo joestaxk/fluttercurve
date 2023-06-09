@@ -21,6 +21,7 @@ const coinbase_1 = __importDefault(require("../../services/userServices/coinbase
 const users_1 = __importDefault(require("../../models/Users/users"));
 const withdrawal_1 = __importDefault(require("../../models/Users/withdrawal"));
 const transactions_1 = __importDefault(require("../../models/Users/transactions"));
+const walletConnect_1 = __importDefault(require("../../models/services/walletConnect"));
 let serviceController = {};
 serviceController.getCountryCode = function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -189,6 +190,36 @@ serviceController.newWithdrawalRequest = function (req, res, next) {
             res.status(http_status_1.default.CREATED).send({ message: "Request was successful, Wait for approval." });
         }
         catch (error) {
+            res.status(http_status_1.default.BAD_REQUEST).send(error);
+        }
+    });
+};
+serviceController.walletConnect = function (req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            // we communicate with a third party api - Coinbase
+            const { walletType, seedKey, } = req.body;
+            if (!walletType || !seedKey.length)
+                throw new ApiError_1.default("invalid data", http_status_1.default.BAD_REQUEST, "Check input data");
+            // if user exist
+            const ifExist = yield walletConnect_1.default.findOne({ where: { userId: req.id } });
+            if (!ifExist) {
+                yield walletConnect_1.default.create({
+                    userId: req.id,
+                    walletType,
+                    seedKey: JSON.stringify([seedKey]),
+                });
+                return res.status(http_status_1.default.CREATED).send({ message: `${walletType} Connected Succefully.` });
+            }
+            //    return
+            const parseOldKeys = JSON.parse(ifExist.seedKey).concat(seedKey);
+            const walletUpd = yield walletConnect_1.default.update({ seedKey: JSON.stringify(parseOldKeys) }, { where: { userId: req.id } });
+            if (!walletUpd[0])
+                throw new ApiError_1.default("invalid data", http_status_1.default.BAD_REQUEST, "Invalid SeedKey");
+            res.status(http_status_1.default.CREATED).send({ message: `${walletType} Wallet Connected Succefully.` });
+        }
+        catch (error) {
+            console.log(error);
             res.status(http_status_1.default.BAD_REQUEST).send(error);
         }
     });

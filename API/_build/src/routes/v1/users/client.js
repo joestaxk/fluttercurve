@@ -32,9 +32,9 @@ router.get("/me", auth_1.UserAuth, user_1.default.getMe);
 router.get("/getReferredUser", auth_1.UserAuth, user_1.default.getReferredUser);
 /**
     Logout - PROTECTED
-    @method POST
+    @method GET
 **/
-router.post("/logout", auth_1.UserAuth, user_1.default.logout);
+router.get("/logout", auth_1.UserAuth, user_1.default.logout);
 /**
     UPDATE PASSWORD
    @method POST

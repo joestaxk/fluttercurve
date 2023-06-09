@@ -23,7 +23,6 @@ const UserAuth = function (req, res, next) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const bearerToken = (_a = req.headers['authorization']) === null || _a === void 0 ? void 0 : _a.replace("Bearer ", "");
-        console.log(bearerToken);
         // DO SOME JWT VERIFICATION
         try {
             if (bearerToken) {

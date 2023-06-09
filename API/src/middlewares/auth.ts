@@ -9,7 +9,6 @@ import helpers from "../utils/helpers";
 // Client Authorization Handler
 const UserAuth = async function(req: any,res:any,next:any) {
     const bearerToken:string = req.headers['authorization']?.replace("Bearer ", "");
-    console.log(bearerToken)
   // DO SOME JWT VERIFICATION
  try {
      if(bearerToken) {

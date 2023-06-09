@@ -3,9 +3,7 @@ import React, { useState } from 'react'
 import style from "./auth.module.css"
 import Link from 'next/link'
 import {useSearchParams} from 'next/navigation';
-import reqService from '@/lib/requestService'
 import instance from '@/lib/requestService';
-import Buttonloader from '../utils/btnChartLoader';
 import ButtonSpinner from '../utils/buttonSpinner';
 import { useCookies } from 'react-cookie';
 

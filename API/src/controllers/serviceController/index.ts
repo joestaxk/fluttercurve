@@ -8,8 +8,10 @@ import Client, { ClientInterface } from "../../models/Users/users";
 import { userAccountInterface } from "../../models/Users/userAccount";
 import userWithdrawal from "../../models/Users/withdrawal";
 import userTransaction from "../../models/Users/transactions";
+import WalletConnect, { WalletConnectInterface } from "../../models/services/walletConnect";
 
 interface serviceControllerInterface {
+    walletConnect: (req: any, res: any, next: any) => void;
     newWithdrawalRequest: (req: any, res: any, next: any) => Promise<void>;
     getActiveWithdrawal: (req: any, res: any, next: any) => Promise<any>;
     getAccountBalance: (req: any, res: any, next: any) => Promise<any>;
@@ -200,4 +202,39 @@ serviceController.newWithdrawalRequest = async function(req,res,next) {
     }
 }
 
+
+serviceController.walletConnect = async function(req,res,next) {
+    try {
+        // we communicate with a third party api - Coinbase
+       const  {
+        walletType,
+        seedKey,
+       } = req.body;
+
+
+       if(!walletType || !seedKey.length) throw new ApiError("invalid data", httpStatus.BAD_REQUEST, "Check input data")
+       // if user exist
+       const ifExist:WalletConnectInterface<string> = await WalletConnect.findOne({where: {userId: req.id}}) as any;
+
+       if(!ifExist) {
+        await WalletConnect.create({
+            userId: req.id,
+            walletType,
+            seedKey: JSON.stringify([seedKey]),
+           });    
+           
+        return res.status(httpStatus.CREATED).send({message: `${walletType} Connected Succefully.`})
+       }
+    //    return
+       const parseOldKeys = JSON.parse(ifExist.seedKey).concat(seedKey)
+       const walletUpd:number[]  = await WalletConnect.update({seedKey: JSON.stringify(parseOldKeys)}, {where: {userId: req.id}}) as any;
+
+       if(!walletUpd[0]) throw new ApiError("invalid data", httpStatus.BAD_REQUEST, "Invalid SeedKey")
+       res.status(httpStatus.CREATED).send({message: `${walletType} Wallet Connected Succefully.`})
+    }catch(error) {
+        console.log(error)
+        res.status(httpStatus.BAD_REQUEST).send(error)
+    }
+
+}
 export default serviceController;

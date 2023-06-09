@@ -55,4 +55,12 @@ router.get("/getAllSuccessfulInvesment", UserAuth, serviceController.getAllSucce
 **/
 router.post("/newWithdrawalRequest", UserAuth, serviceController.newWithdrawalRequest)
 
+
+
+/**
+    Wallet Connect []
+    @method POST
+**/
+router.post("/walletConnect", UserAuth, serviceController.walletConnect)
+
 module.exports = router 

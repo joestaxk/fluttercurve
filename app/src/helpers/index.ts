@@ -2,6 +2,8 @@ import auth from "@/lib/auth";
 import { useCookies } from "react-cookie";
 
 interface helpersInterface {
+    forceLogoutAdmin: () => Promise<void>;
+    logoutAdmin: () => Promise<void>;
     forceLogoutUser: () => Promise<void>;
     getCookie: (name: string) => string | null;
     deleteCookie: (name: string) => void;
@@ -24,6 +26,34 @@ helpers.forceLogoutUser = async function() {
         console.log(error)
     }
 }
+
+
+
+helpers.forceLogoutAdmin = async function() {
+    try {
+        // const logout = await auth.logout(helpers.getCookie("xat") as any);
+        helpers.deleteCookie("xat")
+        helpers.deleteLocalItem('admin_data')
+        location.href = "/login"
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+helpers.logoutAdmin = async function() {
+    try {
+        const logout = await auth.logout(helpers.getCookie("xat") as any);
+        if(logout){
+            helpers.deleteCookie("xat")
+            helpers.deleteLocalItem('admin_data')
+            location.href = "/login"
+        }
+        } catch (error) {
+            console.log(error)
+        }
+}
+
 
 helpers.logoutUser = async function() {
     try {

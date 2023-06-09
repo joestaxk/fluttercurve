@@ -196,7 +196,6 @@ authController.forgetPassword = async function(req, res, next) {
         }
 
         const keyToken = await helpers.createKeyToken(ifExist.uuid)
-        console.log(keyToken)
         // SEND MAIL
         const template = `
            <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:2rem">Welcome to <b>Flutter curve</b>. Seems like you misplaced your old password?</p>
