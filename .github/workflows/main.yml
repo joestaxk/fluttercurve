@@ -28,6 +28,7 @@
 #       - name: build app
 #         run: npm run build
 
+<<<<<<< HEAD
 #       - name: deploy app
 #         uses: SamKirkland/FTP-Deploy-Action@4.3.3
 #         with:
@@ -47,3 +48,24 @@
 #             tailwind.config.js
 #             tsconfig.json
 #             yarn.lock
+=======
+      - name: deploy app
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        with:
+          server: fluttercurve.com
+          username: ${{ secrets.FTP_USER_APP }}
+          password: ${{ secrets.FTP_PASS_APP }}
+          local-dir: ./app/
+          exclude: |
+            **/.git*/**
+            **/node_modules/**
+            **/src/**
+            .eslintrc.json
+            .gitignore
+            README.md
+            package-lock.json
+            postcss.config.js
+            tailwind.config.js
+            tsconfig.json
+            yarn.lock
+>>>>>>> e5383f166f86884c61254232876020de0ad31ce6
