@@ -1,12 +1,12 @@
 import axios from "axios";
 import helpers from "../helpers";
 
-export const BASE_URI = "http://localhost:3000/v1";
-// export const BASE_URI = "https://api.fluttercurve.com/v1";
-// export const MAIN_URL = "https://fluttercurve.com";
-// export const PUBLIC_PATH = "https://api.fluttercurve.com"
-export const PUBLIC_PATH = "http://localhost:3000"
-export const MAIN_URL = "https://fluttercurve.com"
+// export const BASE_URI = "http://localhost:3000/v1";
+export const BASE_URI = "https://api.fluttercurve.com/v1";
+export const MAIN_URL = "https://fluttercurve.com";
+export const PUBLIC_PATH = "https://api.fluttercurve.com"
+// export const PUBLIC_PATH = "http://localhost:3000"
+// export const MAIN_URL = "https://fluttercurve.com"
 const instance = axios.create({
     baseURL: BASE_URI,
 });
