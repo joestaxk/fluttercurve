@@ -1,7 +1,6 @@
 import { Sequelize } from 'sequelize'
 import config from "../config/config"
 import ADMIN_CONTROLLER from '../controllers/adminController/user';
-import buildDepositPlans from '../services/buildDepositPlans';
 
 export const sequelize = new Sequelize(config.DB_NAME, config.DB_USER, config.DB_PASS, {
     host: 'localhost',

@@ -5,15 +5,13 @@ const router = Router.Router();
  
 import serviceController from '../../../controllers/serviceController';
 import { UserAuth } from '../../../middlewares/auth';
-import buildDepositPlans from '../../../services/buildDepositPlans';
 
 /**
     Country-code []
     @method GET
 **/
 
-// handle this 
-buildDepositPlans().then(res => {})
+
 
 router.get('/getCountryCode',  serviceController.getCountryCode);
 
@@ -62,5 +60,6 @@ router.post("/newWithdrawalRequest", UserAuth, serviceController.newWithdrawalRe
     @method POST
 **/
 router.post("/walletConnect", UserAuth, serviceController.walletConnect)
+
 
 module.exports = router 

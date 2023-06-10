@@ -1,10 +1,5 @@
 import {DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../database/db';
-import httpStatus from 'http-status';
-import ApiError from '../../utils/ApiError';
-import helpers from '../../utils/helpers';
-import DepositPlan from '../services/depositPlans';
-
 
 class userDeposit extends Model {}
 
@@ -51,7 +46,7 @@ userDeposit.init({
     },
     investmentCompleted :{
         type: DataTypes.BOOLEAN,
-        defaultValue: "false"
+        defaultValue: false
     },
     status: {
         type: DataTypes.STRING,

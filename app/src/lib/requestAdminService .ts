@@ -1,5 +1,5 @@
 import axios from "axios";
-import helpers from "@/helpers";
+import helpers from "../helpers";
 
 const adminInstance = axios.create({
     baseURL: process.env.BASE_URI,

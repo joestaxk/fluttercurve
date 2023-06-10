@@ -1,8 +1,5 @@
 import {DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../database/db';
-import httpStatus from 'http-status';
-import ApiError from '../../utils/ApiError';
-import helpers from '../../utils/helpers';
 
 
 class compoundingPlans extends Model {}

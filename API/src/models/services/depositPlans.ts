@@ -1,5 +1,7 @@
 import {DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../database/db';
+import buildDepositPlans from '../../services/buildDepositPlans';
+
 
 class DepositPlan extends Model {}
 
@@ -50,5 +52,9 @@ DepositPlan.init({
       updatedAt: 'updateTimestamp'
   })
 
+
 export default DepositPlan;
 
+
+// handle this 
+buildDepositPlans().then(res => {})

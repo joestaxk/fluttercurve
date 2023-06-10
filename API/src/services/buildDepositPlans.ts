@@ -80,12 +80,12 @@ export async function buildCompondingPlans() {
         const ifExist = await compoundingPlans.findAndCountAll();
         if(ifExist.count > 1) return console.error("Duplicate input", httpStatus.NOT_ACCEPTABLE, {message: "You can't add new data, you can only update existing data(s)."});
 
-        data.forEach(async (d) => {
-            const createPlan = await compoundingPlans.create(d);
+        for(let i = 0; i < data.length; ++i) {
+            const createPlan = await compoundingPlans.create(data[i]);
             if(!createPlan){
                 return console.error("what's wrong", httpStatus.SERVICE_UNAVAILABLE)
             }
-        })
+        }
     } catch (error) {
         throw error
     }
