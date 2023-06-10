@@ -1,14 +1,13 @@
 import { useState } from "react";
 import style from "./auth.module.css";
-import { useSearchParams } from "next/navigation";
 import ButtonSpinner from "../utils/buttonSpinner";
 import { useCookies } from "react-cookie";
 import instance from "../../lib/requestService";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 
 export default function Register() {
-  const router = useSearchParams();
+  const router = useParams()
   const [msgDesc, setMsgDesc] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(false);
@@ -196,7 +195,7 @@ export default function Register() {
             <div className="bg-[#f4f4f4] rounded-md mt-3 w-full md:text-lg text-sm">
               <input
                 className="bg-transparent font-medium text-[#526288] w-full p-3 border-0 outline-none"
-                defaultValue={router?.get("ref") as string}
+                defaultValue={router.ref as string}
                 name="referral"
                 type="text"
                 autoComplete="off"
