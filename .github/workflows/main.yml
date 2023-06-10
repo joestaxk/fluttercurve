@@ -11,7 +11,7 @@ jobs:
     
     defaults:
       run:
-        working-directory: app
+        working-directory: fluttercurve-app
 
     steps:
       - name: checkout code
