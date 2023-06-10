@@ -1,11 +1,10 @@
 import helpers from "../../../../helpers";
 import Dashboard from "../../../../components/dashboard/Dashboard";
-import DepositInvesment, { DeposkelentonLoader} from "../../../../components/dashboard/depositInvest";
 import withDashboard from "../../../../hocs/withDashboard";
 import auth from "../../../../lib/auth";
 import { userDataStateType } from "../../../../rState/initialStates";
 import { motion } from "framer-motion";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import Withdrawal from "../../../../components/dashboard/Withdrawals";
 
@@ -26,9 +25,8 @@ function Page({state}:{state: userDataStateType}) {
   }
 
 
-  const [cookies, setCookie, removeCookie] = useCookies();
+  const [cookies] = useCookies();
   const [activeWithdraw, setActiveWithdraw] = useState(0);
-  const [depositPlans, setDepositPlans] = useState([]);
 
   useEffect(() => {
     async function fetchData() {

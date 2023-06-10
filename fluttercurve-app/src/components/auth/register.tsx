@@ -12,7 +12,7 @@ export default function Register() {
   const [msgDesc, setMsgDesc] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(false);
-  const [cookies, setCookie] = useCookies([] as any);
+  const [, setCookie] = useCookies([] as any);
   const [validation, setValidation] = useState({
     agree: { status: false, msg: "Please Agree to our Terms!" },
     cpassword: { status: false, msg: "Please Confirm password!" },

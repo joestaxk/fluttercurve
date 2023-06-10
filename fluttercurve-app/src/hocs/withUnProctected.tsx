@@ -1,7 +1,6 @@
-import { Pageloader } from "@/components/utils/buttonSpinner";
-import { AuthContext } from "@/context/auth-context";
-import helpers from "@/helpers";
-import { userDataStateType } from "@/rState/initialStates";
+import { Pageloader } from "../components/utils/buttonSpinner";
+import helpers from "../helpers";
+import { userDataStateType } from "../rState/initialStates";
 import { useRouter } from "next/navigation";
 import {  Suspense, useEffect, } from "react";
 

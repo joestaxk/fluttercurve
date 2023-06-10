@@ -1,5 +1,4 @@
-import auth from "@/lib/auth"
-import { userDataStateType } from "@/rState/initialStates"
+import { userDataStateType } from "../rState/initialStates"
 import React from "react"
 
 interface contextInterface {

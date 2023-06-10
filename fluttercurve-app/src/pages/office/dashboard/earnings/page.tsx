@@ -1,6 +1,5 @@
 import helpers from "../../../../helpers";
 import Dashboard from "../../../../components/dashboard/Dashboard";
-import DepositInvesment, { DeposkelentonLoader} from "../../../../components/dashboard/depositInvest";
 import withDashboard from "../../../../hocs/withDashboard";
 import auth from "../../../../lib/auth";
 import { userDataStateType } from "../../../../rState/initialStates";
@@ -26,9 +25,8 @@ function Page({state}:{state: userDataStateType}) {
   }
 
 
-  const [cookies, setCookie, removeCookie] = useCookies();
+  const [cookies] = useCookies();
   const [activeDepo, setActiveDeposit] = useState(0);
-  const [depositPlans, setDepositPlans] = useState([]);
 
   useEffect(() => {
     async function fetchData() {

@@ -1,9 +1,7 @@
 
-import auth from "../../lib/auth";
 import { userDataStateType } from "../../rState/initialStates";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import Navigation from "./Navigation";
 import { useResize } from "../../hooks/resize";
 import helpers from "../../helpers";
@@ -16,7 +14,7 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
     const [show, setShow] = useState(false)
     const [nav, setNav]   = useState(false)
     const [imageData, setImageData] = useState("/avatar-1.png")
-    const [width, height] = useResize();
+    const [width] = useResize();
     const [showWallet, setShowWallet] = useState(false)
 
 
@@ -39,12 +37,12 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
             {(width < 1279) ? (
                 <>
                    {nav && <div>
-                     <Navigation nav={nav} setNav={setNav}/>
+                     <Navigation setNav={setNav}/>
                     <DropdownOverlay cb={() => setNav(false)} />
                    </div>}
                 </>
             ): <div>
-                <Navigation nav={nav} setNav={setNav}/>
+                <Navigation setNav={setNav}/>
                 {/* <DropdownOverlay cb={() => setNav(false)} /> */}
             </div>}
             <main>

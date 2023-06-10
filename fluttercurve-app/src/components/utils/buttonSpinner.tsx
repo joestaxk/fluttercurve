@@ -1,4 +1,3 @@
-import React from 'react'
 import classess from "./buttonLoader.module.css"
 
 function ButtonSpinner({color}: {color?: string}) {

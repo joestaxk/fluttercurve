@@ -2,8 +2,7 @@ import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { Pageloader } from "../utils/buttonSpinner";
 import auth from "../../lib/auth";
-import { Link, redirect, useLoaderData } from "react-router-dom";
-import { MAIN_URL } from "../../lib/requestService";
+import { useLoaderData } from "react-router-dom";
 
 
 export async function loader({request, params}:any) {

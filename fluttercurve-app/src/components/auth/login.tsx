@@ -10,7 +10,7 @@ import { userDataStateType } from "../../rState/initialStates";
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [msgDesc, setMsgDesc] = useState("");
-  const [cookies, setCookie] = useCookies([] as any);
+  const [, setCookie] = useCookies([] as any);
   const [err, setErr] = useState(false);
 
   async function handleLogin(ev: any) {

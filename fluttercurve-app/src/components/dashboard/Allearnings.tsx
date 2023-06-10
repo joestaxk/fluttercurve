@@ -1,14 +1,13 @@
 import helpers from "../../helpers";
 import { useCookies } from "react-cookie";
-import { DeposkelentonLoader } from "./depositInvest";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 import auth from "../../lib/auth";
 
 
 export default function AllEarning(){
-    const [cookies, setCookie, removeCookie] = useCookies();
+    const [cookies] = useCookies();
     const [data,setData] = useState([]);
   
     useEffect(() => {

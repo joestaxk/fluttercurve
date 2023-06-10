@@ -80,7 +80,7 @@ export default function Kyc({state}: {state: userDataStateType}) {
                 tracks.forEach(track => track.stop());
               }
           })
-          .catch((err) => {
+          .catch(() => {
             /* handle the error */
             setMedia(false)
           });

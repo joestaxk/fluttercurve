@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 function Page({state}:{state: userDataStateType}) {
   const [cookies] = useCookies();
   const [refferal, setRefferal] = useState([]);
-  const { AlertComponent, showAlert } = useAlert();
+  const { AlertComponent } = useAlert();
 
   useEffect(() => {
     async function fetchData() {

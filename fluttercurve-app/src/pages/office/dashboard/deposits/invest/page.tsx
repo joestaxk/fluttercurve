@@ -25,7 +25,7 @@ function Page({state}:{state: userDataStateType}) {
   }
 
 
-  const [cookies, setCookie, removeCookie] = useCookies();
+  const [cookies] = useCookies();
   const [activeDepo, setActiveDeposit] = useState(0);
 
   useEffect(() => {

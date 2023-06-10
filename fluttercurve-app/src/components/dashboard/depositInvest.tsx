@@ -18,7 +18,7 @@ type selectedType<T> = {
 }
 
 export default function DepositInvesment({state}:{state: userDataStateType}) {
-  const [cookies, setCookie, removeCookie] = useCookies();
+  const [cookies] = useCookies();
   const [depositPlans, setDepositPlans] = useState([]);
   const [check, setifChecked] = useState("0");
   const [selectedData, setSelectedData] = useState({} as selectedType<string>)
@@ -249,6 +249,7 @@ export function DeposkelentonLoader() {
   return (
     <div className="flex flex-wrap w-full gap-4">
       {
+        //@ts-ignore
         arr.map((el, i:number) => (
           <div key={i.toString()} className="w-[380px] border-[1px] rounded-lg bg-[#cccccc30] border-[#ccc] h-[350px]">
           </div>

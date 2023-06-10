@@ -1,5 +1,4 @@
-import ButtonSpinner, { Pageloader } from "@/components/utils/buttonSpinner";
-import PageLoader from "next/dist/client/page-loader";
+import { Pageloader } from "../../../components/utils/buttonSpinner";
 
 export default function Loading() {
     // You can add any UI inside Loading, including a Skeleton.

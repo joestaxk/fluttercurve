@@ -4,7 +4,7 @@ import DepositInvesment  from "../../../../components/dashboard/depositInvest";
 import withDashboard from "../../../../hocs/withDashboard";
 import { userDataStateType } from "../../../../rState/initialStates";
 import { motion } from "framer-motion";
-import { Suspense, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import auth from "../../../../lib/auth";
 
@@ -25,7 +25,7 @@ function Page({state}:{state: userDataStateType}) {
   }
 
 
-  const [cookies, setCookie, removeCookie] = useCookies();
+  const [cookies] = useCookies();
   const [activeDepo, setActiveDeposit] = useState(0);
 
   useEffect(() => {

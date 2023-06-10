@@ -8,7 +8,7 @@ import { Outlet } from "react-router-dom";
 const userData = helpers.getLocalItem("user_data")
 
 export default function DashboardLayout() {
-    const [cookies, setCookies] = useCookies();
+    const [cookies] = useCookies();
     const [appContextData, setAuth] = useState({userData, userSession: cookies['xat']});
 
     const updateContext = function(obj: any) {

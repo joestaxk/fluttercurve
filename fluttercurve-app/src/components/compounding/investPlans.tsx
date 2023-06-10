@@ -6,17 +6,17 @@ import { userDataStateType } from "../../rState/initialStates";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 
-type selectedType<T> = {
-  dailyInterestRate: T,
-  duration: T,
-  guarantee: T
-  id: number,
-  minAmt: T|any,
-  plan: T
-}
+// type selectedType<T> = {
+//   dailyInterestRate: T,
+//   duration: T,
+//   guarantee: T
+//   id: number,
+//   minAmt: T|any,
+//   plan: T
+// }
 
 export default function CompoundingInvesmentPlan({state}:{state: userDataStateType}) {
-  const [cookies, setCookie, removeCookie] = useCookies();
+  const [cookies,] = useCookies();
   const [compoundingPlans, setCompoundingPlans] = useState([]);
 
   
@@ -32,7 +32,7 @@ export default function CompoundingInvesmentPlan({state}:{state: userDataStateTy
     fetchData().then(({data}:any) => setCompoundingPlans(data))
   }, [])
   
-  let x = (id:number) => {
+  let x = () => {
     return{
       borderImage: "linear-gradient(20deg,transparent,#f3d8b8,transparent) 1 / 1 / 0 stretch",
       borderWidth: "1px",
@@ -48,10 +48,11 @@ export default function CompoundingInvesmentPlan({state}:{state: userDataStateTy
 
           <div className="flex flex-wrap w-full items-start gap-4 mt-4">
             {
+              //@ts-ignore
               compoundingPlans.map(({id, interestRate, plan, duration, minAmt, maxAmt, uuid}:any, i:number) => (
                 <div 
                 key={i.toString()}
-                style={x(id)}
+                style={x()}
                 className="w-[450px] transition-all duration-500 rounded-lg bg-[#fffefe] min-h-[300px]">
                   <div className=" p-4 mb-3 flex flex-col w-full justify-between items-center">
                      <div className="text-2xl font-semi-bold text-[#323232d5] mb-2 font-bold">{plan}</div>

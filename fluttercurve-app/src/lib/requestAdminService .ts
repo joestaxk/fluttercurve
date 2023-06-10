@@ -1,5 +1,6 @@
 import axios from "axios";
-import helpers from "@/helpers";
+import helpers from "../helpers";
+import { BASE_URI } from "./requestService";
 
 const adminInstance = axios.create({
     baseURL: BASE_URI,

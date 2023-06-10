@@ -14,7 +14,7 @@ import { PUBLIC_PATH } from "../../../../lib/requestService";
 function Page({state}:{state: userDataStateType}) {
   const [imageData, setImageData] = useState("/avatar-1.png")
   const [cookies] = useCookies();
-  const [clipBoard, setClipBoard] = useState({})
+  const [, setClipBoard] = useState({})
   const [validate, setValidate] = useState({
     passwordErr: {status: false, msg: ""},
   })
