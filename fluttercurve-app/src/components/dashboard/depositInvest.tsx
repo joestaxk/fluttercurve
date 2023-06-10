@@ -149,6 +149,8 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
       window.open(constrURI, '_blank')
     }).catch((err) => {
       setLoadingState(false)
+
+      showAlert("error", err.response.data.message || "Something Wrong :(");
       if(err.response.data.code === "ETIMEDOUT"){
         return showAlert("error", "Timeout. try again :(");
       }
@@ -165,7 +167,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
 
           <div className="flex flex-wrap w-full gap-4 mt-4">
             {
-              depositPlans.length ? depositPlans.map(({id, dailyInterestRate, plan, guarantee, duration, minAmt, maxAmt}:any, i:number) => (
+              !depositPlans.length ? <DeposkelentonLoader /> : depositPlans.map(({id, dailyInterestRate, plan, guarantee, duration, minAmt, maxAmt}:any, i:number) => (
                 <div 
                 style={x(id)}
                 key={i.toString()}
@@ -202,7 +204,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
                      <label htmlFor={id} className={`transition-all duration-300 ${check === id.toString() ? 'text-[#2626b0df]' : 'text-[#2626b0a0]'} hover:text-[#2626b0da] cursor-pointer font-bold`}>Select{check === id.toString() ? "ed" : ''}</label>
                    </div>
                 </div>
-              )) : <DeposkelentonLoader />
+              ))
             }
           </div>
         </div>

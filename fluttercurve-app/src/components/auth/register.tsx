@@ -4,7 +4,7 @@ import ButtonSpinner from "../utils/buttonSpinner";
 import { useCookies } from "react-cookie";
 import instance from "../../lib/requestService";
 import { Link, useParams } from "react-router-dom";
-
+import useAlert from "../../hooks/alert";
 
 export default function Register() {
   const router = useParams()
@@ -17,6 +17,8 @@ export default function Register() {
     cpassword: { status: false, msg: "Please Confirm password!" },
     fullname: { status: false, msg: "Enter your fullname ex. john doe" },
   });
+  const {AlertComponent, showAlert} = useAlert()
+
   const [viewPwd, setViewPwd] = useState({
     cpass: false,
     pass: false,
@@ -25,7 +27,6 @@ export default function Register() {
   async function handleRegister(ev: any) {
     ev.preventDefault();
     const targ = ev.target;
-
     const data = {
       fullName: targ.fullname.value,
       userName: targ.username.value,
@@ -94,6 +95,8 @@ export default function Register() {
       if (error.response.data.description) {
         setErr(true);
         setMsgDesc(error.response.data.description);
+      }else{
+        showAlert("error", error.response.data.message)
       }
     }
   }
@@ -155,7 +158,7 @@ export default function Register() {
                   className="bg-transparent font-medium text-[#526288] w-full p-3 border-0 outline-none"
                   type="tel"
                   name="phone"
-                  pattern="[0-9]{10,10}"
+                  pattern="[0-9]{10,}"
                   title="Enter phone number. 10 digit long"
                   placeholder="Phone Number *"
                   required
@@ -364,6 +367,7 @@ export default function Register() {
           </div>
         </div>
       </div>
+      {AlertComponent}
     </main>
   );
 }

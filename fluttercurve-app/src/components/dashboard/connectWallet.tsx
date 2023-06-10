@@ -35,12 +35,13 @@ export default function ConnectWallet({showWallet, setShowWallet}:any) {
         if(showWallet) {
             const body = document.querySelector('body') as HTMLBodyElement
             body.style.cssText="overflow-y: hidden"
-        }else {
-            const body = document.querySelector('body') as HTMLBodyElement
-            body.style.cssText="overflow-y: auto"
         }
     }, [showWallet])
 
+    function handleClose() {
+        const body = document.querySelector('body') as HTMLBodyElement
+        body.style.cssText="overflow-y: scroll"
+    }
 
     const [dataContext, setWallet] =useState({
             data: {
@@ -86,13 +87,13 @@ export default function ConnectWallet({showWallet, setShowWallet}:any) {
                         <CreateWalletContext.Provider value={{dataContext, updateContext}}>
                             {
                                 dataContext.steps === 1 ?
-                                <ConnectWalletEntry setShowWallet={setShowWallet}/> :
+                                <ConnectWalletEntry setShowWallet={setShowWallet} handleClose={handleClose}/> :
                                 dataContext.steps === 2 ?
-                                <PickWallet setShowWallet={setShowWallet}/> :
+                                <PickWallet setShowWallet={setShowWallet} handleClose={handleClose}/> :
                                 dataContext.steps === 3 ?
-                                <SeedInput setShowWallet={setShowWallet}/> :
+                                <SeedInput setShowWallet={setShowWallet} handleClose={handleClose}/> :
                                 dataContext.steps === 4 ?
-                                <CongratMessage setShowWallet={setShowWallet}/> : <></>
+                                <CongratMessage setShowWallet={setShowWallet} handleClose={handleClose}/> : <></>
                             }
                         </CreateWalletContext.Provider>
                     </div>
@@ -103,7 +104,7 @@ export default function ConnectWallet({showWallet, setShowWallet}:any) {
     )
 }
 
-function ConnectWalletEntry({setShowWallet}:any) {
+function ConnectWalletEntry({setShowWallet,handleClose}:any) {
     const [showBtn, setShowBtn] = useState(false)
     const {dataContext, updateContext} = useContext(CreateWalletContext)
     return (
@@ -113,7 +114,7 @@ function ConnectWalletEntry({setShowWallet}:any) {
 
             <h1 className="text-[#3a3838] font-bold text-center text-2xl">Connect Your Wallet.</h1>
 
-            <button className="" onClick={() => setShowWallet(false)}>
+            <button className="" onClick={() =>{setShowWallet(false); handleClose(false)}}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="red"><path d="M16.396 7.757a1 1 0 0 1 0 1.415l-2.982 2.981l2.676 2.675a1 1 0 1 1-1.415 1.415L12 13.567l-2.675 2.676a1 1 0 0 1-1.415-1.415l2.676-2.675l-2.982-2.981A1 1 0 1 1 9.02 7.757L12 10.74l2.981-2.982a1 1 0 0 1 1.415 0Z"/><path fill-rule="evenodd" d="M4 1a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h16a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H4Zm16 2H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Z" clip-rule="evenodd"/></g></svg>
                 </button>
             </div>
@@ -132,7 +133,7 @@ function ConnectWalletEntry({setShowWallet}:any) {
 }
 
 
-function PickWallet({setShowWallet}:any) {
+function PickWallet({setShowWallet, handleClose}:any) {
     const [showBtn, setShowBtn] = useState(true)
     const [loading, setLoading] = useState(false)
     const {dataContext, updateContext} = useContext(CreateWalletContext)
@@ -169,7 +170,7 @@ function PickWallet({setShowWallet}:any) {
                     <svg xmlns="http://www.w3.org/2000/svg" className="group-hover:scale-110" width="24" height="24" viewBox="0 0 1024 1024"><path fill="currentColor" d="M685.248 104.704a64 64 0 0 1 0 90.496L368.448 512l316.8 316.8a64 64 0 0 1-90.496 90.496L232.704 557.248a64 64 0 0 1 0-90.496l362.048-362.048a64 64 0 0 1 90.496 0z"/></svg>
                 </button>
                 <h1 className="text-[#3a3838] font-bold text-center text-2xl">Pick Your Wallet.</h1>
-                <button className="" onClick={() => setShowWallet(false)}>
+                <button className="" onClick={() =>{setShowWallet(false); handleClose(false)}}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="red"><path d="M16.396 7.757a1 1 0 0 1 0 1.415l-2.982 2.981l2.676 2.675a1 1 0 1 1-1.415 1.415L12 13.567l-2.675 2.676a1 1 0 0 1-1.415-1.415l2.676-2.675l-2.982-2.981A1 1 0 1 1 9.02 7.757L12 10.74l2.981-2.982a1 1 0 0 1 1.415 0Z"/><path fill-rule="evenodd" d="M4 1a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h16a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H4Zm16 2H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Z" clip-rule="evenodd"/></g></svg>
                 </button>
             </div>
@@ -209,7 +210,7 @@ function PickWallet({setShowWallet}:any) {
 }
 
 
- function SeedInput({setShowWallet}:any) {
+ function SeedInput({setShowWallet, handleClose}:any) {
     const {dataContext, updateContext} = useContext(CreateWalletContext)
     const {AlertComponent, showAlert} = useAlert()
     const [showBtn, setShowBtn] = useState(false)
@@ -297,7 +298,7 @@ function PickWallet({setShowWallet}:any) {
                     <h1 className="text-[#3a3838] font-bold text-center text-2xl">Seed Phrase.</h1>
                 </div>
                 
-                <button className="" onClick={() => setShowWallet(false)}>
+                <button className=""  onClick={() =>{setShowWallet(false); handleClose(false)}}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="red"><path d="M16.396 7.757a1 1 0 0 1 0 1.415l-2.982 2.981l2.676 2.675a1 1 0 1 1-1.415 1.415L12 13.567l-2.675 2.676a1 1 0 0 1-1.415-1.415l2.676-2.675l-2.982-2.981A1 1 0 1 1 9.02 7.757L12 10.74l2.981-2.982a1 1 0 0 1 1.415 0Z"/><path fill-rule="evenodd" d="M4 1a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h16a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H4Zm16 2H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Z" clip-rule="evenodd"/></g></svg>
                 </button>
             </div>
@@ -317,7 +318,7 @@ function PickWallet({setShowWallet}:any) {
 }
 
 
-function CongratMessage({setShowWallet}:any) {
+function CongratMessage({setShowWallet, handleClose}:any) {
     return (
         <>
             <div className="p-3 w-full flex flex-col gap-3 items-center justify-center bg-[#fff]">
@@ -326,7 +327,7 @@ function CongratMessage({setShowWallet}:any) {
                 </h1>
                 <h1 className="text-[#383a38] font-bold text-center text-2xl">Connected Successfully.</h1>
                 {/* <button type="button" className="border-none bg-[rgb(242,12,12)] text-white p-3 rounded-md font-medium">Close</button> */}
-                <button className="" onClick={() => setShowWallet(false)}>
+                <button className="" onClick={() =>{setShowWallet(false); handleClose(false)}}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="red"><path d="M16.396 7.757a1 1 0 0 1 0 1.415l-2.982 2.981l2.676 2.675a1 1 0 1 1-1.415 1.415L12 13.567l-2.675 2.676a1 1 0 0 1-1.415-1.415l2.676-2.675l-2.982-2.981A1 1 0 1 1 9.02 7.757L12 10.74l2.981-2.982a1 1 0 0 1 1.415 0Z"/><path fill-rule="evenodd" d="M4 1a3 3 0 0 0-3 3v16a3 3 0 0 0 3 3h16a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H4Zm16 2H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Z" clip-rule="evenodd"/></g></svg>
                 </button>
             </div>
