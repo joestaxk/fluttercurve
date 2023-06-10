@@ -20,7 +20,7 @@ export default function withDashboard(
         {
           <Suspense fallback={<Pageloader />}>
             {
-              !appContextData?.userData ? <div className="w-full h-[100vh] flex "><Pageloader /></div>:
+              !appContextData?.userData ? <div className="w-full h-[100vh] flex justify-center items-center"><Pageloader /></div>:
               <WrappedComponent state={appContextData?.userData} {...props} />              
             }
           </Suspense>

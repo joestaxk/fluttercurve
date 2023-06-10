@@ -112,7 +112,7 @@ export default function ForgetPassword() {
           </div>
 
           <div className="w-full mt-5 flex justify-center">
-            <button type="submit" className='bg-[#007bff] p-4 text-white font-bold rounded-md w-full disabled:bg-[#007bffb4] transition-all duration-300'  disabled={loading}>
+            <button type="submit" className='bg-[#007bff] p-4 text-white font-bold rounded-md w-full flex justify-center disabled:bg-[#007bffb4] transition-all duration-300'  disabled={loading}>
                 {
                   loading ? <ButtonSpinner /> : "Reset Password"
                 }
