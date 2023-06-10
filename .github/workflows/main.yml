@@ -1,61 +1,40 @@
-# name: Production deploy
+name: Production deploy
 
-# on:
-#   push:
-#     branches: [main]
+on:
+  push:
+    branches: [main]
 
-# jobs:
-#   build:
-#     name: build app
-#     runs-on: ubuntu-latest
+jobs:
+  build:
+    name: build app
+    runs-on: ubuntu-latest
     
-#     defaults:
-#       run:
-#         working-directory: app
+    defaults:
+      run:
+        working-directory: app
 
-#     steps:
-#       - name: checkout code
-#         uses: actions/checkout@v3
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
 
-#       - name: use nodejs 16
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: 16
+      - name: use nodejs 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
 
-#       - name: install dependencies
-#         run: npm install
+      - name: install dependencies
+        run: npm install
         
-#       - name: build app
-#         run: npm run build
+      - name: build app
+        run: npm run build
 
-<<<<<<< HEAD
-#       - name: deploy app
-#         uses: SamKirkland/FTP-Deploy-Action@4.3.3
-#         with:
-#           server: fluttercurve.com
-#           username: ${{ secrets.FTP_USER_APP }}
-#           password: ${{ secrets.FTP_PASS_APP }}
-#           local-dir: ./app/out/
-#           exclude: |
-#             **/.git*/**
-#             **/node_modules/**
-#             **/src/**
-#             .eslintrc.json
-#             .gitignore
-#             README.md
-#             package-lock.json
-#             postcss.config.js
-#             tailwind.config.js
-#             tsconfig.json
-#             yarn.lock
-=======
       - name: deploy app
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
           server: fluttercurve.com
           username: ${{ secrets.FTP_USER_APP }}
           password: ${{ secrets.FTP_PASS_APP }}
-          local-dir: ./app/
+          local-dir: ./fluttercurve-app/dist/
           exclude: |
             **/.git*/**
             **/node_modules/**
@@ -68,4 +47,3 @@
             tailwind.config.js
             tsconfig.json
             yarn.lock
->>>>>>> e5383f166f86884c61254232876020de0ad31ce6
