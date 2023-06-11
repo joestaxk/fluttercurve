@@ -13,12 +13,12 @@ export default function AuthLayout(){
              <div className="w-full flex justify-between items-center">
                  <Link  to={MAIN_URL} className="flex gap-2 group">
                     <svg xmlns="http://www.w3.org/2000/svg" className="group-hover:scale-110" width="24" height="24" viewBox="0 0 1024 1024"><path fill="currentColor" d="M685.248 104.704a64 64 0 0 1 0 90.496L368.448 512l316.8 316.8a64 64 0 0 1-90.496 90.496L232.704 557.248a64 64 0 0 1 0-90.496l362.048-362.048a64 64 0 0 1 90.496 0z"/></svg>
-                    <span className="md:block hidden">Go back</span>
+                    <span className="md:block hidden whitespace-nowrap">Go back</span>
                   </Link>
                   
-                  <div className="relative px-2 py-4 flex justify-center">
-                  <img src="/main.png" alt="" className="w-[50px] h-[50px]" />
-                </div>
+                  <div className="relative px-2 py-4 w-full flex justify-center">
+                    <img src="/main_long.png" alt="" className="w-[200px] h-auto object-contain" />
+                  </div>
                   <div className=""></div>
               </div>
            </div>

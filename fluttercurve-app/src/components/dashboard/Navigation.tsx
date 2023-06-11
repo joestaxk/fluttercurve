@@ -12,7 +12,7 @@ export default function Navigation({setNav}: {setNav: (arg0:boolean) => void}) {
         style={{maxWidth: 'calc(100vw - 50px)'}}
         className="xl:block xxl:w-[330px] w-[300px] h-[100vh] xl:fixed absolute xl:z-0 z-[51] bg-white xl:bg-transparent top-0 left-0">
           <div className="relative px-2 py-4 w-full flex justify-center">
-            <img src="/main.png" alt="" className="w-[50px] h-[50px]" />
+            <img src="/main_long.png" alt="" className="w-full h-auto object-contain" />
           </div>
 
           <div className="w-full flex flex-col border-r-[1px] xl:border-r-[#ccc] overflow-y-auto" style={{overflow: 'auto', height: 'calc(100vh - 60px)'}}>
