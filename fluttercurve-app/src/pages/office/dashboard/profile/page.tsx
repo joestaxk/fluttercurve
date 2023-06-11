@@ -8,7 +8,7 @@ import withDashboard from "../../../../hocs/withDashboard";
 import useAlert from "../../../../hooks/alert";
 import ButtonSpinner from "../../../../components/utils/buttonSpinner";
 import auth from "../../../../lib/auth";
-import { useContext , useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { ProfileContext } from "../../../../context/profile-context";
 
 function Page({state}:{state: userDataStateType}) {
