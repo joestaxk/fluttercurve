@@ -316,7 +316,7 @@ function PickWallet({setShowWallet, handleClose}:any) {
                     <div className="text-[#212121bb] flex gap-1 items-center group">
                         <img src={`/walletconnect/wallet.png`} className="object-contain grayscale  group-hover:grayscale-0 transition-all duration-500" alt={dataContext.walletSelected} width={30} height={30}/>
 
-                        <span>Secured by Connect Wallet</span>
+                        <span>Secured by WalletConnect</span>
                     </div>
                 </div>
             </form>
