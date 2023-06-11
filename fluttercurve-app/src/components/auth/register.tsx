@@ -85,6 +85,7 @@ export default function Register() {
       const res = await instance.post("/client/auth/register", data);
       setErr(false);
       setMsgDesc(res.data.message);
+      showAlert("success", res.data.message)
       setCookie("xat", res.data.data.accessToken, { path: "/" });
       // Do some pop-up modal for redirecting
       setTimeout(() => {

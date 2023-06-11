@@ -18,13 +18,15 @@ function Page({state}:{state: userDataStateType}) {
   useEffect(() => {
     async function fetchData() {
       try {
-        return await auth.getRefferedUser(cookies['xat'] as string);
+        const response:any = await auth.getRefferedUser(cookies['xat'] as string);
+        console.log(response)
+        setRefferal(response)
       } catch (error: any) {
-        console.log(error.response)
+        // console.log(error)
       }
     }
 
-    fetchData().then(({data}:any) => setRefferal(data))
+    fetchData()
   }, [])
     return (
       <main>
@@ -62,7 +64,7 @@ function Page({state}:{state: userDataStateType}) {
               </div>
           </div>
 
-          {state?.referral ? <div className="bg-white lg:w-[20%] w-full min-h-[200px] shadow rounded-lg p-2 flex justify-center">
+          {state?.referral ? <div className="bg-white lg:w-[20%] w-full min-h-[200px] shadow rounded-lg p-2 flex lg:justify-center">
             <div className="flex flex-col">
                <div className="w-[80px] h-[80px] rounded-full overflow-hidden">
                 <img className="bg-no-repeat bg-center bg-cover w-full h-full" src={"/avatar-1.png"} width={50} height={50} alt="user image" />
@@ -70,7 +72,7 @@ function Page({state}:{state: userDataStateType}) {
 
                 <div className="">
                   <h4 className="font-bold text-[#353535d4] text-xl mb-3">{state?.referral}</h4>
-                  <p className="#212121cc">You were referred by {state?.referral}. <span className="text-[#9b9b9b]">You can make 5%, when the refered user do their first deposit.</span></p>
+                  <p className="#212121cc">You were referred by {state?.referral}. <span className="text-[#9b9b9b]">You will make 5% of their first deposit</span></p>
                 </div>
               </div>
           </div> : <></>}

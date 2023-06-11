@@ -1,26 +1,21 @@
 
 import { userDataStateType } from "../../rState/initialStates";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Navigation from "./Navigation";
 import { useResize } from "../../hooks/resize";
 import helpers from "../../helpers";
 import ConnectWallet from "./connectWallet";
 import { Link } from "react-router-dom";
-import { PUBLIC_PATH } from "../../lib/requestService";
+import { ProfileContext } from "../../context/profile-context";
 
 
 function Dashboard({children, state}:{children: any, state: userDataStateType}) {
     const [show, setShow] = useState(false)
     const [nav, setNav]   = useState(false)
-    const [imageData, setImageData] = useState("/avatar-1.png")
     const [width] = useResize();
     const [showWallet, setShowWallet] = useState(false)
-
-
-    useEffect(() => {
-        if(state.avatar) setImageData(`${PUBLIC_PATH}/private/users/${state.avatar}`)
-    }, [state.avatar])
+    const {profileDataContext} = useContext(ProfileContext)
 
     useEffect(() => {
         if(nav) {
@@ -31,6 +26,10 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
             body.style.cssText="overflow-y: auto"
         }
     }, [nav])
+
+    useEffect(() => {
+        console.log(profileDataContext)
+    }, [profileDataContext])
 
     return (
         <>
@@ -70,7 +69,7 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
                         <div className="cursor-pointer flex gap-1" onClick={() => setShow(!show)}>
                             <div className="relative">
                                 <img
-                                    src={imageData}
+                                    src={profileDataContext as unknown as string || "/avatar-1.png" }
                                     className="rounded-full w-[50px]  h-[50px] border-[1px] border-gray-700"
                                     alt={"user"} 
                                     width={50}

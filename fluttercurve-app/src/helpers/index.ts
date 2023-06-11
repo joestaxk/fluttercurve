@@ -1,6 +1,9 @@
 import auth from "../lib/auth";
+import instance from "../lib/requestService";
 
 interface helpersInterface {
+    getLocalItemStr: (key: string) => string | undefined;
+    loadImg: () => Promise<string | undefined>;
     forceLogoutAdmin: () => Promise<void>;
     logoutAdmin: () => Promise<void>;
     forceLogoutUser: () => Promise<void>;
@@ -20,6 +23,7 @@ helpers.forceLogoutUser = async function() {
         // const logout = await auth.logout(helpers.getCookie("xat") as any);
         helpers.deleteCookie("xat")
         helpers.deleteLocalItem('user_data')
+        helpers.deleteLocalItem('profile_data')
         location.href = "/login"
     } catch (error) {
         console.log(error)
@@ -33,6 +37,7 @@ helpers.forceLogoutAdmin = async function() {
         // const logout = await auth.logout(helpers.getCookie("xat") as any);
         helpers.deleteCookie("xat")
         helpers.deleteLocalItem('admin_data')
+        helpers.deleteLocalItem('profile_data')
         location.href = "/login"
     } catch (error) {
         console.log(error)
@@ -60,6 +65,7 @@ helpers.logoutUser = async function() {
         if(logout){
             helpers.deleteCookie("xat")
             helpers.deleteLocalItem('user_data')
+            helpers.deleteLocalItem('profile_data')
             location.href = "/login"
         }
         } catch (error) {
@@ -91,7 +97,7 @@ helpers.currencyFormatLong = function(num:number, currency:string) {
 
 helpers.storeLocalItem = function(key, value) {
     try{
-        if(typeof value !== "string") {
+        if(value && typeof value !== "string") {
             value = JSON.stringify(value)
         }
         localStorage.setItem(key, value)
@@ -110,6 +116,18 @@ helpers.getLocalItem = function(key:string) {
 
     return data;
 }
+
+helpers.getLocalItemStr = function(key:string) {
+    let data;
+    try{
+        data = localStorage.getItem(key) as string
+    }catch(error:any) {
+        console.log(error)
+    }
+
+    return data;
+}
+
 
 
 helpers.deleteLocalItem = function(key:string) {
@@ -144,4 +162,18 @@ helpers.deleteCookie = function (name: string): void {
     return null;
   }
   
+
+  helpers.loadImg = async function() {
+    try {
+        const getAvatar:any = helpers.getLocalItem('user_data');
+        if(!getAvatar['avatar']) return;
+        const x:any = await instance.get(`/client/profile/${getAvatar['avatar']}`, {responseType: "blob", headers: {Authorization: helpers.getCookie('xat')}});
+        const createBlob = URL.createObjectURL(x.data);
+        return createBlob;
+    } catch (error) {
+       console.log(error)
+    }
+}
+
+
 export default helpers;

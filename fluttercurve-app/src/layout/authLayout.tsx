@@ -6,6 +6,7 @@ import { Outlet } from "react-router-dom";
 import { MAIN_URL } from "../lib/requestService";
 
 export default function AuthLayout(){
+  
     return (
       <main className="bg-authSkin min-h-[100vh] w-full">
           <div className="w-full flex justify-start p-[2rem]">

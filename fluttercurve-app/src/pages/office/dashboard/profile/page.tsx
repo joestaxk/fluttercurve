@@ -8,13 +8,12 @@ import withDashboard from "../../../../hocs/withDashboard";
 import useAlert from "../../../../hooks/alert";
 import ButtonSpinner from "../../../../components/utils/buttonSpinner";
 import auth from "../../../../lib/auth";
-import { useEffect, useState } from "react";
-import { PUBLIC_PATH } from "../../../../lib/requestService";
+import { useContext , useEffect, useState } from "react";
+import { ProfileContext } from "../../../../context/profile-context";
 
 function Page({state}:{state: userDataStateType}) {
-  const [imageData, setImageData] = useState("/avatar-1.png")
   const [cookies] = useCookies();
-  const [, setClipBoard] = useState({})
+  const {profileDataContext, updateProfileContext}: any = useContext(ProfileContext)
   const [validate, setValidate] = useState({
     passwordErr: {status: false, msg: ""},
   })
@@ -24,25 +23,19 @@ function Page({state}:{state: userDataStateType}) {
   })
   const { AlertComponent, showAlert } = useAlert();
 
-  useEffect(() => {
-      setClipBoard(state.userName)
-      if(state.avatar) setImageData(`${PUBLIC_PATH}/private/users/${state.avatar}`)
-  }, [state.avatar])
-
-  function handleAvatarUpload(ev:any) {
+  async function handleAvatarUpload(ev:any) {
      const fileData = ev.target.files;
      if(!fileData[0].type.startsWith("image/")) return;
 
-    setImageData(URL.createObjectURL(fileData[0]))
+     const imgBlob  = URL.createObjectURL(fileData[0]);
+     updateProfileContext(imgBlob) as any
      // upload data to  server.
-    //  uploadAvatar
-  
-    const formData = new FormData();
+     const formData = new FormData();
       formData.append('avatar', fileData[0]);
-
       auth.uploadAvatar(cookies['xat'], formData).then((res:any) => {
         showAlert("success", res.data.message)
       }).catch((err) => {
+        // updateProfileContext(null)
         console.log(err)
       })
   }
@@ -133,7 +126,7 @@ function Page({state}:{state: userDataStateType}) {
         <div className="bg-white md:w-[65%] w-full shadow rounded-lg min-h-[150px] md:p-4 p-1 flex items-center md:gap-0 gap-4 justify-between">
           <div className="flex flex-col items-center justify-center">
             <div className="w-[80px] group h-[80px] rounded-full overflow-hidden relative">
-              <img src={imageData} className="bg-no-repeat bg-center bg-cover w-full h-full" width={50} height={50} alt={state.userName}  crossOrigin="anonymous"/>
+              <img src={profileDataContext || "/avatar-1.png"} className="bg-no-repeat bg-center bg-cover w-full h-full" width={50} height={50} alt={state.userName}  crossOrigin="anonymous"/>
           
                 <label  htmlFor="avatar" className="bg-[#2121217f] transition-all duration-500 delay-200 ease-linear group-hover:bg-[#212121ce] cursor-pointer group-hover:w-full group-hover:h-full w-fit h-fit rounded-tl-lg rounded-bl-lg p-1 absolute group-hover:right-0 group-hover:bottom-0 group-hover:flex justify-center items-center">
                 <input type="file" className="hidden" name="avatar" accept="image/*" onChange={handleAvatarUpload} id="avatar" />
