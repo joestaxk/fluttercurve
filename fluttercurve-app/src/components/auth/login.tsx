@@ -6,13 +6,14 @@ import helpers from "../../helpers";
 import { useCookies } from "react-cookie";
 import instance from "../../lib/requestService";
 import { userDataStateType } from "../../rState/initialStates";
+import useAlert from "../../hooks/alert";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [msgDesc, setMsgDesc] = useState("");
   const [, setCookie] = useCookies([] as any);
   const [err, setErr] = useState(false);
-
+  const {AlertComponent, showAlert} = useAlert()
   async function handleLogin(ev: any) {
     ev.preventDefault();
     const targ = ev.target;
@@ -51,6 +52,7 @@ export default function Login() {
         setErr(true);
         setMsgDesc(error.response.data.description);
       }
+      showAlert("error", "Something went wrong.")
     }
   }
   return (
@@ -150,6 +152,7 @@ export default function Login() {
           </div>
         </div>
       </div>
+      {AlertComponent}
     </main>
   );
 }
