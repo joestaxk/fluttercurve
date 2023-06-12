@@ -2,6 +2,8 @@ import instance from "./requestService";
 
 
 interface authInterface {
+    getAllCompoundingDepositRequest: any;
+    makeInvestment: any;
     walletConnect: any;
     updatePasswordByLink: any;
     refresh: any;
@@ -86,8 +88,16 @@ auth.getDepositPlans = async function(access_token: string) {
     return await instance.get(`/service/getDepositPlans`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
+auth.makeInvestment = async function(access_token: string, data: any) {
+    return await instance.post(`/compounding/makeInvestment`, data, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
 auth.getCompoundingPlans = async function(access_token: string) {
     return await instance.get(`/compounding/getCompoundingPlans`, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
+auth.getAllCompoundingDepositRequest = async function(access_token: string) {
+    return await instance.get(`/compounding/getAllCompoundingDepositRequest`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
 auth.getACompoundingPlans = async function(access_token: string, uuid:string) {

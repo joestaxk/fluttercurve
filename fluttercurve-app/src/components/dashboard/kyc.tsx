@@ -84,6 +84,9 @@ export default function Kyc({state}: {state: userDataStateType}) {
             /* handle the error */
             setMedia(false)
           });
+
+          return (() => {
+          })
       }, [openVideoingModal]);
     
       useEffect(() => {
@@ -104,9 +107,9 @@ export default function Kyc({state}: {state: userDataStateType}) {
             className="flex justify-around flex-wrap w-full translate-y-[-50%] p-5">
                 <div className="bg-white w-[83%] min-w-[350px] shadow rounded-lg h-[120px] p-4 flex items-center justify-between relative">
                     <div className="z-10 flex justify-between w-full">
-                        <div title="connect wallet"  className="md:min-w-[100px] md:h-[100px] w-[60px] relative flex-col flex justify-center items-center  bg-white">
+                        <div title="connect wallet"  className="md:min-w-[150px] md:h-[100px] w-[60px] relative flex-col flex justify-center items-center  bg-white">
                             <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 36 36"><path fill="#526288" d="M32.33 6a2 2 0 0 0-.41 0h-28a2 2 0 0 0-.53.08l14.45 14.39Z" className="clr-i-solid clr-i-solid-path-1"/><path fill="#526288" d="m33.81 7.39l-14.56 14.5a2 2 0 0 1-2.82 0L2 7.5a2 2 0 0 0-.07.5v20a2 2 0 0 0 2 2h28a2 2 0 0 0 2-2V8a2 2 0 0 0-.12-.61ZM5.3 28H3.91v-1.43l7.27-7.21l1.41 1.41Zm26.61 0h-1.4l-7.29-7.23l1.41-1.41l7.27 7.21Z" className="clr-i-solid clr-i-solid-path-2"/><path fill="none" d="M0 0h36v36H0z"/></svg>
-                            <span className="text-[#526288]  text-[.6rem] md:block hidden">EMAIL VERIFICATION</span>
+                            <span className="text-[#526288]  text-[.6rem] md:block hidden whitespace-nowrap">EMAIL VERIFICATION</span>
                             <svg xmlns="http://www.w3.org/2000/svg" className="absolute top-[10%] right-[60%]" width="20" height="20" viewBox="0 0 2048 2048"><path fill="#4caf50" d="M1024 0q141 0 272 36t244 104t207 160t161 207t103 245t37 272q0 141-36 272t-104 244t-160 207t-207 161t-245 103t-272 37q-141 0-272-36t-244-104t-207-160t-161-207t-103-245t-37-272q0-141 36-272t104-244t160-207t207-161T752 37t272-37zm603 685l-136-136l-659 659l-275-275l-136 136l411 411l795-795z"/></svg>
                         </div>
                         <div className="min-w-[100px] h-[100px] flex-col shadow-2xl shadow-[#4873ebc8] flex justify-center items-center rounded-full bg-white">

@@ -154,8 +154,6 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
       if(err.response.data.code === "ETIMEDOUT"){
         return showAlert("error", "Timeout. try again :(");
       }
-
-      console.log(err)
     })
   }
     return (
@@ -253,7 +251,7 @@ export function DeposkelentonLoader() {
       {
         //@ts-ignore
         arr.map((el, i:number) => (
-          <div key={i.toString()} className="w-[380px] border-[1px] rounded-lg bg-[#cccccc30] border-[#ccc] h-[350px]">
+          <div key={i.toString()} className="w-[380px] amimation-ping border-[1px] rounded-lg bg-[#cccccc30] border-[#ccc] h-[350px]">
           </div>
         ))
       }

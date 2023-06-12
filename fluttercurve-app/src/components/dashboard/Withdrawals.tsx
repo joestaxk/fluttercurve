@@ -22,7 +22,8 @@ export default function Withdrawal({state}: {state: userDataStateType}) {
     const data = {
       amount: tar.amount.value,
       currency: tar.currency_method.value,
-      walletAddress: tar.withdraw_details.value
+      walletAddress: tar.withdraw_details.value,
+      mode: tar.mode_method.value
     }
 
     if(!cacheAcctBal){
@@ -43,6 +44,7 @@ export default function Withdrawal({state}: {state: userDataStateType}) {
         tar.amount.value = ""
         tar.currency_method.value = ""
         tar.withdraw_details.value = ""
+        tar.mode_method.value = ""
         showAlert("success", res.data.message)
       // }
     } catch (error:any) {
@@ -91,6 +93,16 @@ export default function Withdrawal({state}: {state: userDataStateType}) {
                     <option value="usdt">USDT USDT</option>
                     <option value="xrp">Ripple Coin XRP</option>
                     <option value="doge">Dogecoin DOGE</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="mb-2 text-[#212121cc] font-medium text-lg">Choose Mode.</label>
+                <div className="border-[#ccc] border-[1px] rounded-lg ">
+                  <select name="mode_method" className="p-4 outline-none bg-transparent border-none w-full" required>
+                    <option value="normal">Normal Mode</option>
+                    <option value="compounding">Compounding Mode</option>
                   </select>
                 </div>
               </div>

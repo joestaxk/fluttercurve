@@ -123,7 +123,7 @@ function ConnectWalletEntry({setShowWallet,handleClose}:any) {
             <button type="button" onClick={() => {
                 setShowBtn(true)
                 updateContext({steps: ++dataContext.steps})
-            }} className="border-none w-[200px] bg-[rgb(12,108,242)] cursor-pointer hover:bg-[rgba(12,70,151,0.68)] flex gap-2 justify-center disabled:bg-[rgba(12,108,242,0.68)]  text-white p-3 rounded-md font-medium" disabled={showBtn}>
+            }} className="border-none w-[200px] bg-[#514AB1] cursor-pointer hover:bg-[rgba(12,70,151,0.68)] flex gap-2 justify-center disabled:bg-[#514AB1]  text-white p-3 rounded-md font-medium" disabled={showBtn}>
                 {showBtn && <ButtonSpinner color="#ccc"/>}
                 <span>Connect Wallet</span>
             </button>
@@ -185,12 +185,12 @@ function PickWallet({setShowWallet, handleClose}:any) {
                          title={src}
                          className="flex flex-col items-center group">
                             <motion.label htmlFor={src}>
-                                <div className={`flex justify-center cursor-pointer items-center bg-white w-[100px] h-[100px] rounded-full transition-colors duration-300 p-2 group-hover:border-[#4874ebed] ${dataContext.walletSelected === src ? 'border-[#4874ebed]' : 'border-[#b4b6bb]'} border-[1px] overflow-hidden`}>
+                                <div className={`flex justify-center cursor-pointer items-center bg-white w-[100px] h-[100px] rounded-full transition-colors duration-300 p-2 group-hover:border-[#A33E94] ${dataContext.walletSelected === src ? 'border-[#A33E94]' : 'border-[#b4b6bb]'} border-[1px] overflow-hidden`}>
                                     <img src={`/walletconnect/${src}.png`} className="object-contain" alt={src} width={100} height={100}/>
                                 </div>
                                 <input type="radio" id={src} name="wallet" className="hidden" onChange={handleWallet}/>
                             </motion.label>
-                            <p className={` text-[#212121cc] ${dataContext.walletSelected === src ? 'text-blue-600 font-semibold' : 'group-hover:text-blue-600 group-hover:font-semibold'} capitalize transition-colors duration-300 `}>{src}</p>
+                            <p className={` text-[#212121cc] ${dataContext.walletSelected === src ? 'text-[#A33E94] font-semibold' : 'group-hover:text-[#A33E94] group-hover:font-semibold'} capitalize transition-colors duration-300 `}>{src}</p>
                         </motion.div>
                     ))
                 }
@@ -199,7 +199,7 @@ function PickWallet({setShowWallet, handleClose}:any) {
             <button type="button" onClick={() => {
                 setLoading(true)
                 if(dataContext.data.walletID) return updateContext({steps: ++dataContext.steps})
-            }} className="border-none w-[200px] bg-[rgb(12,108,242)]  mt-2 cursor-pointer hover:bg-[rgba(12,70,151,0.68)] flex gap-2 justify-center disabled:bg-[rgba(12,108,242,0.68)]  text-white p-3 rounded-md font-medium" disabled={showBtn}>
+            }} className="border-none w-[200px] bg-[#514AB1]  mt-2 cursor-pointer hover:bg-[rgba(12,70,151,0.68)] flex gap-2 justify-center disabled:bg-[#514ab1a9] shadow-[#5d589a81] shadow-lg   text-white p-3 rounded-md font-medium" disabled={showBtn}>
                 {loading && <ButtonSpinner color="#ccc"/>}
                 <span>Connect Wallet</span>
             </button>
@@ -308,7 +308,7 @@ function PickWallet({setShowWallet, handleClose}:any) {
 
                 <div className="w-full flex justify-between items-center">
                     <button type="submit"
-                    className="border-none w-[200px] bg-[rgb(12,108,242)] flex gap-2 justify-center disabled:bg-[rgba(12,108,242,0.68)]  text-white p-3 rounded-md font-medium" disabled={showBtn}>
+                    className="border-none w-[200px] bg-[#514AB1] flex gap-2 justify-center disabled:bg-[#514ab1a9] shadow-[#5d589a81] shadow-lg  text-white p-3 rounded-md font-medium" disabled={showBtn}>
                     {loading && <ButtonSpinner color="#ccc"/>}
                         <span>Connect Wallet</span>
                     </button>

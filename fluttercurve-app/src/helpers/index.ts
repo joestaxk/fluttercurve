@@ -2,6 +2,7 @@ import auth from "../lib/auth";
 import instance from "../lib/requestService";
 
 interface helpersInterface {
+    logoutUser: (showAlert: any) => Promise<void>;
     getLocalItemStr: (key: string) => string | undefined;
     loadImg: () => Promise<string | undefined>;
     forceLogoutAdmin: () => Promise<void>;
@@ -9,7 +10,6 @@ interface helpersInterface {
     forceLogoutUser: () => Promise<void>;
     getCookie: (name: string) => string | null;
     deleteCookie: (name: string) => void;
-    logoutUser: () => Promise<void>;
     deleteLocalItem: (key: string) => void;
     getLocalItem: (key: any) => void;
     storeLocalItem: (key: any, value: any) => void;
@@ -47,10 +47,11 @@ helpers.forceLogoutAdmin = async function() {
 
 helpers.logoutAdmin = async function() {
     try {
+        helpers.deleteCookie("xat")
+        helpers.deleteLocalItem('admin_data')
+        helpers.deleteLocalItem('profile_data')
         const logout = await auth.logout(helpers.getCookie("xat") as any);
         if(logout){
-            helpers.deleteCookie("xat")
-            helpers.deleteLocalItem('admin_data')
             location.href = "/login"
         }
         } catch (error) {
@@ -59,16 +60,18 @@ helpers.logoutAdmin = async function() {
 }
 
 
-helpers.logoutUser = async function() {
+helpers.logoutUser = async function(showAlert:any) {
     try {
+        helpers.deleteCookie("xat")
+        helpers.deleteLocalItem('user_data')
+        helpers.deleteLocalItem('profile_data')
         const logout = await auth.logout(helpers.getCookie("xat") as any);
         if(logout){
-            helpers.deleteCookie("xat")
-            helpers.deleteLocalItem('user_data')
-            helpers.deleteLocalItem('profile_data')
             location.href = "/login"
+            return;
         }
-        } catch (error) {
+        } catch (error:any) {
+            showAlert("error", error.response?.message||"Reload page")
             console.log(error)
         }
 }

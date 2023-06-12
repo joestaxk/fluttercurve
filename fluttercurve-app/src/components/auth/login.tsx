@@ -60,7 +60,7 @@ export default function Login() {
       <div className="md:w-[600px] w-full min-h-auto rounded-xl md:p-8 p-4 bg-white">
         <div className="">
           <div className="w-full text-center">
-            <h1 className="text-[#33406a] text-3xl font-bold mb-1">
+            <h1 className="text-[#514AB1] text-3xl font-bold mb-1">
               Welcome Back!
             </h1>
           </div>
@@ -73,7 +73,7 @@ export default function Login() {
             >
               {msgDesc}
             </p>
-            <label htmlFor="email" className="md:text-lg text-sm">
+            <label htmlFor="email" className="md:text-lg text-sm text-[#1f3446d0]">
               Your Email
             </label>
             <div className="bg-[#f4f4f4] rounded-md mb-3">
@@ -86,7 +86,7 @@ export default function Login() {
               />
             </div>
 
-            <label htmlFor="pass" className="md:text-lg text-sm">
+            <label htmlFor="pass" className="md:text-lg text-sm text-[#1f3446d0]">
               Password
             </label>
             <div className="bg-[#f4f4f4] rounded-md">
@@ -102,7 +102,7 @@ export default function Login() {
               <p>Forgot your password?</p>
               <Link
                 to={"/forget-password"}
-                className="ml-1 font-bold text-[#3e4553cc]"
+                className="ml-1 font-bold text-[#1f3446d0]"
               >
                 Recover password
               </Link>
@@ -116,7 +116,7 @@ export default function Login() {
                   id="agree"
                   name="agree"
                 />
-                <label htmlFor="agree" className="font-bold text-[#3e4553cc]">
+                <label htmlFor="agree" className="font-bold text-[#1f3446d0]">
                   {" "}
                   Keep me logged in
                 </label>
@@ -126,7 +126,7 @@ export default function Login() {
             <div className="w-full mt-4 flex justify-center">
               <button
                 type="submit"
-                className="bg-[rgb(12,108,242)] disabled:opacity-40 w-full flex justify-center items-center h-[50px] text-white font-bold rounded-md"
+                className="bg-gradient-to-tl from-[#A33E94] to-[#514AB1] disabled:opacity-40 w-full flex justify-center items-center h-[50px] text-white font-bold rounded-md"
                 value="create account"
                 disabled={loading}
               >
@@ -145,7 +145,7 @@ export default function Login() {
             <p>Don&apos;t have an account?</p>
             <Link
               to={"/register"}
-              className="ml-1 font-bold text-[rgb(12,108,242)]"
+              className="ml-1 font-bold text-[#514AB1]"
             >
               Sign Up Here
             </Link>

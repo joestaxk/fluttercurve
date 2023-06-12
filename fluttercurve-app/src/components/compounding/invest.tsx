@@ -30,7 +30,7 @@ export default function CompoundingInvestment({state}:{state: userDataStateType}
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Compounding Balance</h3>
-                <h1 className="text-2xl font-semibold text-[#4d6ae9]">{!state.compounding ? "0.00" : !state.compounding.totalBalance(state.compounding.totalDeposit as string, state.compounding.totalDeposit as string)} {state.currency}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{!state.compounding ? "0.00" : !state.compounding.totalBalance(state.compounding.totalDeposit as string, state.compounding.totalDeposit as string)} {state.currency}</h1>
               </div>
 
               <img src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
@@ -39,7 +39,7 @@ export default function CompoundingInvestment({state}:{state: userDataStateType}
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Total Deposits</h3>
-                <h1 className="text-2xl font-semibold text-[#4d6ae9]">{state.compounding?.totalDeposit || "0.00"} {state.currency}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{state.compounding?.totalDeposit || "0.00"} {state.currency}</h1>
               </div>
 
               <img src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
@@ -48,7 +48,7 @@ export default function CompoundingInvestment({state}:{state: userDataStateType}
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Total Withdrawals</h3>
-                <h1 className="text-2xl font-semibold text-[#4d6ae9]">{state.compounding?.totalWithdrawal || "0.00"} {state.currency}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{state.compounding?.totalWithdrawal || "0.00"} {state.currency}</h1>
               </div>
 
               <div className="">
@@ -60,7 +60,7 @@ export default function CompoundingInvestment({state}:{state: userDataStateType}
             <motion.div variants={item}  className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Total Earnings</h3>
-                <h1 className="text-2xl font-semibold text-[#4d6ae9]">{state.compounding?.totalEarning || "0.00"} {state.currency}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{state.compounding?.totalEarning || "0.00"} {state.currency}</h1>
               </div>
 
               <img src={`/${state.currency}.png`} width={50} height={50} alt="money"/>

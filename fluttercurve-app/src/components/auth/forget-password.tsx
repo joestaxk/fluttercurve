@@ -73,8 +73,8 @@ export default function ForgetPassword() {
       <div className='w-[600px] min-h-auto rounded-xl md:p-8 p-4 bg-white'>
         <div className="">
           <div className="w-full text-center">
-            <h1 className='text-[#33406a] text-3xl font-bold mb-1'>Forgotten Password</h1>
-            <p className='md:text-lg text-sm'>Use the form below to request for a password reset mail.</p>
+            <h1 className='text-[#514AB1] text-3xl font-bold mb-1'>Forgotten Password</h1>
+            <p className='md:text-lg text-sm text-[#1f3446d9]'>Use the form below to request for a password reset mail.</p>
           </div>
 
           {
@@ -85,7 +85,7 @@ export default function ForgetPassword() {
               </div>
 
               <div className="w-full mt-5 flex justify-center">
-                <button type="submit" className='bg-[#007bff] p-4 text-white font-bold rounded-md w-full flex justify-center disabled:bg-[#007bffb4] transition-all duration-300'  disabled={loading}>
+                <button type="submit" className='bg-gradient-to-tl from-[#A33E94] to-[#514AB1] p-4 text-white font-bold rounded-md w-full flex justify-center disabled:bg-[#514ab1b3] transition-all duration-300'  disabled={loading}>
                     {
                       loading ? <ButtonSpinner /> : "Reset Password"
                     }
@@ -112,7 +112,7 @@ export default function ForgetPassword() {
           </div>
 
           <div className="w-full mt-5 flex justify-center">
-            <button type="submit" className='bg-[#007bff] p-4 text-white font-bold rounded-md w-full flex justify-center disabled:bg-[#007bffb4] transition-all duration-300'  disabled={loading}>
+            <button type="submit" className='bg-gradient-to-tl from-[#A33E94] to-[#514AB1]  p-4 text-white font-bold rounded-md w-full flex justify-center disabled:bg-[#514ab1b3] transition-all duration-300'  disabled={loading}>
                 {
                   loading ? <ButtonSpinner /> : "Reset Password"
                 }
@@ -126,9 +126,9 @@ export default function ForgetPassword() {
             <div className={style.or}><span className='p-3 font-bold'>OR</span></div>
           </div>
 
-          <div className="flex mt-3 justify-center md:gap-0 gap-1 md:text-lg text-sm">
+          <div className="flex mt-3 justify-center md:gap-0 gap-1 md:text-lg text-[#1f3446d9] text-sm">
             <p>Remembered your password? </p>
-            <Link to={"/login"} className='ml-1 font-bold text-[rgb(12,108,242)]'>Login</Link>
+            <Link to={"/login"} className='ml-1 font-bold text-[#514AB1]'>Login</Link>
           </div>
         </div>
       </div>

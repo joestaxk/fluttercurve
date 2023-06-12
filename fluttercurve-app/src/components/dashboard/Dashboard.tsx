@@ -8,6 +8,7 @@ import helpers from "../../helpers";
 import ConnectWallet from "./connectWallet";
 import { Link } from "react-router-dom";
 import { ProfileContext } from "../../context/profile-context";
+import  useAlert from "../../hooks/alert";
 
 
 function Dashboard({children, state}:{children: any, state: userDataStateType}) {
@@ -27,9 +28,6 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
         }
     }, [nav])
 
-    useEffect(() => {
-        console.log(profileDataContext)
-    }, [profileDataContext])
 
     return (
         <>
@@ -70,7 +68,7 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
                             <div className="relative">
                                 <img
                                     src={profileDataContext as unknown as string || "/avatar-1.png" }
-                                    className="rounded-full w-[50px]  h-[50px] border-[1px] border-gray-700"
+                                    className="rounded-full w-[50px]  h-[50px] border-[1px] border-gray-700 object-cover"
                                     alt={"user"} 
                                     width={50}
                                     height={50}
@@ -110,8 +108,8 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
 
 export function NormalMode() {
     return (
-        <div className="text-[#4d6ae9] flex jus gap-2 rounded-md mt-3 text-xl items-center font-bold w-fit p-4 bg-white">
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36"><path fill="#4d6ae9" d="M30 18a4.06 4.06 0 0 0 4-4V6H24V4.43A2.44 2.44 0 0 0 21.55 2h-7.1A2.44 2.44 0 0 0 12 4.43V6H2v8a4.06 4.06 0 0 0 4.05 4h4v-2.08h2v5.7a1 1 0 1 1-2 0v-1.56H6.06A6.06 6.06 0 0 1 2 18.49v9.45a2 2 0 0 0 2 2h28a2 2 0 0 0 2-2v-9.45a6 6 0 0 1-4.06 1.57H28V18ZM14 4.43a.45.45 0 0 1 .45-.43h7.1a.45.45 0 0 1 .45.43V6h-8Zm12 17.19a1 1 0 1 1-2 0v-1.56H14V18h10v-2.08h2Z" className="clr-i-solid clr-i-solid-path-1"/><path fill="none" d="M0 0h36v36H0z"/></svg>
+        <div className="text-[#514AB1] flex jus gap-2 rounded-md mt-3 text-xl items-center font-bold w-fit p-4 bg-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36"><path fill="#514AB1" d="M30 18a4.06 4.06 0 0 0 4-4V6H24V4.43A2.44 2.44 0 0 0 21.55 2h-7.1A2.44 2.44 0 0 0 12 4.43V6H2v8a4.06 4.06 0 0 0 4.05 4h4v-2.08h2v5.7a1 1 0 1 1-2 0v-1.56H6.06A6.06 6.06 0 0 1 2 18.49v9.45a2 2 0 0 0 2 2h28a2 2 0 0 0 2-2v-9.45a6 6 0 0 1-4.06 1.57H28V18ZM14 4.43a.45.45 0 0 1 .45-.43h7.1a.45.45 0 0 1 .45.43V6h-8Zm12 17.19a1 1 0 1 1-2 0v-1.56H14V18h10v-2.08h2Z" className="clr-i-solid clr-i-solid-path-1"/><path fill="none" d="M0 0h36v36H0z"/></svg>
             <div>Normal Mode</div>
         </div>
     )
@@ -124,6 +122,7 @@ export function DropdownOverlay({ cb }: {cb: () => void}) {
 }
 
 function ProfileMenu({setShowWallet}:any) {
+    const {AlertComponent, showAlert} = useAlert()
     return (
         <motion.div 
          initial={{display: "none", opacity: 0}}
@@ -157,11 +156,12 @@ function ProfileMenu({setShowWallet}:any) {
                     <span>Notification</span> 
                 </div> */}
 
-                <div className="text-[#db3939] flex items-center gap-2 p-2" onClick={helpers.logoutUser}>
+                <div className="text-[#db3939] flex items-center gap-2 p-2" onClick={helpers.logoutUser.bind(null, showAlert)}>
                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="#db3939" d="M10.24 0c3.145 0 6.057 1.395 7.988 3.744a.644.644 0 0 1-.103.92a.68.68 0 0 1-.942-.1a8.961 8.961 0 0 0-6.944-3.256c-4.915 0-8.9 3.892-8.9 8.692c0 4.8 3.985 8.692 8.9 8.692a8.962 8.962 0 0 0 7.016-3.343a.68.68 0 0 1 .94-.113a.644.644 0 0 1 .115.918C16.382 18.564 13.431 20 10.24 20C4.583 20 0 15.523 0 10S4.584 0 10.24 0Zm6.858 7.16l2.706 2.707c.262.261.267.68.012.936l-2.644 2.643a.662.662 0 0 1-.936-.01a.662.662 0 0 1-.011-.937l1.547-1.547H7.462a.662.662 0 0 1-.67-.654c0-.362.3-.655.67-.655h10.269l-1.558-1.558a.662.662 0 0 1-.011-.936a.662.662 0 0 1 .936.011Z"/></svg>
                  <span className="font-semibold">Logout</span> 
                 </div>
             </div>
+            {AlertComponent}
         </motion.div>
     )
 }

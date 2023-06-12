@@ -6,7 +6,8 @@ import { DeposkelentonLoader } from "./depositInvest";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
-export default function MyInvestment(){
+
+export default function MyInvestment({state}:any){
   const [cookies] = useCookies();
   const [data,setData] = useState([]);
 
@@ -75,7 +76,7 @@ export default function MyInvestment(){
                             style={{borderImage: "linear-gradient(100deg,#transparent,#3ddc75,transparent) 1 / 1 / 0 stretch"}}
                             className="w-[380px] p-3 border-[1px] rounded-lg bg-[#e5e5e530] border-[#ccc] min-h-[350px] flex flex-col">
                                 <div className="">
-                                    <div className={`text-4xl ${data.status === "SUCCESSFUL" ? "text-[#56c87f]" : "text-[#437053]"} font-bold`}>{helpers.currencyFormatLong(data.investedAmt, "gbp")}</div>
+                                    <div className={`text-4xl ${data.status === "SUCCESSFUL" ? "text-[#56c87f]" : "text-[#437053]"} font-bold`}>{helpers.currencyFormatLong(data.investedAmt, state.currency)}</div>
                                 </div>
 
                                 <h2 className="text-3xl mt-4 font-semi-bold text-[#2b2b2b] mb-3">{data.plan} Plan</h2>

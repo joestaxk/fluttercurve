@@ -106,10 +106,10 @@ export default function Register() {
       <div className="md:w-[600px] w-full min-h-auto rounded-xl md:p-8 p-4 bg-white">
         <div className="">
           <div className="">
-            <h1 className="text-[#33406a] text-3xl font-bold mb-1">
+            <h1 className="text-[#514AB1] text-3xl font-bold mb-1">
               Get Started
             </h1>
-            <p className="xxl:text-xl md:text-lg text-sm text-[#55658a]">
+            <p className="xxl:text-xl md:text-lg text-sm text-[#1f3446d9]">
               Open account for free and start investing now!
             </p>
           </div>
@@ -329,7 +329,7 @@ export default function Register() {
                 />
                 <label
                   htmlFor="radio"
-                  className={`font-bold text-[#242424cc] transition-all duration-300 ${
+                  className={`font-bold text-[#1f3446d9] transition-all duration-300 ${
                     validation.agree.status
                       ? "border-b-[2px] border-dotted border-[red]"
                       : ""
@@ -342,7 +342,7 @@ export default function Register() {
             <div className="w-full mt-4 flex justify-center">
               <button
                 type="submit"
-                className="bg-[#007bff] h-[50px] disabled:opacity-50 w-full  w-full flex justify-center items-center shadow-md text-white font-bold rounded-md"
+                className="bg-gradient-to-tl from-[#A33E94] to-[#514AB1] h-[50px] disabled:opacity-50  w-full flex justify-center items-center shadow-md text-white font-bold rounded-md"
                 value="create account"
                 disabled={loading}
               >
@@ -357,11 +357,11 @@ export default function Register() {
             </div>
           </div>
 
-          <div className="flex md:gap-0 gap-1 mt-3 justify-center md:text-lg text-sm">
+          <div className="flex md:gap-0 gap-1 mt-3 text-[#1f3446d9] justify-center md:text-lg text-sm">
             <p>Already have an account?</p>
             <Link
               to={"/login"}
-              className="ml-1 font-bold text-[rgb(12,108,242)]"
+              className="ml-1 font-bold text-[#514AB1]"
             >
               Login
             </Link>
@@ -373,7 +373,7 @@ export default function Register() {
   );
 }
 
-export function Select({ className }: { className: string }) {
+export function Select({ className, selectedCountry}: { className: string, selectedCountry?: string }) {
   return (
     <select
       className={`${className} p-4 bg-transparent`}
@@ -381,7 +381,7 @@ export function Select({ className }: { className: string }) {
       autoComplete="yes"
       required
     >
-      <option value="">Select a country…</option>
+      <option value="">{selectedCountry || "Selected a country..."}</option>
       <option value="AF">Afghanistan (AF)</option>
       <option value="AL">Albania (AL)</option>
       <option value="DZ">Algeria (DZ)</option>

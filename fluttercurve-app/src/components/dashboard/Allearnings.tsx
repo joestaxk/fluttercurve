@@ -25,7 +25,7 @@ export default function AllEarning(){
     }, [])
 
     return (
-        <div className="pb-6">
+        <div className="pb-6 p-3">
             <h1 className="text-3xl mb-8 border-b-[#bdbdbdc0] border-b-[1px] text-[#333]">All Earnings</h1>
 
             <div className="flex flex-wrap gap-3">
