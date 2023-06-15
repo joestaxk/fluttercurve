@@ -6,6 +6,7 @@ import { useCookies } from "react-cookie";
 import { Outlet } from "react-router-dom";
 import { ProfileContext } from "../context/profile-context";
 import { userDataStateType } from "../rState/initialStates";
+import auth from "../lib/auth";
 
 const userData:userDataStateType = helpers.getLocalItem("user_data") as any
 const profile_data:string|void|undefined = helpers.getLocalItemStr("profile_data")
@@ -36,7 +37,12 @@ export default function DashboardLayout() {
       }
     //   setProfileData(profile_data)
     // }
+
+
     useEffect(() => {
+      auth.getMe(helpers.getCookie('xat')).then(({data}:any) => {
+        helpers.storeLocalItem('user_data', data)
+      })
       updateProfileContext(null)
     }, [])
     return (

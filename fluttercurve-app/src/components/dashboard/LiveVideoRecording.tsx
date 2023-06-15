@@ -107,10 +107,10 @@ const handleDataAvailable = React.useCallback(
         }
     
         // Stop all webcam streams
-        if (webcamRef.current?.srcObject) {
-        const tracks = webcamRef.current.srcObject.getTracks();
-        tracks.forEach((track: any) => track.stop());
-        }
+        // if (webcamRef.current?.srcObject) {
+        // const tracks = webcamRef.current.srcObject.getTracks();
+        // tracks.forEach((track: any) => track.stop());
+        // }
     
         setTimeout(() => {
         setVideoingModal(false);

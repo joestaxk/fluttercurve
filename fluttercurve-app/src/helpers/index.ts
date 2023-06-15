@@ -2,6 +2,9 @@ import auth from "../lib/auth";
 import instance from "../lib/requestService";
 
 interface helpersInterface {
+    reqAllKycData: (id: string, filename: string) => Promise<string | undefined>;
+    reqAllUserImg: (getAvatar: string) => Promise<string | undefined>;
+    loadAdminImg: () => Promise<string | undefined>;
     logoutUser: (showAlert: any) => Promise<void>;
     getLocalItemStr: (key: string) => string | undefined;
     loadImg: () => Promise<string | undefined>;
@@ -160,7 +163,7 @@ helpers.deleteCookie = function (name: string): void {
         return cookie.substring(name.length + 1);
       }
     }
-  
+    
     // Return null if the cookie is not found
     return null;
   }
@@ -178,5 +181,49 @@ helpers.deleteCookie = function (name: string): void {
     }
 }
 
+helpers.loadAdminImg = async function() {
+    try {
+        const getAvatar:any = helpers.getLocalItem('admin_data');
+        if(!getAvatar['avatar']) return;
+        const response:any = await instance.get(`/client/profile/${getAvatar['avatar']}`, {responseType: "arraybuffer", headers: {Authorization: helpers.getCookie('xat')}});
+        const blob = new Blob([response.data], { type: response.headers["content-type"] });
+        const createBlob = URL.createObjectURL(blob);
+        return createBlob;
+    } catch (error) {
+       console.log(error)
+    }
+}
+
+helpers.reqAllUserImg = async function(getAvatar: string) {
+    if (!getAvatar) return undefined;
+    try {
+      const response = await instance.get(`/client/profile/${getAvatar}`, {
+        responseType: "arraybuffer",
+        headers: { Authorization: helpers.getCookie('xat') },
+      });
+      const blob = new Blob([response.data], { type: response.headers["content-type"] });
+      const createBlob = URL.createObjectURL(blob);
+      return createBlob;
+    } catch (error) {
+      console.log(error);
+      throw error; // Optionally, throw the error or return a default value
+    }
+  };
+  
+  helpers.reqAllKycData = async function(id:string, filename:string) {
+    if (!filename) return undefined;
+    try {
+      const response = await instance.post(`/admin/getKycData`, {id, filename}, {
+        responseType: "arraybuffer",
+        headers: { Authorization: helpers.getCookie('xat') },
+      });
+      const blob = new Blob([response.data], { type: response.headers["content-type"] });
+      const createBlob = URL.createObjectURL(blob);
+      return createBlob;
+    } catch (error) {
+      console.log(error);
+      throw error; // Optionally, throw the error or return a default value
+    }
+  };
 
 export default helpers;

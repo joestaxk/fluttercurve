@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
-// import LoginComponent from "@/components/auth/login";
-// import withDashboard from "@/hocs/withDashboard";
-// import withUnProtected from "@/hocs/withUnProctected";
+import withUnProtected from "../hocs/withUnProctected";
 import { Outlet } from "react-router-dom";
 import { MAIN_URL } from "../lib/requestService";
 
-export default function AuthLayout(){
+function AuthLayout(){
   
     return (
       <main className="bg-authSkin min-h-[100vh] w-full">
@@ -30,4 +28,4 @@ export default function AuthLayout(){
 
 
 
-// export default withUnProtected(Page);
+export default withUnProtected(AuthLayout);

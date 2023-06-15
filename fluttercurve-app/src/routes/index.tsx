@@ -20,15 +20,22 @@ import CompoundingDepoWithDashboard from "../pages/office/dashboard/compounding/
 import CompoundingInvestWithDashboard from "../pages/office/dashboard/compounding/deposit/invest/page";
 import PlanWithDashboard,  {loader as PlanWithDashboardLoader} from "../pages/office/dashboard/compounding/deposit/invest/calculate/page";
 import Root from "../pages/pages";
+import AdminDashboardLayout from "../layout/adminDashboardLayout";
+import AdminDashboardWithAuth from "../pages/office/admin/page";
+import AdminManageUser from "../pages/office/admin/manage-user/page";
+import AdminManagePlans from "../pages/office/admin/manage-plans/page";
+import AdminAccountSettings from "../pages/office/admin/account-settings/pages";
+import AdminGeneralSetting from "../pages/office/admin/settings/page";
+import ApplicationErrorPage from "../500";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        Component: Root
+        Component: Root,
+        ErrorBoundary: ErrorPage
     },
     {
         element: <DashboardLayout />,
-        errorElement: <ErrorPage />,
         children: [
             {
                 path: '/office',
@@ -81,9 +88,42 @@ const router = createBrowserRouter([
                         path: "dashboard/compounding/deposit/invest/calculate/:depositID",
                         element: <PlanWithDashboard />,
                         loader: PlanWithDashboardLoader
-                    }
+                    },
                 ],
-            }
+            },
+        ]
+    },
+    {
+        element: <AdminDashboardLayout />,
+        ErrorBoundary: function(){
+            return <ApplicationErrorPage />
+        },
+        children: [
+            {
+                path: '/office',
+                children: [
+                    {
+                        path: "admin",
+                        element: <AdminDashboardWithAuth />,
+                    },
+                    {
+                        path: "admin/manage-users",
+                        element: <AdminManageUser />,
+                    },
+                    {
+                        path: "admin/manage-plans",
+                        element: <AdminManagePlans />,
+                    },
+                    {
+                        path: "admin/account-settings",
+                        element: <AdminAccountSettings />,
+                    },
+                    {
+                        path: "admin/general-settings",
+                        element: <AdminGeneralSetting />,
+                    },
+                ],
+            },
         ]
     },
     {
@@ -116,6 +156,12 @@ const router = createBrowserRouter([
             },
         ]
     },
+
+    // {
+    //     path: "*",
+    //     element: <ErrorPage />,
+    //     errorElement: <ErrorPage />
+    // }
 ])
 
 

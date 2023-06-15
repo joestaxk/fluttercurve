@@ -12,7 +12,7 @@ export default function withDashboard(
     
     useEffect(() => {
       if(!appContextData?.userData || !appContextData?.userSession) {
-       helpers.forceLogoutUser()
+        helpers.forceLogoutUser()
       }
     }, [appContextData]);
     return (

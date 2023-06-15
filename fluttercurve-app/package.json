@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.15",
     "axios": "^1.4.0",
     "face-api.js": "^0.22.2",
     "framer-motion": "^10.12.13",
+    "moment": "^2.29.4",
     "next": "13.4.2",
     "react": "18.2.0",
     "react-cookie": "^4.1.1",

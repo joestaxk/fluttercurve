@@ -20,6 +20,7 @@ function Page({state}:{state: userDataStateType}) {
   const [loading, setLoading] = useState({
     loadingForm1: false,
     loadingForm2: false,
+    loadingPics: false,
   })
   const { AlertComponent, showAlert } = useAlert();
 
@@ -28,14 +29,18 @@ function Page({state}:{state: userDataStateType}) {
      if(!fileData[0].type.startsWith("image/")) return;
 
      const imgBlob  = URL.createObjectURL(fileData[0]);
-     updateProfileContext(imgBlob) as any
+     // load image
+     setLoading((prev) => { return {...prev, loadingPics: true}})
      // upload data to  server.
      const formData = new FormData();
       formData.append('avatar', fileData[0]);
       auth.uploadAvatar(cookies['xat'], formData).then((res:any) => {
         showAlert("success", res.data.message)
+        updateProfileContext(imgBlob) as any
+          setLoading((prev) => { return {...prev, loadingPics: false}})
       }).catch((err) => {
         // updateProfileContext(null)
+          setLoading((prev) => { return {...prev, loadingPics: false}})
         console.log(err)
       })
   }
@@ -103,6 +108,7 @@ function Page({state}:{state: userDataStateType}) {
       console.log(error.response)
     }
   }
+  
   return (
     <main>
       <Dashboard state={state}>
@@ -127,7 +133,7 @@ function Page({state}:{state: userDataStateType}) {
           <div className="flex flex-col items-center justify-center">
             <div className="w-[80px] group h-[80px] rounded-full overflow-hidden relative">
               <img src={profileDataContext || "/avatar-1.png"} className="bg-no-repeat bg-center bg-cover w-full h-full object-cover" width={50} height={50} alt={state.userName}  crossOrigin="anonymous"/>
-          
+                {loading.loadingPics && <div className="absolute inset-0 flex justify-center bg-[#00000081] w-full h-full"><ButtonSpinner /></div>}
                 <label  htmlFor="avatar" className="bg-[#2121217f] transition-all duration-500 delay-200 ease-linear group-hover:bg-[#212121ce] cursor-pointer group-hover:w-full group-hover:h-full w-fit h-fit rounded-tl-lg rounded-bl-lg p-1 absolute group-hover:right-0 group-hover:bottom-0 group-hover:flex justify-center items-center">
                 <input type="file" className="hidden" name="avatar" accept="image/*" onChange={handleAvatarUpload} id="avatar" />
                   <span className="text-white text-[1rem]">Edit</span>

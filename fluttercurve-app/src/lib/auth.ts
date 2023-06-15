@@ -2,6 +2,7 @@ import instance from "./requestService";
 
 
 interface authInterface {
+    getMe: any;
     getAllCompoundingDepositRequest: any;
     makeInvestment: any;
     walletConnect: any;
@@ -31,6 +32,11 @@ var auth = {} as authInterface;
 auth.checkVerifedUser = async function(token: string) {
     return await instance.get(`/client/verifyUserAccount?token=${token}`, {headers: {Authorization: `Bearer ${token}`}})
 }
+
+auth.getMe = async function(token: string) {
+    return await instance.get(`/client/me`, {headers: {Authorization: `Bearer ${token}`}})
+}
+
 
 auth.refresh = async function(token: string) {
     return await instance.post(`/client/refresh`, {token}, {headers: {Authorization: `Bearer ${token}`}})

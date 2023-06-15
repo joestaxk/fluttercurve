@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import style from "./auth.module.css";
 import ButtonSpinner from "../utils/buttonSpinner";
 import { useCookies } from "react-cookie";
@@ -251,7 +251,7 @@ export default function Register() {
                         stroke="#212121cc"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        stroke-width="2"
+                        strokeWidth="2"
                       >
                         <path d="M6.873 17.129c-1.845-1.31-3.305-3.014-4.13-4.09a1.693 1.693 0 0 1 0-2.077C4.236 9.013 7.818 5 12 5c1.876 0 3.63.807 5.13 1.874" />
                         <path d="M14.13 9.887a3 3 0 1 0-4.243 4.242M4 20L20 4M10 18.704A7.124 7.124 0 0 0 12 19c4.182 0 7.764-4.013 9.257-5.962a1.694 1.694 0 0 0-.001-2.078A22.939 22.939 0 0 0 19.57 9" />
@@ -308,7 +308,7 @@ export default function Register() {
                         stroke="#212121cc"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        stroke-width="2"
+                        strokeWidth="2"
                       >
                         <path d="M6.873 17.129c-1.845-1.31-3.305-3.014-4.13-4.09a1.693 1.693 0 0 1 0-2.077C4.236 9.013 7.818 5 12 5c1.876 0 3.63.807 5.13 1.874" />
                         <path d="M14.13 9.887a3 3 0 1 0-4.243 4.242M4 20L20 4M10 18.704A7.124 7.124 0 0 0 12 19c4.182 0 7.764-4.013 9.257-5.962a1.694 1.694 0 0 0-.001-2.078A22.939 22.939 0 0 0 19.57 9" />
@@ -374,14 +374,22 @@ export default function Register() {
 }
 
 export function Select({ className, selectedCountry}: { className: string, selectedCountry?: string }) {
+  const refSelect:{current: any} = useRef(null);
+  useEffect(() => {
+    if(typeof refSelect.current === undefined) return;
+
+    const selectOptions = refSelect.current.querySelectorAll("option");
+    selectOptions.forEach((el:HTMLOptionElement) => el.value === selectedCountry ? el.setAttribute("selected", "true") : "")
+  }, [refSelect.current])
   return (
     <select
+      ref={refSelect}
       className={`${className} p-4 bg-transparent`}
       name="country"
       autoComplete="yes"
       required
     >
-      <option value="">{selectedCountry || "Selected a country..."}</option>
+      <option value="">{"Selected a country..."}</option>
       <option value="AF">Afghanistan (AF)</option>
       <option value="AL">Albania (AL)</option>
       <option value="DZ">Algeria (DZ)</option>
