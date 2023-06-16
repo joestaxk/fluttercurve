@@ -13,10 +13,10 @@ export default function CheckKyc() {
     const [blobVid, setBlobVid] = useState<string | undefined>(undefined);
     const [loadVid, setVidLoader] = useState<boolean>(false);
     const {AlertComponent, showAlert} = useAlert()
-    // const [loading, setLoading] = useState({
-    //     approved: false,
-    //     declined: false
-    // })
+    const [loading, setLoading] = useState({
+        approved: false,
+        declined: false
+    })
 
     const context = useContext(CreateUserIDContext)
     useEffect(() => {
@@ -46,10 +46,13 @@ export default function CheckKyc() {
     }
 
     async function authorizeKyc(type: "APPROVED"|"DECLINED") {
-        
+        if(type === "APPROVED") {
+            setLoading({...loading, approved: true})
+        }
         try {
             const data_ = await adminAuth.authorizeKyc(kyc.clientID, type)
             showAlert("success", data_.data)
+            setTimeout(() => location.reload())
         } catch (error:any) {
             // showAlert("error", error.response.data)
             console.log(error)
@@ -67,8 +70,8 @@ export default function CheckKyc() {
                         <div className="bg-gray-100 p-3 font-medium flex items-center justify-between">
                             <span>User's Kyc <span className={`${kyc.isKyc === "APPROVED" ? "text-emerald-600" : kyc.isKyc === "DECLINED" ? "text-red-600" : "text-slate-600"}`}>({kyc.isKyc})</span></span>
                             <div className="flex gap-2 items-center">
-                                <button className="p-2 rounded-xl text-white disabled:opacity-40 bg-green-600" onClick={authorizeKyc.bind(null, "APPROVED")} disabled={kyc.isKyc === "APPROVED"}>Accept</button>
-                                <button className="p-2 rounded-xl text-white disabled:opacity-40 bg-red-600" onClick={authorizeKyc.bind(null, "DECLINED")} disabled={kyc.isKyc === "DECLINED"}>Decline</button>
+                                <button className="p-2 rounded-xl text-white disabled:opacity-40 bg-green-600" onClick={!loading.approved ? authorizeKyc.bind(null, "APPROVED") : () => {}} disabled={kyc.isKyc === "APPROVED"}>Accept</button>
+                                <button className="p-2 rounded-xl text-white disabled:opacity-40 bg-red-600" onClick={!loading.declined ? authorizeKyc.bind(null, "DECLINED") : () => {}} disabled={kyc.isKyc === "DECLINED"}>Decline</button>
                             </div>
                         </div>
                         <div className="flex flex-wrap items-center gap-3 p-4 border-b-[1px] border-gray-200 mb-2">
@@ -128,7 +131,7 @@ export default function CheckKyc() {
                                         <button className="absolute transition-all duration-300 bottom-0 w-full p-2 rounded-b-xl text-white bg-gray-500 opacity-0 group-hover:opacity-100">Back Upload</button>
                                     </div>
                                     <div className={`flex justify-center items-center ${!blobVid && "animate-pulse"} bg-gray-200 border-[1px] border-gray-200 rounded-xl w-[400px] min-h-[500px] overflow-hidden`}>
-                                        {blobVid && <video src={blobVid} className="w-full h-full object-cover"></video>}
+                                        {blobVid && <video src={blobVid} className="w-full h-full object-cover" autoPlay={true}></video>}
                                         {
                                             loadVid ?
                                             <Buttonloader /> :

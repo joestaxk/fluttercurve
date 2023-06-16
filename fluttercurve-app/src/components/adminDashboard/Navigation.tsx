@@ -48,14 +48,6 @@ export default function Navigation({setNav}: {setNav: (arg0:boolean) => void}) {
                   <div className="">Account Settings</div>
               </div>
             </ActiveLink>
-            {/* <ActiveLink href="/office/admin/verifications">
-              <div className="flex gap-2 xxl:text-xl text-lg hover:font-medium items-center ">
-                  <div className="">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="#514AB1" d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm10 0h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zM13 4v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1z"/></svg>
-                  </div>
-                  <div className="">Verifications</div>
-              </div>
-            </ActiveLink> */}
             {/* <ActiveLink href="/office/admin/send-message">
               <div className="flex gap-2 xxl:text-xl text-lg hover:font-medium items-center ">
                   <div className="">
@@ -64,14 +56,14 @@ export default function Navigation({setNav}: {setNav: (arg0:boolean) => void}) {
                   <div className="">Send Message</div>
               </div>
             </ActiveLink> */}
-            {/* <ActiveLink href="/office/admin/general-settings">
+            <ActiveLink href="/office/admin/general-settings">
               <div className="flex gap-2 xxl:text-xl text-lg hover:font-medium items-center ">
                   <div className="">
                     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="#514AB1" d="m17 22l-.3-1.5q-.3-.125-.563-.263T15.6 19.9l-1.45.45l-1-1.7l1.15-1q-.05-.3-.05-.65t.05-.65l-1.15-1l1-1.7l1.45.45q.275-.2.538-.337t.562-.263L17 12h2l.3 1.5q.3.125.563.263t.537.337l1.45-.45l1 1.7l-1.15 1q.05.3.05.65t-.05.65l1.15 1l-1 1.7l-1.45-.45q-.275.2-.537.338t-.563.262L19 22h-2Zm1-3q.825 0 1.413-.588T20 17q0-.825-.588-1.413T18 15q-.825 0-1.413.588T16 17q0 .825.588 1.413T18 19ZM2 20V4h8l2 2h10v5.25q-.875-.625-1.9-.938T18 10q-2.925 0-4.963 2.038T11 17q0 .8.163 1.55t.512 1.45H2Z"/></svg>
                   </div>
                   <div className="">General Settings</div>
               </div>
-            </ActiveLink> */}
+            </ActiveLink>
           </div>
        </motion.aside>
     </>

@@ -23,10 +23,20 @@ export default function Register() {
     cpass: false,
     pass: false,
   });
+  const [currency, setcurrency] = useState([]);
+
+  useEffect(() => {
+      instance.get("/service/getCurrencies").then((res) => {
+         setcurrency(res.data)
+      }).catch((err:any) => {
+          showAlert('error', err.response.data)
+      })
+  }, [])
 
   async function handleRegister(ev: any) {
     ev.preventDefault();
     const targ = ev.target;
+
     const data = {
       fullName: targ.fullname.value,
       userName: targ.username.value,
@@ -178,8 +188,13 @@ export default function Register() {
                   name="currency"
                   required
                 >
-                  <option value="GBP">£</option>
-                  <option value="USD">$</option>
+                  {
+                    currency.length ? 
+                     currency.map(({id, currency}:any) => (
+                        <option key={id} value={currency}>{currency}</option>
+                     )) : <option value=''>Currency Loading...</option>
+                  }
+
                 </select>
               </div>
 
@@ -384,7 +399,7 @@ export function Select({ className, selectedCountry}: { className: string, selec
   return (
     <select
       ref={refSelect}
-      className={`${className} p-4 bg-transparent`}
+      className={`${className} p-4 bg-transparent w-full`}
       name="country"
       autoComplete="yes"
       required
