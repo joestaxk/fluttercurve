@@ -3,12 +3,14 @@ import helpers from "../../../helpers";
 import { motion } from "framer-motion";
 import useAlert from "../../../hooks/alert";
 import instance from "../../../lib/requestService";
+import ButtonSpinner from "../../utils/buttonSpinner";
 
 
 export default function CurrencyData() {
     const {AlertComponent, showAlert} = useAlert();
     const [data, setData] = useState([]);
     const [drop, setToggleDrop] = useState(false);
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         instance.get("/service/getCurrencies").then((res) => {
@@ -33,11 +35,13 @@ export default function CurrencyData() {
         } = ev.target;
 
         if(!currency.value || currency.value.length > 4) return showAlert('error', "Invalid currecy code") 
-
+        setLoading(true)
         instance.post('/service/addCurrency', {currency: currency.value.toUpperCase()}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}}).then((res:any) => {
+            setLoading(false)
             showAlert('success', res.data)
             currency.value = ""
         }).catch((err) => {
+            setLoading(false)
             showAlert('error', err.response.data)
             console.log(err)
         })
@@ -47,20 +51,26 @@ export default function CurrencyData() {
         data.splice(id-1, 1)
         setData([...data])
         setToggleDrop(false)
+        setLoading(true)
         instance.post('/service/deleteCurrency', {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}}).then((res:any) => {
+            setLoading(false)
             showAlert('success', res.data)
         }).catch((err) => {
+            setLoading(false)
             showAlert('error', err.response.data)
             console.log(err)
         })
     }
 
     function switchDefault(id: number){
+        setLoading(true)
         setToggleDrop(false)
         instance.post('/service/switchToDefault', {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}}).then((res:any) => {
+            setLoading(false)
            setData(res.data.currencies)
            showAlert('success', res.data.message)
         }).catch((err) => {
+            setLoading(false)
             showAlert('error', err.response.data)
             console.log(err)
         })
@@ -158,7 +168,10 @@ export default function CurrencyData() {
                         }
                     </motion.div>}
                 </div>
-                <button className="bg-orange-500 hover:bg-orange-600 transition duration-100 p-3 text-gray-50 rounded-lg">Add Currency</button>
+                <button className="bg-orange-500 hover:bg-orange-600 transition duration-100 p-3 flex gap-1 text-gray-50 rounded-lg disabled:opacity-60" disabled={loading}>
+                   {loading && <ButtonSpinner />}
+                    Add Currency
+                </button>
             </form>
           </div>
 
