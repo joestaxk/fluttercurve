@@ -10,6 +10,7 @@ export const MAIN_APP_URL = "https://app.fluttercurve.com";
 
 // prod
 export const BASE_URI = "https://api.fluttercurve.com/v1";
+export const PUBLIC_PATH = "https://api.fluttercurve.com"
 
 // dev
 // export const BASE_URI = "http://localhost:3000/v1";
