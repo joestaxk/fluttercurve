@@ -44,7 +44,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
     fetchData().then((res:any) => setDepositPlans(res))
   }, [])
 
-  let x = (id:number) => {
+  const x = (id:number) => {
     return{
       borderImage: `${check === id.toString() ?
         "linear-gradient(20deg,#2626b0df,#2626b0a0,transparent) 1 / 1 / 0 stretch" :
@@ -251,8 +251,7 @@ export function DeposkelentonLoader() {
   return (
     <div className="flex flex-wrap w-full gap-4">
       {
-        //@ts-ignore
-        arr.map((el, i:number) => (
+        arr.map((i:number) => (
           <div key={i.toString()} className="w-[380px] amimation-ping border-[1px] rounded-lg bg-[#cccccc30] border-[#ccc] h-[350px]">
           </div>
         ))
