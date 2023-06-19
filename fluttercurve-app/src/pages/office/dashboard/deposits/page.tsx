@@ -69,7 +69,11 @@ function Page({state}:{state: userDataStateType}) {
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Balance</h3>
-                <h1 className="text-2xl font-semibold text-[#514AB1]">{!state.userAccount ? "0.00" : !state.userAccount.totalBalance(state.userAccount.totalDeposit as string, state.userAccount.totalDeposit as string)} {state.currency}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{
+                  !state.userAccount ? 
+                  helpers.currencyFormat(parseFloat("0"), state.currency) : 
+                  helpers.currencyFormat((parseInt(state.userAccount.totalDeposit) + parseInt(state.userAccount.totalEarning) - parseInt(state.userAccount.totalWithdrawal)), state.currency)
+                }</h1>
               </div>
 
               <img src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
@@ -79,7 +83,7 @@ function Page({state}:{state: userDataStateType}) {
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Total Deposits</h3>
-                <h1 className="text-2xl font-semibold text-[#514AB1]">{helpers.currencyFormat(state.userAccount?.totalDeposit as any||0, state.currency)}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{helpers.currencyFormat((state.userAccount?.totalDeposit || "0.00"), state.currency)}</h1>
               </div>
 
               <img src={`/${state.currency}.png`} width={50} height={50} alt="money"/>

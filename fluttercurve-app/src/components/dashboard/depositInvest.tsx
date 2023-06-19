@@ -226,7 +226,9 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
                 <div className={`border-[1px] ${validate.payMethod ? "border-[#d20b0b]" : "border-[#ccc]"} md:w-1/2 w-full  rounded-lg overflow-hidden`}>
                   <select name="paymentMethod"  className="p-4 w-full h-full bg-transparent border-none">
                       <option value="" selected>Select Payment Source</option>
-                      <option value="account">Account  ({helpers.currencyFormatLong(parseInt(state.userAccount?.totalBalance as any || 0), state.currency)})</option>
+                      <option value="account">Account  ({
+                         helpers.currencyFormat((parseInt(state.userAccount.totalDeposit) + parseInt(state.userAccount.totalEarning) - parseInt(state.userAccount.totalWithdrawal)), state.currency)
+                      })</option>
                       <option value="e-currency">E-currency</option>
                   </select>
                 </div>

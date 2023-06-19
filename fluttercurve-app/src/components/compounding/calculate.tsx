@@ -251,8 +251,8 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
                                 multiIntrestCalc.length ? multiIntrestCalc.map((data, i) => (
                                     <tr key={i.toString()}>
                                         <td className="text-left py-4 pl-2">{data?.period}</td>
-                                        <td className="text-left py-4 pl-2">{helpers.currencyFormatLong(data?.FIV as any, state.currency)}</td>
                                         <td className="text-left py-4 pl-2">{helpers.currencyFormatLong(data?.TIE as any, state.currency)}</td>
+                                        <td className="text-left py-4 pl-2">{helpers.currencyFormatLong(data?.FIV as any, state.currency)}</td>
                                     </tr>
                                 )):<tr></tr>
                             }

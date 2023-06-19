@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 import auth from "../../lib/auth";
+import { userDataStateType } from "../../rState/initialStates";
 
 
-export default function AllEarning(){
+export default function AllEarning({state}: {state: userDataStateType}){
     const [cookies] = useCookies();
     const [data,setData] = useState([]);
   
@@ -41,11 +42,11 @@ export default function AllEarning(){
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><mask id="ipSFiveStarBadge0"><path fill="#fff" stroke="#fff" strokeLinecap="round" strokeLinejoin="round"  strokeWidth="4" d="M23.103 20.817a1 1 0 0 1 1.794 0l2.985 6.048a1 1 0 0 0 .753.548l6.675.97a1 1 0 0 1 .554 1.705l-4.83 4.708a1 1 0 0 0-.288.885l1.14 6.648a1 1 0 0 1-1.45 1.054l-5.97-3.138a1 1 0 0 0-.931 0l-5.97 3.138a1 1 0 0 1-1.452-1.054l1.14-6.648a1 1 0 0 0-.287-.885l-4.83-4.708a1 1 0 0 1 .554-1.706l6.675-.97a1 1 0 0 0 .753-.547l2.985-6.048ZM36 4H12v10l12 5l12-5V4Z"/></mask><path fill="gold" d="M0 0h48v48H0z" mask="url(#ipSFiveStarBadge0)"/></svg>
                                 <span>Investment Completed.</span>
                             </div>
-                            <div className="text-4xl text-[#3ddc75] font-bold">{helpers.currencyFormatLong(data.progressAmt, "gbp")}</div>
+                            <div className="text-4xl text-[#3ddc75] font-bold">{helpers.currencyFormatLong(data.progressAmt, state.currency)}</div>
                         </div> : 
                         <div className="">
                             <div className="text-md mb-1 text-[#212121cc]">Earning So far.</div>
-                            <div className="text-4xl text-[#3333bddf] font-bold">{helpers.currencyFormatLong(50000, "gbp")}</div>
+                            <div className="text-4xl text-[#3333bddf] font-bold">{helpers.currencyFormatLong(data.progressAmt, state.currency)}</div>
                         </div>
                         }
     
@@ -59,7 +60,7 @@ export default function AllEarning(){
     
                         <div className="flex justify-between mb-3">
                             <div className="">Invested Amount: </div>
-                            <div className="">{helpers.currencyFormatLong(data.investedAmt, "gbp")}</div>
+                            <div className="">{helpers.currencyFormatLong(data.investedAmt, state.currency)}</div>
                         </div>
     
                         <div className="flex justify-between">

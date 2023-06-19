@@ -1,6 +1,5 @@
 
 // THIS WILL CALCULATE FOR MONTH AND YEAR.
-
 interface calculateCompoundingPlanInterface {
     compoundingData: (initialAmt: number, nominalInterestRate: number, compoundingPeriods: number) => void;
 }

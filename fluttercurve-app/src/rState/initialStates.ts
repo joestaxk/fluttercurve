@@ -11,14 +11,13 @@ export type userDataStateType = {
     referral:"",     
     avatar :"",
     userAccount: {
-        totalBalance: (tDepo:string, tWith:string) => number,
-        totalDeposit: string|null
-        totalWithdrawal: string|null
+        totalDeposit: any
+        totalWithdrawal: any,
+        totalEarning: any,
     },
-    compounding: {
-        totalBalance: (tDepo:string, tWith:string) => number,
-        totalDeposit: string|null
-        totalWithdrawal: string|null,
-        totalEarning: string|null,
+    userCompounding: {
+        totalDeposit: any
+        totalWithdrawal: any,
+        totalEarning: any,
     }
 }

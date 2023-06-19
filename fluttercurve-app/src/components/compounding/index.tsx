@@ -85,7 +85,11 @@ export default function Compounding({state}:{state: userDataStateType}) {
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Compounding Balance</h3>
-                <h1 className="text-2xl font-semibold text-[#514AB1]">{!state.compounding ? "0.00" : !state.compounding.totalBalance(state.compounding.totalDeposit as string, state.compounding.totalDeposit as string)} {state.currency}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{
+                  !state.userCompounding ? 
+                  helpers.currencyFormatLong(parseFloat("0"), state.currency) : 
+                  helpers.currencyFormatLong((parseInt(state.userCompounding.totalDeposit) + parseInt(state.userCompounding.totalEarning) - parseInt(state.userCompounding.totalWithdrawal)), state.currency)
+                }</h1>
               </div>
 
               <img src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
@@ -94,7 +98,7 @@ export default function Compounding({state}:{state: userDataStateType}) {
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Total Deposits</h3>
-                <h1 className="text-2xl font-semibold text-[#514AB1]">{state.compounding?.totalDeposit || "0.00"} {state.currency}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{helpers.currencyFormatLong((state.userCompounding?.totalDeposit || "0.00"), state.currency)}</h1>
               </div>
 
               <img src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
@@ -103,7 +107,11 @@ export default function Compounding({state}:{state: userDataStateType}) {
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Total Withdrawals</h3>
-                <h1 className="text-2xl font-semibold text-[#514AB1]">{state.compounding?.totalWithdrawal || "0.00"} {state.currency}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{
+                  !state.userCompounding ? 
+                  helpers.currencyFormat(parseFloat("0"), state.currency) : 
+                  helpers.currencyFormat(((state.userCompounding?.totalWithdrawal)), state.currency)
+                }</h1>
               </div>
 
               <div className="">
@@ -115,7 +123,11 @@ export default function Compounding({state}:{state: userDataStateType}) {
             <motion.div variants={item}  className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Total Earnings</h3>
-                <h1 className="text-2xl font-semibold text-[#514AB1]">{state.compounding?.totalEarning || "0.00"} {state.currency}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{
+                  !state.userCompounding ? 
+                  helpers.currencyFormat(parseFloat("0"), state.currency) : 
+                  helpers.currencyFormatLong(((state.userCompounding?.totalEarning)), state.currency)
+                }</h1>
               </div>
 
               <img src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
@@ -139,7 +151,7 @@ export default function Compounding({state}:{state: userDataStateType}) {
                               style={{borderImage: "linear-gradient(100deg,#transparent,#3ddc75,transparent) 1 / 1 / 0 stretch"}}
                               className="w-[380px] p-3 border-[1px] rounded-lg bg-[#e5e5e530] border-[#ccc] min-h-[350px] flex flex-col">
                                   <div className="">
-                                      <div className={`text-4xl ${data.status === "SUCCESSFUL" ? "text-[#56c87f]" : "text-[#437053]"} font-bold`}>{helpers.currencyFormatLong(data.initialBalance, state.currency)}</div>
+                                      <div className={`text-4xl ${data.status === "SUCCESSFUL" ? "text-[#56c87f]" : "text-[#437053]"} font-bold`}>{helpers.currencyFormatLong(data.investedAmt, state.currency)}</div>
                                   </div>
 
                                   <h2 className="text-3xl mt-4 font-semi-bold text-[#2b2b2b] mb-3">{data.plan} Plan</h2>
@@ -167,7 +179,7 @@ export default function Compounding({state}:{state: userDataStateType}) {
 
                                   { data.status == "SUCCESSFUL" &&  <div className="flex justify-between flex-grow">
                                       <div className="">Duration: </div>
-                                      <div className="">7days</div>
+                                      <div className="">{data.duration}days</div>
                                   </div>}
 
 
@@ -178,7 +190,7 @@ export default function Compounding({state}:{state: userDataStateType}) {
                                           data.status === "SUCCESSFUL" ?
                                           <>
                                               <button className="px-3 py-2 rounded-xl w-full bg-[#56c87f]">{parseInt(data.remainingDays) < parseInt(data.duration) ?  "In progress" : "Completed"}</button>
-                                              <Link to={"/office/dashboard/earnings"} className="px-3 py-2 rounded-xl w-full bg-[#5680c8] text-center">View Earnings</Link>
+                                              <Link to={"/office/dashboard/compounding/deposit"} className="px-3 py-2 rounded-xl w-full bg-[#5680c8] text-center">View Earnings</Link>
                                           </> : <></>
                                       }
                                   </div>

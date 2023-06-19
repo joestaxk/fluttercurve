@@ -4,6 +4,7 @@ import Dashboard from "../../../../components/dashboard/Dashboard";
 import withDashboard from "../../../../hocs/withDashboard";
 
 function Page({state}:{state: any}) {
+  console.log(state)
     return (
       <main>
         <Dashboard state={state}>
@@ -23,7 +24,7 @@ function Page({state}:{state: any}) {
               </div>
 
               <div className="w-[200px] bg-slate-100 flex hover:bg-slate-200 transition-all duration-200  rounded-md">
-                <Link to={"/office/dashboard/compounding/deposit"} className="p-4 w-full">View Investment</Link>
+                <Link to={"/office/dashboard/compounding/deposit"} className="p-4 w-full">View Earnings</Link>
               </div>
              </div>
           </div>
