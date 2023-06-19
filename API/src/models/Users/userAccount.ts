@@ -14,16 +14,21 @@ export interface userAccountInterface<T> {
     uuid: T,
     totalWithdrawal: T,
     totalDeposit: T,
+    totalEarning: T
 }
 
 userAccount.init({
     totalDeposit: {
-        type: DataTypes.STRING,
-        defaultValue: "0"
+        type: DataTypes.DECIMAL,
+        defaultValue: 0
     },
     totalWithdrawal: {
-        type: DataTypes.STRING,
-        defaultValue: "0"
+        type: DataTypes.DECIMAL,
+        defaultValue: 0
+    },
+    totalEarning: {
+        type: DataTypes.DECIMAL,
+        defaultValue: 0
     },
   },
   {

@@ -8,6 +8,7 @@ export interface transactionInterface<T> {
     uuid: T,
     invoiceID: T,
     amount: T,
+    mode: "normal"|"compounding"
     status: T,
 }
 
@@ -23,6 +24,11 @@ userTransaction.init({
     amount: {
         type: DataTypes.STRING,
         defaultValue: 0
+    },
+    mode: {
+        type: DataTypes.ENUM("normal", "compounding"),
+        allowNull: false,
+        defaultValue: "normal"
     },
     status: {
         type: DataTypes.ENUM("PENDING", "SUCCESSFUL", "FAILED"),

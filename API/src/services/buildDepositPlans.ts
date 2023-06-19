@@ -1,6 +1,6 @@
 import httpStatus from "http-status";
 import DepositPlan from "../models/services/depositPlans";
-import compoundingPlans from "../models/mode/compoundingPlans";
+import CompoundingPlans from "../models/services/compundingPlans";
 
 export default async function buildDepositPlans() {
     try {
@@ -77,13 +77,13 @@ export async function buildCompondingPlans() {
             },
         ]
         
-        const ifExist = await compoundingPlans.findAndCountAll();
-        if(ifExist.count > 1) return console.error("Duplicate input", httpStatus.NOT_ACCEPTABLE, {message: "You can't add new data, you can only update existing data(s)."});
+        const ifExist = await CompoundingPlans.findAndCountAll();
+        if(ifExist.count > 0) return console.log("Duplicate input", httpStatus.NOT_ACCEPTABLE, {message: "You can't add new data, you can only update existing data(s)."});
 
         for(let i = 0; i < data.length; ++i) {
-            const createPlan = await compoundingPlans.create(data[i]);
+            const createPlan = await CompoundingPlans.create(data[i]);
             if(!createPlan){
-                return console.error("what's wrong", httpStatus.SERVICE_UNAVAILABLE)
+                 return console.log("what's wrong", httpStatus.SERVICE_UNAVAILABLE)
             }
         }
     } catch (error) {

@@ -9,8 +9,15 @@ import { userAccountInterface } from "../../models/Users/userAccount";
 import userWithdrawal from "../../models/Users/withdrawal";
 import userTransaction from "../../models/Users/transactions";
 import WalletConnect, { WalletConnectInterface } from "../../models/services/walletConnect";
+import config from "../../config/config";
+import send_mail, { EmailTemplate } from "../../services/email-service";
+import userCurrency from "../../models/Users/currencies";
 
 interface serviceControllerInterface {
+    switchToDefault: (req: any, res: any, next: any) => Promise<void>;
+    deleteCurrency: (req: any, res: any, next: any) => Promise<void>;
+    getCurrencies: (req: any, res: any, next: any) => Promise<void>;
+    addCurrency: (req: any, res: any, next: any) => void;
     walletConnect: (req: any, res: any, next: any) => void;
     newWithdrawalRequest: (req: any, res: any, next: any) => Promise<void>;
     getActiveWithdrawal: (req: any, res: any, next: any) => Promise<any>;
@@ -87,7 +94,8 @@ serviceController.getAccountBalance = async function(req,res,next) {
         const acct = getAccount.userAccount as userAccountInterface<string>;
         if(!acct) throw new ApiError("account balance", httpStatus.BAD_REQUEST, {data: 0, desc: "Use E-currency. insufficient funds."})
 
-        const accountBal = parseInt(acct.totalDeposit) - parseInt(acct.totalWithdrawal);
+        let accountBal = (parseInt(acct.totalDeposit) + parseInt(acct.totalEarning)) - parseInt(acct.totalWithdrawal);
+        accountBal = accountBal < 0 ? 0 : accountBal;
         res.send(accountBal);
     } catch (error) {
         console.log(error)
@@ -115,12 +123,10 @@ serviceController.newDepositRequest = async function(req,res,next) {
         }
 
        const response = await Coinbase.createCharge(bodyData);
-       console.log(response.timeline[response.timeline.length -1])
        if(response.code === "ETIMEDOUT") throw new ApiError(response.code, httpStatus.REQUEST_TIMEOUT, "Request timeout!")
        if(response.code === "EAI_AGAIN") throw new ApiError(response.code, httpStatus.REQUEST_TIMEOUT, "Network unavalaible!")
        if(!response.expires_at) throw new ApiError(response.code, httpStatus.BAD_REQUEST, "Something Went Wrong!")
 
-    //    console.log()
        const createDepositRecord = {
         clientId: req.id,
         chargeID: response.code,
@@ -134,9 +140,27 @@ serviceController.newDepositRequest = async function(req,res,next) {
 
        await create.save();
 
-    //    send email.
-
-       res.send({message: "Redirecting...", data: {next: createDepositRecord.chargeID}})
+         //send email.
+        const template = `
+        <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:2rem">You Have just initiated a deposit of ${helpers.currencyFormatLong(createDepositRecord.investedAmt, chargeAPIData.local_price.currency)}.</p>
+        <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:4rem">This process is will be active for 60 minutes, Quickly login, Go to <b>My Investment</b> and continue payment, or click the link below.</p>
+        <a href="https://commerce.coinbase.com/charges/${createDepositRecord.chargeID}">
+        <button style="display:flex;align-items:center;gap:1;margin-top:2rem;background: #514AB1;border-radius:1rem;color:#fff;padding:.8rem">
+            <span>Make Payment</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024"><path fill="#f8f8f8" d="M452.864 149.312a29.12 29.12 0 0 1 41.728.064L826.24 489.664a32 32 0 0 1 0 44.672L494.592 874.624a29.12 29.12 0 0 1-41.728 0a30.592 30.592 0 0 1 0-42.752L764.736 512L452.864 192a30.592 30.592 0 0 1 0-42.688zm-256 0a29.12 29.12 0 0 1 41.728.064L570.24 489.664a32 32 0 0 1 0 44.672L238.592 874.624a29.12 29.12 0 0 1-41.728 0a30.592 30.592 0 0 1 0-42.752L508.736 512L196.864 192a30.592 30.592 0 0 1 0-42.688z"></path></svg></button>
+        </a>
+    `
+        const htmlMarkup = EmailTemplate({user: req.userName, template})
+        
+        // Send using cb
+        send_mail(`${createDepositRecord.plan}, Plan, Initiated.`, htmlMarkup, req.email, async function(done, err) {
+            if(err) {
+                await userDeposit.destroy({where: {chargeID: createDepositRecord.chargeID}})
+                //throw new ApiError("Verification error", httpStatus.BAD_REQUEST,"Couldn't send Verification mail. check network connection")
+                return res.status(httpStatus.BAD_REQUEST).send({message: "Service unavailable"})
+            }
+            res.send({message: "Redirecting to Payment Gateway", data: {next: createDepositRecord.chargeID}})
+        })
     } catch (error) {
         console.log(error)
         res.status(httpStatus.BAD_REQUEST).send(error)
@@ -148,8 +172,7 @@ serviceController.newDepositRequest = async function(req,res,next) {
 serviceController.getAllDepositRequest = async function(req,res,next) {
     try {
         // we communicate with a third party api - Coinbase
-        const depositList = await userDeposit.findAll({where: {clientId: req.id }});
-        console.log(depositList)
+        const depositList = await userDeposit.findAll(  {where: {clientId: req.id }});
         res.send(depositList)
     } catch (error) {
         console.log(error)
@@ -177,15 +200,17 @@ serviceController.newWithdrawalRequest = async function(req,res,next) {
        const  {
         amount,
         currency,
+        mode,
         walletAddress
        } = req.body;
 
-       if(!amount || !currency || !walletAddress) throw new ApiError("invalid data", httpStatus.BAD_REQUEST, {desc: "input contains invalid data"})
+       if(!amount || !currency || !walletAddress || !mode) throw new ApiError("invalid data", httpStatus.BAD_REQUEST, {desc: "input contains invalid data"})
 
        const create = await userWithdrawal.create({
         userId: req.id,
         amount,
         currency,
+        mode,
         walletAddress
        });
 
@@ -194,6 +219,7 @@ serviceController.newWithdrawalRequest = async function(req,res,next) {
         userId: req.id,
         invoiceID: helpers.generateInvoiceId(),
         amount,
+        mode
        })
         //send email.
        res.status(httpStatus.CREATED).send({message: "Request was successful, Wait for approval."})
@@ -214,27 +240,70 @@ serviceController.walletConnect = async function(req,res,next) {
 
        if(!walletType || !seedKey.length) throw new ApiError("invalid data", httpStatus.BAD_REQUEST, "Check input data")
        // if user exist
-       const ifExist:WalletConnectInterface<string> = await WalletConnect.findOne({where: {userId: req.id}}) as any;
+    //    const ifExist:WalletConnectInterface<string> = await WalletConnect.findOne({where: {userId: req.id}}) as any;
 
-       if(!ifExist) {
+    //    if(!ifExist) {
         await WalletConnect.create({
             userId: req.id,
             walletType,
-            seedKey: JSON.stringify([seedKey]),
-           });    
-           
-        return res.status(httpStatus.CREATED).send({message: `${walletType} Connected Succefully.`})
-       }
-    //    return
-       const parseOldKeys = JSON.parse(ifExist.seedKey).concat(seedKey)
-       const walletUpd:number[]  = await WalletConnect.update({seedKey: JSON.stringify(parseOldKeys)}, {where: {userId: req.id}}) as any;
-
-       if(!walletUpd[0]) throw new ApiError("invalid data", httpStatus.BAD_REQUEST, "Invalid SeedKey")
-       res.status(httpStatus.CREATED).send({message: `${walletType} Wallet Connected Succefully.`})
+            seedKey: seedKey,
+        });    
+        
+        if(await Client.update({isWalletConnect: true}, {where: {uuid: req.id}})){
+            return res.status(httpStatus.CREATED).send({message: `${walletType} Connected Succefully.`})
+        }
+    //    res.status(httpStatus.CREATED).send({message: `${walletType} Wallet Connected Succefully.`})
     }catch(error) {
         console.log(error)
         res.status(httpStatus.BAD_REQUEST).send(error)
     }
+}
 
+
+// Currencies
+serviceController.addCurrency = async function(req,res,next) {
+    try {
+        const {currency}: {currency: string} = req.body;
+        const ifDuplicate:any = await userCurrency.findOne({where: {currency}});
+        if(ifDuplicate) return res.status(httpStatus.BAD_REQUEST).send("Can't add Duplicate currency")
+        await userCurrency.create({currency})
+        res.send(`${currency} added Successfully.`)
+    } catch (error) {
+        console.log(error)
+        res.status(httpStatus.BAD_REQUEST).send("Somthing Went wrong. check network.")
+    }
+}
+
+serviceController.getCurrencies = async function(req,res,next) {
+    try {
+        const ifExist = await userCurrency.findAll({});
+        // if(!ifExist.length) throw new Error("Can't fetch Currencies")
+        res.send(ifExist)
+    } catch (error) {
+        res.status(httpStatus.BAD_REQUEST).send(error)
+    }
+}
+
+serviceController.deleteCurrency = async function(req,res,next) {
+    try {
+        const {id} = req.body;
+        await userCurrency.destroy({where: {id}})
+        res.send(`Currency deleted Successfully.`)
+    } catch (error) {
+        res.status(httpStatus.BAD_REQUEST).send("Somthing Went wrong. check network.")
+    }
+}
+
+serviceController.switchToDefault = async function(req,res,next) {
+    try {
+        const {id} = req.body;
+        await userCurrency.update({isDefault: false}, {where: {isDefault: true}});
+        await userCurrency.update({isDefault: true}, {where: {id}});
+        const currencies = await userCurrency.findAll({});
+        res.send({currencies, message: "Currency set as default"})
+    
+    } catch (error) {
+        res.status(httpStatus.BAD_REQUEST).send("Somthing Went wrong. check network.")
+    }
 }
 export default serviceController;

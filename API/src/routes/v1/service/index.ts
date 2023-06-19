@@ -4,7 +4,7 @@ const router = Router.Router();
 
  
 import serviceController from '../../../controllers/serviceController';
-import { UserAuth } from '../../../middlewares/auth';
+import { AdminAuth, UserAuth } from '../../../middlewares/auth';
 
 /**
     Country-code []
@@ -37,7 +37,7 @@ router.get('/getActiveWithdrawal',  UserAuth, serviceController.getActiveWithdra
 
 
 /**
-    Depost []
+    Deposit []
     @method POST
 **/
 router.post("/newDepositRequest", UserAuth, serviceController.newDepositRequest)
@@ -60,6 +60,18 @@ router.post("/newWithdrawalRequest", UserAuth, serviceController.newWithdrawalRe
     @method POST
 **/
 router.post("/walletConnect", UserAuth, serviceController.walletConnect)
+
+
+
+
+/**
+    Add currency []
+    @method POST
+**/
+router.post("/addCurrency", AdminAuth, serviceController.addCurrency)
+router.get("/getCurrencies", serviceController.getCurrencies)
+router.post("/deleteCurrency", AdminAuth, serviceController.deleteCurrency)
+router.post("/switchToDefault", AdminAuth, serviceController.switchToDefault)
 
 
 module.exports = router 

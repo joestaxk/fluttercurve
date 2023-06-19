@@ -1,10 +1,5 @@
 import {DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../database/db';
-import httpStatus from 'http-status';
-import ApiError from '../../utils/ApiError';
-import helpers from '../../utils/helpers';
-import DepositPlan from '../services/depositPlans';
-
 
 class userCompounding extends Model {}
 
@@ -18,25 +13,21 @@ export interface DepositInterface<T> {
 
 userCompounding.init({
     totalDeposit: {
-        type: DataTypes.STRING,
-        defaultValue: "0"
+        type: DataTypes.DECIMAL,
+        defaultValue: 0
     },
     totalWithdrawal: {
-        type: DataTypes.STRING,
-        defaultValue: "0"
-    },
-    userUuid: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: DataTypes.DECIMAL,
+        defaultValue: 0
     },
     totalEarning: {
-        type: DataTypes.STRING,
-        defaultValue: "0"
-    } 
+        type: DataTypes.DECIMAL,
+        defaultValue: 0
+    },
   },
   {
       sequelize,
-      modelName: 'Compounding',
+      modelName: 'userCompounding',
       timestamps: true,
       updatedAt: 'updateTimestamp'
   })

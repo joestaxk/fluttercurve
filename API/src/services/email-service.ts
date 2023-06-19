@@ -1,6 +1,7 @@
 "use strict";
 import nodemailer from "nodemailer";
 import config from "../config/config";
+import path from 'path'
 
 function send_mail(
   header: string,
@@ -9,6 +10,8 @@ function send_mail(
   recipient: string,
   cb: (arg0: null | Boolean, arg1: null | Boolean) => void
 ) {
+
+
   var transport = nodemailer.createTransport({
     host: config.MAIL_HOST,
     port: config.MAIL_PORT,
@@ -18,22 +21,23 @@ function send_mail(
     },
   });
 
-  var mailOptions = {
-    from: "fluttercurve@fluttercurve.com",
+  var mailOptions:nodemailer.SendMailOptions = {
+    from: "support@fluttercurve.com",
     to: recipient,
     subject: header,
     html,
-    //     attachments: [
-    //       {
-    //         filename: 'mailtrap.png',
-    //         path: __dirname + '/mailtrap.png',
-    //         cid: 'uniq-mailtrap.png'
-    //       }
-    // ]
+    sender: "Fluttercurve",
+    replyTo: "support@fluttercurve.com",
+    attachments: [
+          {
+            filename: 'main.png',
+            path:path.resolve(__dirname,  '../../public/main.png'),
+            cid: 'uniq-main.png'
+          }
+    ]
   };
 
   transport.sendMail(mailOptions, (error: any, info: any) => {
-    console.log(mailOptions);
     if (error) {
       console.log(error);
       cb(null, true);
@@ -53,10 +57,11 @@ export function EmailTemplate({ user, template }: any) {
   <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,800;1,900&display=swap" rel="stylesheet"/>
   </head>
   <body>
-    <div class="" style="font-family: 'Montserrat Alternates', sans-serif; width: 100vw; height: 100vh; display: flex; justify-content: center;">
-      <div style="background:#f8f8f8;width:700px;min-height:600px">
-        <div style="background:#04468b;padding:1rem">
-          <h1 style="color:#fff;font-size:2rem">Fluttercurve</h1>
+    <div class="" style="font-family: 'Montserrat Alternates', sans-serif; padding: .5rem; width: 100%">
+      <div style="background:#f8f8f8;width:700px; min-height:600px margin: auto">
+        <div style="background:linear-gradient(45deg, #A33E94, #514AB1); padding:1rem; display: flex; align-items: center; gap: 3px ">
+           <img src="cid:uniq-main.png" style="width: 50px;height: 50px" alt="fluttercurve.com" />
+          <h1 style="color:#fff;font-size:2rem">FlutterCurve</h1>
         </div>
         <div style="width:100%;padding:.4rem">
 
@@ -80,7 +85,7 @@ export function EmailTemplate({ user, template }: any) {
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="#212121" d="M4 20q-.825 0-1.413-.588T2 18V6q0-.825.588-1.413T4 4h16q.825 0 1.413.588T22 6v12q0 .825-.588 1.413T20 20H4Zm8-7l8-5V6l-8 5l-8-5v2l8 5Z"></path></svg>
                 <a   style="text-decoration: none; color: #04468b;" href="mailto:support@fluttercurve.com">support@fluttercurve.com</a>
             </p>
-                <p style="color: red; text-align: center; font-size: 0.8rem; margin-top: 2rem;"> <b>Heads-up</b> If you're not expecting a mail, Please ignore it. This request will expire in 60minutes.</p>
+                <p style="color: red; text-align: center; font-size: 0.8rem; margin-top: 2rem;"> <b>Heads-up</b> If you're not expecting a mail, Please ignore it.</p>
               </div></div></div></div></div>
     </div>
     </body>

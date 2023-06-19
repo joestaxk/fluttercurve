@@ -9,33 +9,27 @@ const router = Router.Router();
 
 // Define default paths
 const definePath = [
- {
-     path: "/client/auth",
-     route: require("./auth/user")
- },
- {
-    path: "/client",
-    route: require("./users/client")
- },
-{
-    path: "/service",
-    route: require("./service")
-},
+    {
+        path: "/client/auth",
+        route: require("./auth/user")
+    },
+    {
+        path: "/client",
+        route: require("./users/client")
+    },
+    {
+        path: "/service",
+        route: require("./service")
+    },
 
-{
-    path: "/compounding",
-    route: require("./mode")
-}
-//  {
-//     path: "/admin/auth",
-//     route: authAdmin
-//  },
-
-
-//  {
-//     path: "/errander",
-//     route: AdminUser
-//  },
+    {
+        path: "/compounding",
+        route: require("./mode")
+    },
+    {
+        path: "/admin",
+        route: require("./admin")
+    }
 ]
 
 

@@ -1,7 +1,7 @@
 import {DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../database/db';
 
-class userDeposit extends Model {}
+class  compoundingDeposit extends Model {}
 
 export interface DepositInterface<T> {
     id: T,
@@ -11,7 +11,7 @@ export interface DepositInterface<T> {
     status: T
 }
 
-userDeposit.init({
+ compoundingDeposit.init({
     clientId: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -26,7 +26,7 @@ userDeposit.init({
     },
     duration: {
         type: DataTypes.INTEGER,
-        defaultValue: "0"
+        allowNull: false
     },
     intrestRate: {
         type: DataTypes.STRING,
@@ -42,7 +42,7 @@ userDeposit.init({
     },
     remainingDays: {
         type: DataTypes.DECIMAL,
-        defaultValue: "1"
+        defaultValue: 0
     },
     investmentCompleted :{
         type: DataTypes.BOOLEAN,
@@ -59,11 +59,11 @@ userDeposit.init({
   },
   {
       sequelize,
-      modelName: 'Deposit',
+      modelName: 'compoundingDeposit',
       timestamps: true,
       updatedAt: 'updateTimestamp'
   })
 
 
-export default userDeposit;
+export default  compoundingDeposit;
 

@@ -12,10 +12,10 @@ buildCompondingPlans().then(res => {})
 
 /**
    Make Investment
-    @method GET
+    @method POST
 **/
 
-router.get('/makeInvestment', UserAuth, compoundingController.makeInvestment);
+router.post('/makeInvestment', UserAuth, compoundingController.makeInvestment);
 
 /**
    GET Investment
@@ -30,5 +30,9 @@ router.get('/getCompoundingPlans', UserAuth, compoundingController.getCompoundin
     @method GET
 **/
 router.get('/getACompoundingPlans', UserAuth, compoundingController.getACompoundingPlans);
+
+router.get('/getAllCompoundingDepositRequest', UserAuth, compoundingController.getAllCompoundingDepositRequest);
+
+router.get('/getAllCompoundingSuccessfulInvesment', UserAuth, compoundingController.getAllCompoundingSuccessfulInvesment);
 
 module.exports = router

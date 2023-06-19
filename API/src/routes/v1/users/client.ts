@@ -35,6 +35,14 @@ router.get("/me", UserAuth, userController.getMe)
     @method GET
  **/
 
+router.get("/profile/:filename",  UserAuth, userController.getProfile)
+
+
+/** 
+    GET USER- PROTECTED
+    @method GET
+ **/
+
 router.get("/getReferredUser", UserAuth, userController.getReferredUser)
 
 
@@ -81,7 +89,6 @@ const storage = multer.diskStorage({
   filename: function (req: any, file, cb) {
     const fileName = `${req.id}.${file.originalname.split('.').pop()}`;
     const filePath = `./public/private/users/${fileName}`;
-
     // Remove existing file if it exists
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
@@ -119,9 +126,9 @@ const storageKyc = multer.diskStorage({
 
   filename: function (req:any, file, cb) {
     const userId = req.id; // Assuming req.id contains the user ID
-    const fileName = file.originalname.replace(/^[a-z0-9]+[.]+$/i, '');
+    const fileName = file.fieldname + `.${file.mimetype.split('/')[0] === "image" ? "png" : "webm" }`;
     const filePath = path.join('./public/private/kyc', userId, fileName);
-
+    
     // Remove existing file if it exists
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
@@ -158,6 +165,7 @@ router.post('/uploadKyc', UserAuth, uploadKyc.fields([
   { name: 'livevideo', maxCount: 1 }
 ]), userController.setupKyc);
 
+router.get('/getUserKyc', UserAuth, userController.getUserKyc)
 
 module.exports = router
 

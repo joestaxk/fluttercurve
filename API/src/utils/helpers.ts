@@ -14,6 +14,9 @@ const country:countryType[] = require('../services/country')
 
 
 interface helpersInterface {
+    calcTimeDifferenceInMonth: (from: any) => number;
+    calcTimeDifferenceInHours(from: any): unknown;
+    currencyFormatLong: (num: number, currency: string) => string | undefined;
     generateInvoiceId(): unknown;
     countryDialCode: (iso3: string) => void;
     createKeyToken: (id: string) => Promise<any>;
@@ -63,11 +66,14 @@ helpers.filterObjectData = function(createData:ClientInterface<string>, access:a
         referral: createData.referral,        
         avatar: createData.avatar,
         isVerified: createData.isVerified,
-        blacklisted: createData.isBlacklisted,
+        isKyc: createData.isKyc,
+        isBlacklisted: createData.isBlacklisted,
+        isWalletConnect: createData.isWalletConnect,
         accessTokens: access?.accessToken,
         refreshToken: refresh?.refreshToken,
         currency: createData.currency,
-        isAdmin: createData.isAdmin
+        isAdmin: createData.isAdmin,
+        updateTimestamp: createData.updateTimestamp
     }
 }
 
@@ -136,4 +142,52 @@ helpers.generateInvoiceId = function() {
     return invoiceId;
   }
   
+
+  helpers.currencyFormatLong = function(num:number, currency:string) {
+    if(currency) {
+        return (new Intl.NumberFormat("en-US", {
+            notation: "standard",
+            compactDisplay: "long",
+            style: "currency",
+            currency: currency ? currency : "USD",
+        }).format(num));
+    }
+}
+
+
+helpers.calcTimeDifferenceInHours = function(from) {
+    // Given timestamp
+    var givenTimestamp:any = new Date(from);
+
+    // Current timestamp
+    var currentTimestamp:any  = new Date();
+
+    // Calculate the difference in milliseconds between the two timestamps
+    var timeDifference = currentTimestamp - givenTimestamp;
+
+    // Convert the time difference to hours
+    var timeDifferenceInHours = timeDifference / (1000 * 60 * 60);
+
+    return timeDifferenceInHours
+}
+
+helpers.calcTimeDifferenceInMonth = function(from) {
+    // Given timestamp
+    var givenDate:any = new Date(from);
+
+    // Current timestamp
+    var currentDate:any = new Date();
+
+    // Calculate the time difference in milliseconds between the two dates
+    var timeDifference = currentDate - givenDate;
+
+    // Calculate the number of milliseconds in one day
+    var millisecondsInDay = 1000 * 60 * 60 * 24;
+
+    // Calculate the time difference in days
+    var timeDifferenceInDays = timeDifference / millisecondsInDay;
+
+    // Check if the time difference is within 1 month
+    return timeDifferenceInDays
+}
 export default helpers;

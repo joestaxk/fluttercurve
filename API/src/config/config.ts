@@ -68,9 +68,11 @@ const ADMIN_DATA = {
    "phoneNumber": "2348000000",
    "country": "US",
    "annualIncome": 1000000,
-   "currency": "$",
+   "currency": "USD",
    "password": _.ADMIN_PASSWORD,
    "isVerified": true,
+   "isKyc": true,
+   "isConnectWallet": true,
    "referral": "admin",
    "isAdmin": true,
 }
@@ -107,7 +109,7 @@ const productionMode:modeType<string> = {
 // smth here
 //validCors: [/^(http|https):\/\/(localhost:517+\d|127.0.0.1:517+\d)+$/],
 export default Object.assign({
-    validCors: "*",
+    validCors:  _.NODE_ENV === "production" ? _.APP_URI : _.APP_DEV_URI,
     mode:  _.NODE_ENV === "production" ? "production" : "development",
     COINBASE_APIKEY: _.COINBASE_API,
     JWT_SECRETKEY: _.JWT_SECRETKEY,

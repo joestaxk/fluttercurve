@@ -1,23 +1,21 @@
 import {DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../database/db';
-import httpStatus from 'http-status';
-import ApiError from '../../utils/ApiError';
-import helpers from '../../utils/helpers';
 
 
-class CompoundingPlan extends Model {}
 
-export interface CompoundingPlanInterface<T> {
+class compoundingPlans extends Model {}
+
+export interface compoundingPlanInterface<T> {
     id: T,
     uuid: T,
     plan: T,
     minAmt: T,
     duration: T,
     gurantee: T,
-    dailyInterestRate: T,
+    interestRate: T,
 }
 
-CompoundingPlan.init({
+compoundingPlans.init({
     uuid: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4
@@ -38,21 +36,17 @@ CompoundingPlan.init({
         type: DataTypes.STRING,
         defaultValue: "0"
     },
-    guarantee: {
-        type: DataTypes.STRING,
-        defaultValue: "0"
-    },
-    dailyInterestRate: {
+    interestRate: {
         type: DataTypes.STRING,
         defaultValue: "0"
     }
   },
   {
       sequelize,
-      modelName: 'CompoundingPlan',
+      modelName: 'compoundingPlan',
       timestamps: true,
       updatedAt: 'updateTimestamp'
   })
 
-export default CompoundingPlan;
+export default compoundingPlans;
 

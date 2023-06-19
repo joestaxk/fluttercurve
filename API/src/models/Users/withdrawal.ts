@@ -32,6 +32,11 @@ userWithdrawal.init({
         type: DataTypes.STRING,
         defaultValue: 0
     },
+    mode: {
+        type: DataTypes.ENUM("normal", "compounding"),
+        allowNull: false,
+        defaultValue: "normal"
+    },
     status: {
         type: DataTypes.ENUM("PENDING", "SUCCESSFUL", "FAILED"),
         allowNull: false,

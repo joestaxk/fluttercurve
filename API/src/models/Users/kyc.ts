@@ -32,31 +32,35 @@ Kyc.init({
     },
     idType: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
      },
     frontID: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     backID: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     livevideo: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     dob: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     nationality: {
         type: DataTypes.STRING,
         allowNull: false,
     },
     isKyc: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+        type: DataTypes.ENUM("PENDING", "APPROVED", "DECLINED"),
+        defaultValue: "PENDING"
+    },
+    clientID: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
   },
   {

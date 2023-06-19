@@ -8,7 +8,7 @@ export default class Cron {
         return {
             minutes : function(remote: boolean) {
                 console.log(' 🔥🔥🔥 MINUTE CRON IN SERVICE 🔥🔥🔥`')
-                return cron.schedule('*/10 * * *  *', function() {
+                return cron.schedule('*/30 * * * *  *', function() {
                     task()
                 }, {
                     scheduled: remote
@@ -17,31 +17,23 @@ export default class Cron {
             },
             daily : function(remote: boolean) {
                 console.log(' 🔥🔥🔥 DAILY CRON IN SERVICE 🔥🔥🔥`')
-                return cron.schedule('* * 23 * * *', function() {
+                return cron.schedule('*/60 * * * * *', function() {
                     task()
                 }, {
-                    scheduled: remote
-                  })
-            },
-            monthly: function(remote: boolean) {
-                console.log(' 🔥🔥🔥 MONTHLY CRON IN SERVICE 🔥🔥🔥`')
-                return cron.schedule('* * * 28 * *', function() {
-                    task()
-                },{
                     scheduled: remote
                   })
             }
         }
     }
 
-    add(task:any, type: "minutes"|"daily"|"monthly", id:string, remote?:boolean) {
+    add(task:any, type: "minutes"|"daily", id:string, remote?:boolean) {
         if(!id) return;
         this.tasks[id] = this.#schedules(task)[type](remote||true);
         return this.tasks[id];
     }
 
     stop(id:string) {
-        this.tasks[id].start();
+        this.tasks[id].stop();
     }
 
     start(id: string) {

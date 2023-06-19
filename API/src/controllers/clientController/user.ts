@@ -2,12 +2,14 @@ import httpStatus from 'http-status'
 import ApiError from '../../utils/ApiError';
 import Client, { ClientInterface } from '../../models/Users/users';
 import helpers from '../../utils/helpers';
-import userAccount, { userAccountInterface } from '../../models/Users/userAccount';
 import Referral from '../../models/Users/referrals';
 import Kyc from '../../models/Users/kyc';
-
+import path from 'path'
+import fs from 'fs'
 
 interface userControllerInterface {
+    getUserKyc: (req: any, res: any, next: any) => Promise<void>;
+    getProfile: (req: any, res: any) => Promise<void>;
     getRefreshToken: (req: any, res: any) => Promise<void>;
     setupKyc: (req: any, res: any, next: any) => void;
     updateUserInfo: (req: any, res: any, next: any) => Promise<void>;
@@ -28,7 +30,6 @@ userController.getRefreshToken =async function(req:any, res:any) {
         if(!accessToken) throw new Error("Logout");
         
         const response = await helpers.generateRefreshToken(accessToken, req);
-        
         res.send(response)
     } catch (error) {
          console.log(error)
@@ -64,12 +65,13 @@ userController.verifyUserAccount = async function(req:any, res:any) {
 
 userController.getMe = async function(req:any, res:any) {
     try {
-        const me: ClientInterface<string> = await Client.findOne({where: {uuid: req.id},  include:['Referrals', 'userAccount', 'Compounding']}) as any;
+        const me: ClientInterface<string> = await Client.findOne({where: {uuid: req.id},  include:['Referrals', 'userAccount', 'userCompounding']}) as any
+        console.log(me)
         res.send({
             ...helpers.filterObjectData(me), 
             noRefferedUser: me.Referrals?.length, 
             userAccount: me.userAccount,
-            compounding: me.Compounding
+            userCompounding: me.userCompounding
         })
     } catch (error) {
         console.log(error)
@@ -77,9 +79,52 @@ userController.getMe = async function(req:any, res:any) {
     }
 }
 
+userController.getProfile = async function(req:any, res:any) {
+    const filename = req.params.filename;
+	// Construct the path to the image file
+	const imagePath = path.join('./public/private/users', filename)
+	// Check if the image file exists
+	if (fs.existsSync(imagePath)) {
+        // Read the image file as a buffer
+          const imageBuffer = fs.readFileSync(imagePath);
+
+        // Convert the image buffer to a Blob object
+        const imageBlob = Buffer.from(imageBuffer);
+
+        // Set the appropriate Content-Type header based on the image file extension
+        const contentType = getContentType(filename);
+        res.set('Content-Type', contentType);
+
+        // Send the Blob as the response
+        res.send(imageBlob);
+	} else {
+	  // Image file not found, send an error response
+	  res.status(404).send(null);
+	}
+}
+
+// Helper function to get the Content-Type based on file extension
+function getContentType(filename:string) {
+    const extension = path.extname(filename).toLowerCase();
+  
+    switch (extension) {
+      case '.jpg':
+      case '.jpeg':
+        return 'image/jpeg';
+      case '.png':
+        return 'image/png';
+      case '.gif':
+        return 'image/gif';
+      // Add more cases for other supported image file types if needed
+      default:
+        return 'application/octet-stream'; // Fallback to a generic binary content type
+    }
+  }
+
 userController.getReferredUser = async function(req:any, res:any) {
     try {
         const {data}:any = await Referral.findAll({where: {ClientUuid: req.id}});
+        if(!data) return res.status(404).send(null)
         const filter = data.map((res:any) => {
             return {
             "firstDeposit": res.firstDeposit,
@@ -206,82 +251,125 @@ userController.uploadAvatar = async function(req,res,next) {
 }
 
 
+userController.getUserKyc = async function(req,res,next) {
+    try {
+        const getKyc:any = await Kyc.findOne({where: {clientID: req.id}}) // useful later below
+        res.send(getKyc.isKyc)
+    } catch (error) {
+        res.status(httpStatus.BAD_REQUEST).send(error)
+    }
+}
 
-userController.setupKyc = function (req, res, next) {
+userController.setupKyc = async function (req, res, next) {
     const files = req.files;
     const body = req.body;
-  
-    // Validate request body fields
-    if (!body.fullName || !body.idType || !body.dob || !body.nationality) {
-      return res.status(400).json({ error: 'Missing required fields.' });
-    }
-  
-    // Prepare body and file data
-    const bodyData = {
-      fullName: body.fullName,
-      idType: body.idType,
-      dob: body.dob,
-      nationality: body.nationality,
-      isKyc: false
-    };
-  
-    const fileData = {
-      passport: null,
-      frontID: null,
-      backID: null,
-      livevideo: null
-    };
-  
-    // Map file data based on fieldname
-    Object.keys(files).forEach((fieldname) => {
-        const fileArray = files[fieldname];
-        if (Array.isArray(fileArray) && fileArray.length > 0) {
-          const file = fileArray[0];
-          console.log(file)
-          switch (fieldname) {
-            case 'passport':
-              fileData.passport = file.filename;
-              break;
-            case 'frontID':
-              fileData.frontID = file.filename;
-              break;
-            case 'backID':
-              fileData.backID = file.filename;
-              break;
-            case 'livevideo':
-              fileData.livevideo = file.filename;
-              break;
-            default:
-              break;
-          }
-        }
-      });
 
- // Ensure all required files are present
-    if (!fileData.frontID || !fileData.backID || !fileData.livevideo) {
-        return res.status(400).json({ error: 'Missing required files.' });
-    }
+    const stage = body.stage;
+      
+    const fileData = {
+        passport: null,
+        frontID: null,
+        backID: null,
+        livevideo: null
+    };
     
-    // Save the KYC data in the Kyc table
-    Kyc.create({
-        fullName: bodyData.fullName,
-        passport: fileData.passport,
-        idType: bodyData.idType,
-        frontID: fileData.frontID,
-        backID: fileData.backID,
-        livevideo: fileData.livevideo,
-        dob: bodyData.dob,
-        nationality: bodyData.nationality,
-        isKyc: bodyData.isKyc,
-    })
-    .then((kyc) => {
-        // KYC data saved successfully
-        res.status(200).json({ message: 'KYC data saved successfully' });
-    })
-    .catch((error) => {
-        console.log(error)
-        // Error occurred while saving KYC data
-        res.status(500).json({ error: 'Failed to save KYC data' });
+      // Map file data based on fieldname
+    Object.keys(files).forEach((fieldname) => {
+          const fileArray = files[fieldname];
+          if (Array.isArray(fileArray) && fileArray.length > 0) {
+            const file = fileArray[0];
+            switch (fieldname) {
+              case 'passport':
+                fileData.passport = file.filename;
+                break;
+              case 'frontID':
+                fileData.frontID = file.filename;
+                break;
+              case 'backID':
+                fileData.backID = file.filename;
+                break;
+              case 'livevideo':
+                fileData.livevideo = file.filename;
+                break;
+              default:
+                break;
+            }
+          }
     });
+
+    const checkIfExist= await Kyc.findOne({where: {clientID: req.id}}) // useful later below
+    if(stage === "1") {
+        // Validate request body fields
+        if (!fileData.passport || !body.fullName || !body.dob || !body.nationality) {
+            return res.status(400).json({ error: 'Missing required fields.' });
+        }
+        const bodyData = {
+            passport: fileData.passport,
+            fullName: body.fullName,
+            dob: body.dob,
+            nationality: body.nationality,
+        };
+        if(!checkIfExist)  {
+            Kyc.create({
+                passport: fileData.passport,
+                fullName: bodyData.fullName,
+                dob: bodyData.dob,
+                nationality: bodyData.nationality,
+                clientID: req.id
+            }).then(() => {
+                // KYC data saved successfully
+                return res.status(200).json({ message: 'Personal Information Updated' });
+            })
+            .catch((error) => {
+                console.log(error)
+                // Error occurred while saving KYC data
+                res.status(500).json({ error: 'Failed to save KYC data' });
+            });
+        }else {
+                Kyc.update({
+                    passport: fileData.passport,
+                    fullName: bodyData.fullName,
+                    dob: bodyData.dob,
+                    nationality: bodyData.nationality,
+                    isKyc: "PENDING",
+                    clientID: req.id
+                }, {where: {clientID: req.id}}).then(() => {
+                    // KYC data saved successfully
+                    return res.status(200).json({ message: 'Personal Information Updated' });
+                })
+                .catch((error) => {
+                    console.log(error)
+                    // Error occurred while saving KYC data
+                    res.status(500).json({ error: 'Failed to save KYC data' });
+                });
+        }
+    }else if(stage === "2" && checkIfExist) {
+         // Ensure all required files are present
+        if (!body.idType || !fileData.frontID || !fileData.backID ) {
+            return res.status(400).json({ error: 'Missing required files.' });
+        }
+        Kyc.update({
+            idType: body.idType,
+            frontID: fileData.frontID,
+            backID: fileData.backID,
+        }, {where: {clientID: req.id}}).then(() => {
+            return res.status(200).json({ message: 'Identification Submitted & Updated' });
+        }).catch((err) => {
+            res.status(500).json({ error: 'Failed to save KYC data' });
+        })
+    }else if(stage === "3" && checkIfExist) {
+        // Ensure all required files are present
+        if (!fileData.livevideo) {
+            return res.status(400).json({ error: 'Missing required files.' });
+        }
+
+        Kyc.update({
+            livevideo: fileData.livevideo,
+        }, {where: {clientID: req.id}}).then(() => {
+            return res.status(200).json({ message: 'Facial Identity Updated' });
+        }).catch((err) => {
+            res.status(500).json({ error: 'Failed to save KYC data' });
+        })
+    }
 };
 export default userController;

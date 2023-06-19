@@ -5,12 +5,10 @@ import helmet from "helmet"
 import cors from "cors"
 import httpStatus  from "http-status"
 import Routes from "./routes/v1"
-import { errorConverter, errorHandler } from "./middlewares/error"
 import limiter from "./middlewares/rate-limiter"
 import ApiError from "./utils/ApiError"
 import config from "./config/config"
 import bodyParser from 'body-parser'
-import buildDepositPlans from './services/buildDepositPlans'
 import { UserAuth } from './middlewares/auth'
 
 // initialize express app
@@ -42,8 +40,10 @@ const corsOptions = {
 	maxAge: 3600,
 	preflightContinue: true, 
 }
+console.log(corsOptions)
 app.use(cors(corsOptions))
-// app.options("*", cors(corsOptions));
+// app.use(cors())
+app.options("*", cors(corsOptions));
 
 // app.use((req, res, next) => {
 // 	res.header('Access-Control-Allow-Origin', 'http://localhost:3002/');
@@ -66,8 +66,7 @@ app.get('/', async (req:any,res:any,next: any) => {
 app.use("/v1", Routes);
 
 app.use('/', express.static('public/'));
-app.use('/private/', UserAuth, express.static('public/private/'));
-
+// app.use('/private', UserAuth, express.static('public/private/'));
 
 // send back a 404 error for any unknown api request
 app.use((req:any, res:any, next: any) => {

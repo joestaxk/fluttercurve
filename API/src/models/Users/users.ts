@@ -6,15 +6,13 @@ import helpers from '../../utils/helpers';
 import userAccount from './userAccount';
 import Referral from './referrals';
 import userCompounding from '../mode/compounding';
-import Kyc from './kyc';
-// import Referral from './referrals';
 
 
 class Client extends Sequelize.Model {}
 
 export interface ClientInterface<T> {
     userAccount: any,
-    Compounding: any,
+    userCompounding: any,
     Referrals: any,
     id: T,
     uuid: T,
@@ -32,9 +30,12 @@ export interface ClientInterface<T> {
     token: T,
     isVerified: Boolean,
     isKyc: Boolean,
+    isWalletConnect: Boolean,
+    isWallet: Boolean,
     isBlacklisted: Boolean,
     oneTimeKeyToken: T,
-    avatar: T
+    avatar: T,
+    updateTimestamp: T
 }
 
 Client.init({
@@ -91,6 +92,14 @@ Client.init({
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
+    isKyc: {
+        type: DataTypes.ENUM("PENDING", "APPROVED", "DECLINED"),
+        defaultValue: "PENDING"
+    },
+    isWalletConnect: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
     isBlacklisted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
@@ -132,20 +141,43 @@ Client.beforeCreate(
     }
 )
 
-Client.hasOne(userAccount)
-userAccount.belongsTo(Client)
+Client.hasOne(userAccount, {
+    foreignKey: {
+      name: 'clientId',
+      allowNull: false,
+    },
+  });
+  
+  userAccount.belongsTo(Client, {
+    foreignKey: {
+      name: 'clientId',
+      allowNull: false,
+    },
+  });
 
 
-Client.hasOne(userCompounding)
-userCompounding.belongsTo(Client)
+Client.hasOne(userCompounding, {
+    foreignKey: {
+      name: 'clientId',
+      allowNull: false,
+    },
+  });
+  
+userCompounding.belongsTo(Client, {
+    foreignKey: {
+      name: 'clientId',
+      allowNull: false,
+    },
+  });
+
 
 Client.hasMany(Referral, {
     foreignKey: "ClientId"
 });
 Referral.belongsTo(Client)
 
-Client.hasOne(Kyc)
-Kyc.belongsTo(Client)
+// Client.hasOne(Kyc)
+// Kyc.belongsTo(Client)
 
 
 
