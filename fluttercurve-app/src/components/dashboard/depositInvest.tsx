@@ -227,7 +227,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
                   <select name="paymentMethod"  className="p-4 w-full h-full bg-transparent border-none">
                       <option value="" selected>Select Payment Source</option>
                       <option value="account">Account  ({
-                         helpers.currencyFormat((parseInt(state.userAccount.totalDeposit) + parseInt(state.userAccount.totalEarning) - parseInt(state.userAccount.totalWithdrawal)), state.currency)
+                         helpers.currencyFormat((parseInt(state.userAccount?.totalDeposit) + parseInt(state.userAccount?.totalEarning) - parseInt(state.userAccount?.totalWithdrawal)), state.currency)
                       })</option>
                       <option value="e-currency">E-currency</option>
                   </select>
