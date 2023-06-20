@@ -20,6 +20,10 @@ export interface DepositInterface<T> {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    type: {
+        type: DataTypes.STRING,
+        defaultValue: "compounding"
+    },
     plan: {
         type: DataTypes.STRING,
         allowNull: false,

@@ -8,6 +8,8 @@ import fs from 'fs';
 import path from 'path';
 import WalletConnect from '../../models/services/walletConnect';
 import { userAccountInterface } from '../../models/Users/userAccount';
+import userCompounding from '../../models/mode/compounding';
+import compoundingDeposit from '../../models/mode/compoundingDeposit';
 const country = require('../../services/country')
 
 interface AdminControllerInterface {
@@ -104,7 +106,14 @@ AdminController.getAllUserDeposit = async function(req,res,next) {
   try {
       // we communicate with a third party api - Coinbase
       const depositList = await userDeposit.findAll({where: {clientId: req.body.id }});
-      res.send(depositList)
+      const compoundingList = await compoundingDeposit.findAll({where: {clientId: req.body.id }});
+      console.log(depositList, compoundingList)
+      
+      // if(depositList.length && compoundingList.length) {
+        console.log(depositList, compoundingList)
+        return res.send([...depositList, ...compoundingList]);
+      // }
+      res.send([])
   } catch (error) {
       console.log(error)
       res.status(httpStatus.BAD_REQUEST).send(error)
@@ -257,7 +266,7 @@ AdminController.suspendAccount = async function(req,res,next) {
 AdminController.getuserAccountBalance = async function(req,res,next) {
   try {
       // query DB for data
-      const getAccount:ClientInterface<string> = await Client.findOne({where: {uuid: req.body.id}}) as any;
+      const getAccount:ClientInterface<string> = await Client.findOne({where: {uuid: req.body.id}, include:['Referrals', 'userAccount', 'userCompounding']}) as any;
       const acct = getAccount.userAccount as userAccountInterface<string>;
       if(!acct) return res.status(200).send({bal: 0})
 

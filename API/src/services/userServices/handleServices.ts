@@ -26,14 +26,15 @@ handleServices.successfulDepositCharge = async function(chargeID:string) {
     const res:any = await userDeposit.findOne({where: {chargeID}});
     if(!res?.clientId) return;
 
-    const {uuid, id, userName, email, }:any =  await Client.findOne({where: {uuid: res.clientId}})
+    // we got the user so as to send client mail
+    const {uuid, id, userName, email, currency}:any =  await Client.findOne({where: {uuid: res.clientId}})
 
     // STORE A EMAIL and send later
     await templates.successfulChargeMailTemplate(uuid, [
         {
             type: "p",
-            msg: `Hello, ${userName}, Congrats 🚀🚀🚀. Your Deposit of ${res.investedAmt}, has been credited to wallet successfully. Your ${res.plan} Investment Plan, starts from today. <br/> 
-                Login into your account to keep track of what is going on.`
+            msg: `Congratulations. Your Deposit of ${helpers.currencyFormatLong(res?.investedAmt, currency)}, has been credited to wallet successfully. Your ${res.plan} Investment Plan, starts from today.
+                Login into your account to keep track of what's going on.`
         },
         {
             type: "a",
@@ -45,9 +46,9 @@ handleServices.successfulDepositCharge = async function(chargeID:string) {
     // UPDATE USERACCOUNT
     // get the user wallet account
     const ifAny = await userAccount.findOne({where: {clientId: id}});
+    // Each time a new user wallet is created, that user just made some investment.
+    await userDeposit.update({status: "SUCCESSFUL"}, {where: {chargeID}})
     if(!ifAny) {
-        // Each time a new user wallet is created, that user just made some investment.
-        await userDeposit.update({status: "SUCCESSFUL"}, {where: {chargeID}})
         // create new account for the user
         await userAccount.create({
             totalDeposit: parseInt(res.investedAmt),
@@ -69,7 +70,7 @@ handleServices.successfulDepositCharge = async function(chargeID:string) {
 
 
 
-handleServices.updateEarning = async function({clientId, chargeID, plan, duration, investedAmt, progressAmt, intrestRate, remainingDays, investmentCompleted, status, expiresAt, createdAt, updateTimestamp}: any) {
+handleServices.updateEarning = async function({clientId, chargeID, duration, investedAmt, progressAmt, intrestRate, remainingDays, status, updateTimestamp}: any) {
     // check status
     if(status !== "SUCCESSFUL") return;
     console.log(`working on depositing services......`)
@@ -78,12 +79,12 @@ handleServices.updateEarning = async function({clientId, chargeID, plan, duratio
     if(duration === progressAmt) return;
     
     // check if it's the next day
-    const timeFrame:any = helpers.calcTimeDifferenceInHours(updateTimestamp);
-    if(timeFrame < 23) return;
+    // const timeFrame:any = helpers.calcTimeDifferenceInHours(updateTimestamp);
+    // if(timeFrame < 23) return console.log("----------------------NOT up to a day yet---------------------------");
 
     
     ++remainingDays
-    if(remainingDays <= duration) {
+    if(remainingDays <= parseFloat(duration)) {
         const earnings = calculateEarnings(
             parseInt(investedAmt),
             parseFloat(intrestRate)/100,
@@ -91,13 +92,13 @@ handleServices.updateEarning = async function({clientId, chargeID, plan, duratio
         )
         userDeposit.update({
             progressAmt: (earnings).toString(),
-            investmentCompleted: duration === remainingDays  ? true : false,
+            investmentCompleted: parseFloat(duration) === remainingDays  ? true : false,
             remainingDays: remainingDays
         } ,{where: {chargeID}})
     
         
         // When ever the investment is completed, let's increment user's account
-        if(duration === remainingDays) {
+        if(parseFloat(duration) === remainingDays) {
             const {id} = await Client.findOne({where: {uuid: clientId}}) as any
             await userAccount.increment('totalEarning', {
                 by: earnings,

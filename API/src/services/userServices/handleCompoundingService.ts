@@ -46,9 +46,10 @@ handleCompoundingServices.successfulCompoundingCharge = async function(chargeID:
     // UPDATE USERACCOUNT
     // get the user compounding wallet account
     const ifAny = await userCompounding.findOne({where: {clientId: id}});
+
+    // Each time a new user wallet is created, that user just made some investment.
+    await compoundingDeposit.update({status: "SUCCESSFUL"}, {where: {chargeID}})
     if(!ifAny) {
-        // Each time a new user wallet is created, that user just made some investment.
-        await compoundingDeposit.update({status: "SUCCESSFUL"}, {where: {chargeID}})
         // create new account for the user
         await userCompounding.create({
             totalDeposit: parseInt(res.investedAmt),
@@ -99,7 +100,6 @@ handleCompoundingServices.updateEarning = async function({clientId, chargeID, pl
     
         
         // When ever the investment is completed, let's increment user's account
-        console.log(remainingDays, parseInt(duration))
         if(parseInt(duration) === remainingDays) {
             const {id} = await Client.findOne({where: {uuid: clientId}}) as any
             await userCompounding.increment('totalEarning', {

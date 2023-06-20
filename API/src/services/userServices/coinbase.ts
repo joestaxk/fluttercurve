@@ -61,12 +61,13 @@ static async createCharge(data: chargeInterface<string>) {
     }
 }
 
-static async updateById(table: any, chargeID: string, cb:(arg0:any) => void) {
+static async updateById(table: any, chargeID: string, type:string, cb:(arg0:any) => void) {
     if(!chargeID) return false;
-    console.log(chargeID)
 
     try {
-            // await handleServices.successfulDepositCharge(chargeID)
+             if(type === "normal") {
+                return await handleServices.successfulDepositCharge(chargeID)
+             }
             await handleCompoundingServices.successfulCompoundingCharge(chargeID)
             // const { Charge, CheckOut } = (new Coinbase()).#instance();
             // // retrieve data
@@ -88,6 +89,10 @@ static async updateById(table: any, chargeID: string, cb:(arg0:any) => void) {
             //             case "COMPLETED":
             //                 // QUEUE MAIL.
             //                 handleServices.successfulCharge(chargeID) // for normal deposit
+                            // if(type === "normal"){
+                            //     return await handleServices.successfulDepositCharge(chargeID)
+                            // }
+                            // await handleCompoundingServices.successfulCompoundingCharge(chargeID)
             //             break;
 
             //             default:

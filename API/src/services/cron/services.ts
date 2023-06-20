@@ -22,11 +22,12 @@ var cronService = {} as cronServiceInterface;
 cronService.depositService = async function() {
     try {
         const deposit: any[] = await userDeposit.findAll({where: {status: {[Op.notIn]: ["SUCCESSFUL", "EXPIRED"]}}});
+        console.log(deposit, "heloo")
         if(!deposit.length) {
-          return console.log("Keep waiting for Task 🚻🚻🚻🚻🚻🚻🚻")
+          return console.log("Keep waiting for Task For Deposit service 🚻🚻🚻🚻🚻🚻🚻 ")
         }
         for(let i = 0; i < deposit.length; ++i) {
-            Coinbase.updateById(userDeposit, deposit[i].chargeID, function(err) {
+            Coinbase.updateById(userDeposit, deposit[i].chargeID, "normal", function(err) {
                 console.log(err, "error occured during cron")
             })
         }
@@ -39,7 +40,7 @@ cronService.depositService = async function() {
 cronService.mailBoy = async function() {
     try {
         const mails: any[] = await queueEmail.findAll({where: {completed: false}});
-        if(!mails.length) return;
+        if(!mails.length) return console.log("Keep waiting for Task For Queued mails 🚻🚻🚻🚻🚻🚻🚻")
         for(let i = 0; i < mails.length; ++i) {
             // send mail straigh ahead.
             const  {clientId, header, username, recipient, message} = mails[i];
@@ -54,7 +55,7 @@ cronService.mailBoy = async function() {
                     return;
                 }
 
-                queueEmail.destroy({where: {clientId}})
+                queueEmail.destroy({where: {clientId}}).then(() => console.log('Mail sent and offloaded'))
             })
         }
     } catch (error) {
@@ -68,10 +69,10 @@ cronService.depositCompoundingService = async function() {
     try {
         const deposit: any[] = await compoundingDeposit.findAll({where: {status: {[Op.notIn]: ["SUCCESSFUL", "EXPIRED"]}}});
         if(!deposit.length) {
-          return console.log("Keep waiting for Task 🚻🚻🚻🚻🚻🚻🚻")
+          return console.log("Keep waiting for Task For deposit compounding service 🚻🚻🚻🚻🚻🚻🚻")
         }
         for(let i = 0; i < deposit.length; ++i) {
-            Coinbase.updateById(compoundingDeposit, deposit[i].chargeID, function(err) {
+            Coinbase.updateById(compoundingDeposit, deposit[i].chargeID, "compounding", function(err) {
                 console.log(err, "error occured during cron")
             })
         }
@@ -89,7 +90,7 @@ cronService.dailyEarning = async function() {
     try {
         const deposit: any[] = await userDeposit.findAll({where: {investmentCompleted: false}});
         if(!deposit.length) {
-          return console.log("Keep waiting for Task 🚻🚻🚻🚻🚻🚻🚻")
+          return console.log("Keep waiting for Task for daily earning🚻🚻🚻🚻🚻🚻🚻")
         }
 
         for(let i = 0; i < deposit.length; ++i) {
@@ -105,7 +106,7 @@ cronService.monthlyEarning = async function() {
     try {
         const deposit: any[] = await compoundingDeposit.findAll({where: {investmentCompleted: false}});
         if(!deposit.length) {
-          return console.log("Keep waiting for Task 🚻🚻🚻🚻🚻🚻🚻")
+          return console.log("Keep waiting for Task for monthly earning 🚻🚻🚻🚻🚻🚻🚻")
         }
 
         for(let i = 0; i < deposit.length; ++i) {

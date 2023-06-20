@@ -58,17 +58,17 @@ interface Paragraph {
                 message,
             })
         } catch (error) {
-            
+            console.log(error)
         }
     },
-    sendMail: async function(){
+    // sendMail: async function(){
 
-    },
+    // },
 
-    successfulChargeMailTemplate: (userId:string, arr: TemplateItem[], email: string, userName: string): string => {
-      const containerHtml = reusableContainer(arr);
-  
-      templates.initQueueing(userId, "Congratulations, You've Successfully started a new investment", email, userName,  containerHtml)
+    successfulChargeMailTemplate: async (userId:string, arr: TemplateItem[], email: string, userName: string) => {
+      const containerHtml = reusableContainer(arr); // create the template
+
+      await templates.initQueueing(userId, "Congratulations, You've Successfully started a new investment", email, userName,  containerHtml)
       return containerHtml;
     },
   };

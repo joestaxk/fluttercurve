@@ -6,18 +6,36 @@ export default class Cron {
 
     #schedules(task: any) {
         return {
-            minutes : function(remote: boolean) {
+            minutes5 : function(remote: boolean) {
                 console.log(' 🔥🔥🔥 MINUTE CRON IN SERVICE 🔥🔥🔥`')
-                return cron.schedule('*/30 * * * *  *', function() {
+                return cron.schedule('*/2 * * *  *', function() {
                     task()
                 }, {
                     scheduled: remote
                   }
                 )
             },
-            daily : function(remote: boolean) {
+            minutes10 : function(remote: boolean) {
+                console.log(' 🔥🔥🔥 MINUTE CRON IN SERVICE 🔥🔥🔥`')
+                return cron.schedule('*/5 * * *  *', function() {
+                    task()
+                }, {
+                    scheduled: remote
+                  }
+                )
+            },
+            minutes15 : function(remote: boolean) {
+                console.log(' 🔥🔥🔥 MINUTE CRON IN SERVICE 🔥🔥🔥`')
+                return cron.schedule('*/7 * * *  *', function() {
+                    task()
+                }, {
+                    scheduled: remote
+                  }
+                )
+            },
+            daily6hrs : function(remote: boolean) {
                 console.log(' 🔥🔥🔥 DAILY CRON IN SERVICE 🔥🔥🔥`')
-                return cron.schedule('*/60 * * * * *', function() {
+                return cron.schedule('*/10 * * * * *', function() {
                     task()
                 }, {
                     scheduled: remote
@@ -26,7 +44,7 @@ export default class Cron {
         }
     }
 
-    add(task:any, type: "minutes"|"daily", id:string, remote?:boolean) {
+    add(task:any, type: "minutes5" | "minutes10"|"minutes15"|"daily6hrs", id:string, remote?:boolean) {
         if(!id) return;
         this.tasks[id] = this.#schedules(task)[type](remote||true);
         return this.tasks[id];

@@ -32,34 +32,34 @@ taskHandler.ongoingServices = [];
 
 taskHandler.depositCronUpdates = function() {
     console.log("---- reading depositCronUpdate --------")
-    const task:any = newJob.add(cronService.depositService, "minutes", "depositservice", true);
+    const task:any = newJob.add(cronService.depositService, "minutes5", "depositservice", true);
     taskHandler.ongoingServices.push(task as never);
 }
 
-taskHandler.depositCompoundingCronUpdates = async function() {
+taskHandler.depositCompoundingCronUpdates = function() {
     console.log("---- reading depositCompoundingCronUpdates --------")
-    const task:any = newJob.add(cronService.depositCompoundingService, "minutes", "compoundingservice", true);
+    const task:any = newJob.add(cronService.depositCompoundingService, "minutes5", "compoundingservice", true);
     taskHandler.ongoingServices.push(task as never);
 }
 
-taskHandler.QueuedMail = async function() {
+taskHandler.QueuedMail = function() {
     console.log("---- reading Queued mails --------")
-    const task:any = newJob.add(cronService.mailBoy, "minutes", "queuedmail", true);
+    const task:any = newJob.add(cronService.mailBoy, "minutes10", "queuedmail", true);
     taskHandler.ongoingServices.push(task as never);
 }
 
 
 // daily cron
-taskHandler.calculateDailyEarnings = async function(){
+taskHandler.calculateDailyEarnings = function(){
     console.log("---- reading calculate Daily Earnings --------")
-    const task:any = newJob.add(cronService.dailyEarning, "daily", "calculateDailyEarnings", true);
+    const task:any = newJob.add(cronService.dailyEarning, "daily6hrs", "calculateDailyEarnings", true);
     taskHandler.ongoingServices.push(task as never);
 }
 
 // monthly cron
-taskHandler.calculateMonthlyEarnings = async function(){
+taskHandler.calculateMonthlyEarnings = function(){
     console.log("---- reading calculate Monthly Earnings --------")
-    const task:any = newJob.add(cronService.monthlyEarning, "daily", "calculateMonthlyEarnings", true);
+    const task:any = newJob.add(cronService.monthlyEarning, "daily6hrs", "calculateMonthlyEarnings", true);
     taskHandler.ongoingServices.push(task as never);
 }
  
