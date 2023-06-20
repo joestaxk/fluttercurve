@@ -1,7 +1,7 @@
 import helpers from "../..//helpers";
 import auth from "../../lib/auth";
 import { userDataStateType } from "../../rState/initialStates";
-import { useEffect, useState} from "react";
+import { useEffect, useRef, useState} from "react";
 import { useCookies } from "react-cookie";
 import ButtonSpinner from "../utils/buttonSpinner";
 import useAlert from "../../hooks/alert";
@@ -29,6 +29,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
   })
   const [loading, setLoadingState] = useState(false)
   const {AlertComponent, showAlert} = useAlert()
+  const ahref:{current: any} = useRef(null);
 
   
   useEffect(() => {
@@ -145,9 +146,10 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
       setLoadingState(false)
       showAlert("success", "Redirecting to payment Gateway");
       const constrURI = `https://commerce.coinbase.com/charges/${data.data.next}`
-      if(typeof window === "undefined") return;
-      window.open(constrURI, '_blank')
+      ahref.current.href = constrURI;
+      ahref.current.click();
     }).catch((err) => {
+      ahref.current.click();
       setLoadingState(false)
 
       showAlert("error", err.response.data.message || "Something Wrong :(");
@@ -242,6 +244,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
           </form>
         </div>
         {AlertComponent}
+        <a ref={ahref} target="_blank" className="hidden">redirect</a>
       </div>
     )
 }

@@ -29,6 +29,7 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
     const amtRef: {current: any} = useRef(null)
     const {AlertComponent, showAlert} = useAlert()
     const [loading, setLoadingState] = useState(false)
+    const ahref:{current: any} = useRef(null);
 
     // motion style
     const container = {
@@ -104,9 +105,9 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
             val.initialAmt.value = "";
             setLoadingState(false)
             showAlert("success", "Redirecting to payment Gateway");
-            const constrURI = `https://commerce.coinbase.com/charges/${response.data.next}`
-            if(typeof window === "undefined") return;
-            window.open(constrURI, '_blank')
+            const constrURI = `https://commerce.coinbase.com/charges/${data.data.next}`
+            ahref.current.href = constrURI;
+            ahref.current.click();
         } catch (error:any) {
             setLoadingState(false)
             showAlert("error", error.response.data.message || "Something Wrong :(");
@@ -262,6 +263,7 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
             </motion.div>
           </motion.div>
           {AlertComponent}
+          <a ref={ahref} target="_blank" className="hidden">redirect</a>
         </main>
         )
 }
