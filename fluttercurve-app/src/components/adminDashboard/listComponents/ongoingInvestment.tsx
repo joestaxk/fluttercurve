@@ -16,6 +16,7 @@ export default function OngoingInvestment() {
     useEffect(() => {
         adminAuth.getAllUserDeposit(context.ID)
             .then((res: any) => {
+                console.log(res)
                 setUser([...res?.data]);
             })
             .catch((error: any) => {
@@ -57,6 +58,7 @@ export default function OngoingInvestment() {
                                     <th className="p-3 font-medium">Earnings</th>
                                     <th className="p-3 font-medium">Progress</th>
                                     <th className="p-3 font-medium">Suspend</th>
+                                    <th className="p-3 font-medium" title="Use this when the user complains that the payment is taking time.">Approve</th>
                                 </tr>
                             </thead>
                             <tbody className="border-[#e6e4e4] border-[1px]">
@@ -78,6 +80,24 @@ export default function OngoingInvestment() {
                                             <td className="p-3 font-medium text-slate-600">{helpers.currencyFormatLong(investedAmt, context?.user.currency)} </td>
                                             <td className="p-3 font-medium text-emerald-500">{helpers.currencyFormatLong(progressAmt, context?.user.currency)}</td>
                                             <td className="p-3 font-medium text-slate-600">{remainingDays}/{duration} days</td>
+                                            <td className="p-3 font-medium">
+                                                <Switch
+                                                    checked={enable}
+                                                    onClick={suspendData.bind(null, {chargeID, investmentCompleted})}
+                                                    onChange={setEnable}
+                                                    className={`${
+                                                        enable ? 'bg-blue-600' : 'bg-gray-200'
+                                                    } relative inline-flex h-6 w-11 items-center rounded-full opacity-60`}
+                                                >
+                                                    <span className="sr-only">Enable notifications</span>
+                                                    <span
+                                                        className={`${
+                                                            enable ? 'translate-x-6' : 'translate-x-1'
+                                                        } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                                                    />
+                                                </Switch>
+                                            </td>
+
                                             <td className="p-3 font-medium">
                                                 <Switch
                                                     checked={enable}
