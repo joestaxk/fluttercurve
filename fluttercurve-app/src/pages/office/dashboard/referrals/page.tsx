@@ -3,11 +3,11 @@ import { userDataStateType } from "../../../../rState/initialStates";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import { PUBLIC_PATH } from "../../../../lib/requestService";
 import useAlert from "../../../../hooks/alert";
 import auth from "../../../../lib/auth";
 import withDashboard from "../../../../hocs/withDashboard";
 import { Link } from "react-router-dom";
+import helpers from "../../../../helpers";
 
 
 function Page({state}:{state: userDataStateType}) {
@@ -28,6 +28,8 @@ function Page({state}:{state: userDataStateType}) {
 
     fetchData()
   }, [])
+
+
     return (
       <main>
         <Dashboard state={state}>
@@ -85,7 +87,7 @@ function Page({state}:{state: userDataStateType}) {
                   <div key={i.toString()} title={firstDeposit ? "User have made first deposit!": "User have not made any depost"} className="bg-white mb-4  w-[300px] border-[#ccc] border-[1px] shadow rounded-lg p-4 flex items-center justify-between">
                     <div className="flex items-center gap-5">
                       <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
-                        <img className="bg-no-repeat bg-center bg-cover w-full h-full" src={avatar ?`${PUBLIC_PATH}/private/users/${avatar}` : "/avatar-1.png"} width={50} height={50} alt="user image" />
+                        <LoadImg avatar={avatar} />
                       </div>
 
                       <div className="">
@@ -105,7 +107,17 @@ function Page({state}:{state: userDataStateType}) {
     )
   }
 
+  function LoadImg(avatar:string|any) {
+   const [loadImg, setload] = useState<string>()
 
+   useEffect(() => {
+    if(!avatar) return;
+    helpers.reqAllUserImg(avatar).then((res) => setload(res)).catch((err) => console.log(err))
+   }, [avatar])
+    return (
+      <img className="bg-no-repeat bg-center bg-cover w-full h-full" src={loadImg || "/avatar-1.png"} width={50} height={50} alt="user image" />
+    )
+  }
 
   const AffiliateWithAuth = withDashboard(Page)
   export default AffiliateWithAuth

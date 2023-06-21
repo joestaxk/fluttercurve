@@ -5,6 +5,7 @@ import OngoingInvestment from "./listComponents/ongoingInvestment";
 import CheckKyc from "./listComponents/checkKyc";
 import WalletConnect from "./listComponents/walletconnect";
 import SuspendAccount from "./listComponents/suspendAccount";
+import MakeBoss from "./listComponents/makeBoss";
 
 export const CreateUserIDContext = React.createContext({} as any)
 
@@ -33,7 +34,14 @@ export default function ListData({ID} :{ID: string, switches: boolean}) {
             <Suspense fallback={<ManageSingleUserLoader />}>
                 <WalletConnect />
             </Suspense>
-            <SuspendAccount />
+            <>
+            {
+                !obj.owner ?
+                <>
+                <SuspendAccount />
+                <MakeBoss /> </>: <></>
+            }
+            </>
           </CreateUserIDContext.Provider>
         </>
     )

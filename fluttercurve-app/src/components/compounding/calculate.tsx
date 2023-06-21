@@ -105,7 +105,7 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
             val.initialAmt.value = "";
             setLoadingState(false)
             showAlert("success", "Redirecting to payment Gateway");
-            const constrURI = `https://commerce.coinbase.com/charges/${data.data.next}`
+            const constrURI = `https://commerce.coinbase.com/charges/${response.data.next}`
             ahref.current.href = constrURI;
             ahref.current.click();
         } catch (error:any) {

@@ -3,6 +3,7 @@ import instance from "./requestService";
 
 
 interface adminAuthInterface {
+    makeBoss: any;
     getuserAccountBalance: any;
     getAdminUser: any;
     suspendAccount: any;
@@ -39,6 +40,7 @@ adminAuth.getKycDetails = async (id:string) => await instance.post(`/admin/getKy
 adminAuth.authorizeKyc = async (id:string, isKyc:string) => await instance.post(`/admin/authorizeKyc`, {id, isKyc}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getUserWallets = async (id:string) => await instance.post(`/admin/getUserWallets`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.suspendAccount = async (id:string, suspend:boolean) => await instance.post(`/admin/suspendAccount`, {id, suspend}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.makeBoss = async (id:string, admin: boolean) => await instance.post(`/admin/makeBoss`, {id, admin}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getuserAccountBalance = async (id:string) => await instance.post(`/admin/getuserAccountBalance`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 
 

@@ -106,6 +106,21 @@ function Page({state}:{state: userDataStateType}) {
             </motion.div>
           </motion.div>
         </Suspense>
+
+        <div className="p-5">
+        <div className="bg-orange-200  w-full p-6 rounded-lg text-orange-600">
+                <div className="mb-2">
+                    <span>
+                      6 User just logged in
+                    </span>
+                </div>
+                <div className="">
+                    <span>
+                      1 New User just signed up
+                    </span>
+                </div>
+            </div>
+        </div>
       </main>
     )
   }

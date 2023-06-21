@@ -60,6 +60,7 @@ function EditUsers({ID, switches, goBack}:any) {
 
 function ListUsers({setSwitch}: any) {
     const [userList, setList] = useState({} as any)
+    const [fakeList, setFakeList] = useState({} as any)
     let [page, setPage] = useState(1)
     const [loading, setloading] = useState(false)
     const {AlertComponent, showAlert} = useAlert()
@@ -76,9 +77,32 @@ function ListUsers({setSwitch}: any) {
             showAlert("error", "Can't load data. NETWORK-ERR")
         }
     }
+
+    useEffect(() => {
+        setFakeList(userList)
+    }, [userList])
+    
     useEffect(() => {
         LoadUser()
     }, [page])
+
+    function debounce(func: any, delay:number) {
+        let timeout:any;
+
+        return function() {
+            clearTimeout(timeout)
+            timeout = setTimeout(func, delay)
+
+        }
+    }
+
+    function captureKeyLogs(ev:any) {
+        const getValue = ev.target.value;
+        debounce(function(){
+            const filteredUserList = userList.data.filter((res:any) => res.fullName.includes(getValue));
+                setFakeList((prev:any) => ({ ...prev, data: filteredUserList }));
+        }, 1000)()
+    }
 
     
     return (
@@ -91,11 +115,21 @@ function ListUsers({setSwitch}: any) {
             <div className="my-4">
                 <h2 className="text-xl font-medium text-[#212121cc]">Users</h2>
                 <p className="text-gray-600">A list of all the user's account including their name, title, email and role.</p>
+
+                <div className="">
+                    <div className="border-[1px] border-gray-200 rounded-lg  focus-within:border-blue-500">
+                        <input type="text" placeholder="Filter by fullname only" className="outline-none p-3 bg-transparent w-full disabled:bg-slate-100" onKeyUp={captureKeyLogs}  disabled={!userList?.data}/>
+                    </div>
+                </div>
             </div>
 
-            {typeof userList?.data === "undefined" ? <ManageUserLoader /> : 
+            {typeof fakeList?.data === "undefined" ? <ManageUserLoader /> : 
             <>
-                <div className="w-full overflow-y-auto rounded-2xl border-[1px] border-gray-100 mt-5">
+                <motion.div
+                  initial = {{opacity: 0, x: -5}}
+                  animate = {{opacity: 1, x:0, transition: {delay: 5}}}
+                  exit={{transition: {delay: .5}, x: -5, opacity: 0}} 
+                  className="w-full overflow-y-auto rounded-2xl border-[1px] border-gray-100 mt-5">
                     <table className="w-full border-[#e6e4e4] border-[1px]">
                         <thead className="bg-[#f3f3f3]">
                             <tr className="text-left">
@@ -108,7 +142,7 @@ function ListUsers({setSwitch}: any) {
 
                         <tbody className="border-[#e6e4e4] border-[1px]">
                         {(
-                            userList.data.map((res: any) => {
+                            fakeList.data.map((res: any) => {
                             return (
                                 <UserRow key={res.id} user={res} setSwitch = {setSwitch} />
                             );
@@ -116,49 +150,49 @@ function ListUsers({setSwitch}: any) {
                         )}
                         </tbody> 
                     </table>
+                </motion.div>
+
+                <div className="relative flex items-center justify-center  w-full  py-3">
+                {loading && <div className="absolute inset-0 w-full h-full bg-slate-200 opacity-60 z-10 flex justify-center"><ButtonSpinner color="#333" /></div>}
+                    <div className=" sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                            <div >
+                                <nav className="isolate inline-flex items-center space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                                        <a
+                                        onClick={() => {
+                                            page >= userList.totalPage ? setPage(--page) : setPage(1)
+                                        }}
+                                        href="#" className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                                            <span className="sr-only">Previous</span>
+                                            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
+                                            </svg>
+                                        </a>
+                                        <div className="px-4">
+                                            <p className="text-sm text-gray-700 flex gap-1">
+                                                Showing
+                                                <span className="font-medium">{userList.page}</span>
+                                                to
+                                                <span className="font-medium">{userList.limit}</span>
+                                                of
+                                                <span className="font-medium">{userList.totalRecords}</span>
+                                                results
+                                            </p>
+                                        </div>
+
+
+                                        <a href="#" onClick={() => {
+                                            page < userList.totalPages ? setPage(++page) : setPage(userList.totalPages);
+                                        }} className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                                            <span className="sr-only">Next</span>
+                                            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+                                            </svg>
+                                        </a>
+                                </nav>
+                            </div>
+                    </div>
                 </div>
-
-            <div className="relative flex items-center justify-center  w-full  py-3">
-               {loading && <div className="absolute inset-0 w-full h-full bg-slate-200 opacity-60 z-10 flex justify-center"><ButtonSpinner color="#333" /></div>}
-                <div className=" sm:flex sm:flex-1 sm:items-center sm:justify-between">
-                        <div >
-                            <nav className="isolate inline-flex items-center space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                                    <a
-                                    onClick={() => {
-                                        page >= userList.totalPage ? setPage(--page) : setPage(1)
-                                    }}
-                                     href="#" className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-                                        <span className="sr-only">Previous</span>
-                                        <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
-                                        </svg>
-                                    </a>
-                                    <div className="px-4">
-                                        <p className="text-sm text-gray-700 flex gap-1">
-                                            Showing
-                                            <span className="font-medium">{userList.page}</span>
-                                            to
-                                            <span className="font-medium">{userList.limit}</span>
-                                            of
-                                            <span className="font-medium">{userList.totalRecords}</span>
-                                            results
-                                        </p>
-                                    </div>
-
-
-                                    <a href="#" onClick={() => {
-                                        page < userList.totalPages ? setPage(++page) : setPage(userList.totalPages);
-                                    }} className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
-                                        <span className="sr-only">Next</span>
-                                        <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
-                                        </svg>
-                                    </a>
-                            </nav>
-                        </div>
-                </div>
-            </div>
-            {AlertComponent}
+                {AlertComponent}
             </>
              }
 
@@ -215,14 +249,14 @@ const UserRow = ({ key, user, setSwitch }: { key: string, user: any , setSwitch:
             border-[1px] 
             w-fit p-1 rounded-3xl
             ${ !user.isVerified ? "border-[#d1b7b7] bg-red-100 text-red-700":
-            ((user.isKyc === "NEW")|| !user.isWalletConnect) ? "border-[#e2cfc5] bg-orange-100 text-orange-700" :
+            ((user.isKyc !== "APPROVED")|| !user.isWalletConnect) ? "border-[#e2cfc5] bg-orange-100 text-orange-700" :
             "border-[#bdddbd] bg-green-100 text-emerald-700"}
             `}>
             {
-                !user.isVerified && "Email/"
+                !user.isVerified && "Email / "
             }
             {
-                (user.isKyc === "NEW") && "Kyc/"
+                (user.isKyc !== "APPROVED") && "Kyc /"
             }
             {
                 !user.isWalletConnect && "Wallet"

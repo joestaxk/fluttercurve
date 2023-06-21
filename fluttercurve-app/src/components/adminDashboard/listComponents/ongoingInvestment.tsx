@@ -16,7 +16,6 @@ export default function OngoingInvestment() {
     useEffect(() => {
         adminAuth.getAllUserDeposit(context.ID)
             .then((res: any) => {
-                console.log(res)
                 setUser([...res?.data]);
             })
             .catch((error: any) => {
