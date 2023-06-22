@@ -41,7 +41,6 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
         console.log(error)
       }
     }
-
     fetchData().then((res:any) => setDepositPlans(res))
   }, [])
 
@@ -71,20 +70,20 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
 
     const formVal = ev.target;
     const data = {
-      amount: parseInt(formVal.amount.value || 0) as number,
+      amount: formVal.amount.valueAsNumber as number,
       paymentMethod: formVal.paymentMethod.value
     };
 
     // Validations
-    if(data.amount < parseInt(selectedData.minAmt)) {
-      return setValidation({...validate, stat: true, msg: `minimum amount is ${helpers.currencyFormatLong(selectedData.minAmt, state.currency)}`})
+    if(data.amount < helpers.calculateFixerData("USD", state.currency,  selectedData.minAmt)) {
+      return setValidation({...validate, stat: true, msg: `minimum amount is ${helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency,  selectedData.minAmt), state.currency)}`})
     }else {
       setValidation({...validate, stat: false, msg: ""})
     }
 
-    if(data.amount > parseInt(selectedData.maxAmt)) {
+    if(data.amount > helpers.calculateFixerData("USD", state.currency, selectedData.maxAmt)) {
       // do error
-      return setValidation({...validate, stat: true, msg: `maximum amount is ${helpers.currencyFormatLong(selectedData.maxAmt, state.currency)}`})
+      return setValidation({...validate, stat: true, msg: `maximum amount is ${helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency,  selectedData.maxAmt), state.currency)}`})
     }else {
       setValidation({...validate, stat: false, msg: ""})
     }
@@ -123,7 +122,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
       plan: selectedData.plan,
       duration: selectedData.duration,
       intrestRate: selectedData.dailyInterestRate,
-      investedAmt: data.amount
+      investedAmt: helpers.calculateFixerData(state.currency, "USD", data.amount)
     } 
 
     const chargeAPIData = {
@@ -133,7 +132,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
         },
         name: selectedData.plan,
         local_price: {
-          amount: data.amount,
+          amount: helpers.calculateFixerData(state.currency, "USD", data.amount),
           currency: state.currency
       }
     }
@@ -183,11 +182,11 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
                   <div className="">
                       <div className="p-4 border-b-[#ccc] border-b-[1px] flex justify-between">
                           <div className="font-bold text-[#121d33e9]">Minimum Amount:</div>
-                          <div className="text-[#212121cc]">{helpers.currencyFormatLong(minAmt, state.currency)}</div>
+                          <div className="text-[#212121cc]">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, parseInt(minAmt)), state.currency)}</div>
                       </div>
                       <div className="p-4 border-b-[#ccc] border-b-[1px] flex justify-between">
                           <div className="font-bold text-[#121d33e9]">Maximum Amount:</div>
-                          <div className="text-[#212121cc]">{helpers.currencyFormatLong(maxAmt, state.currency)}</div>
+                          <div className="text-[#212121cc]">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, parseInt(maxAmt)), state.currency)}</div>
                       </div>
                       <div className="p-4 border-b-[#ccc] border-b-[1px] flex justify-between">
                           <div className="font-bold text-[#121d33e9]">Money back guarantee:</div>
@@ -219,9 +218,9 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
               <div className="flex flex-wrap w-full gap-2 mt-4">
                 <div className={`border-[1px] ${validate.stat ? "border-[#d20b0b]" : "border-[#ccc]"} md:w-1/2 w-full rounded-lg overflow-hidden`}>
                   <input 
-                    type="text"
+                    type="number"
                    name="amount" 
-                  placeholder={`Enter Amount: ${helpers.currencyFormatLong(parseInt(selectedData.minAmt as any || 0), state.currency)}`} 
+                  placeholder={`Enter Amount: ${helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, selectedData.minAmt), state.currency)} `} 
                   className="outline-none bg-transparent p-3 w-full"/>
                 </div>
 

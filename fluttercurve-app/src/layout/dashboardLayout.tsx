@@ -42,6 +42,11 @@ export default function DashboardLayout() {
     useEffect(() => {
       auth.getMe(helpers.getCookie('xat')).then(({data}:any) => {
         helpers.storeLocalItem('user_data', data)
+        updateProfileContext(data)
+      })
+      
+      auth.currencyConversion(helpers.getCookie('xat')).then(({data}:any) => {
+        helpers.storeLocalItem('currency_data', data)
       })
       updateProfileContext(null)
     }, [])

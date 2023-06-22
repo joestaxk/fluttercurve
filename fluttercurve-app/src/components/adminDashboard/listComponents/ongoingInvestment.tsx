@@ -76,8 +76,8 @@ export default function OngoingInvestment() {
                                                 <div className={status === "SUCCESSFUL" ? `text-emerald-600` : `text-gray-600` }>{status}</div>
                                             </td>
                                             <td className="p-3 font-medium text-slate-600">{plan} Plan</td>
-                                            <td className="p-3 font-medium text-slate-600">{helpers.currencyFormatLong(investedAmt, context?.user.currency)} </td>
-                                            <td className="p-3 font-medium text-emerald-500">{helpers.currencyFormatLong(progressAmt, context?.user.currency)}</td>
+                                            <td className="p-3 font-medium text-slate-600">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", context?.user.currency,investedAmt), context?.user.currency)} </td>
+                                            <td className="p-3 font-medium text-emerald-500">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", context?.user.currency,progressAmt), context?.user.currency)}</td>
                                             <td className="p-3 font-medium text-slate-600">{remainingDays}/{duration} days</td>
                                             <td className="p-3 font-medium">
                                                 <Switch

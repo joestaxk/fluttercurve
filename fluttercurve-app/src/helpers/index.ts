@@ -2,6 +2,8 @@ import auth from "../lib/auth";
 import instance from "../lib/requestService";
 
 interface helpersInterface {
+    calculateFixerData: (from: string, to: string, amt: number) => number;
+    checkConversion: (from: string, to: string, amount: number) => Promise<void>;
     reqAllKycData: (id: string, filename: string) => Promise<string | undefined>;
     reqAllUserImg: (getAvatar: string) => Promise<string | undefined>;
     loadAdminImg: () => Promise<string | undefined>;
@@ -41,6 +43,7 @@ helpers.forceLogoutAdmin = async function() {
         helpers.deleteCookie("xat")
         helpers.deleteLocalItem('admin_data')
         helpers.deleteLocalItem('profile_data')
+        helpers.deleteLocalItem('currency_data')
         location.href = "/login"
     } catch (error) {
         console.log(error)
@@ -53,6 +56,7 @@ helpers.logoutAdmin = async function() {
         helpers.deleteCookie("xat")
         helpers.deleteLocalItem('admin_data')
         helpers.deleteLocalItem('profile_data')
+        helpers.deleteLocalItem('currency_data')
         const logout = await auth.logout(helpers.getCookie("xat") as any);
         if(logout){
             location.href = "/login"
@@ -68,6 +72,7 @@ helpers.logoutUser = async function(showAlert:any) {
         helpers.deleteCookie("xat")
         helpers.deleteLocalItem('user_data')
         helpers.deleteLocalItem('profile_data')
+        helpers.deleteLocalItem('currency_data')
         const logout = await auth.logout(helpers.getCookie("xat") as any);
         if(logout){
             location.href = "/login"
@@ -225,5 +230,16 @@ helpers.reqAllUserImg = async function(getAvatar: string) {
       throw error; // Optionally, throw the error or return a default value
     }
   };
+
+  helpers.calculateFixerData = function(from: string, to: string, amt: any):number {
+    const getData:any = helpers.getLocalItem("currency_data")
+    if(!getData) return 0;
+    // get the fixer data.
+    const conversion = getData[to]/getData[from]
+    // make the conversion
+    const perfConversion:number = parseInt(amt as any) * conversion;
+    // return data
+    return parseInt(perfConversion.toFixed())
+}
 
 export default helpers;

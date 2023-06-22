@@ -127,8 +127,8 @@ function Page({state}:{state: userDataStateType}) {
                       notifications?.rows?.length ? 
                       <>
                         {
-                          notifications?.rows.map(({clientId, type, fullName, userIp, depositType}: any) => (
-                            <div key={clientId}>
+                          notifications?.rows.map(({type, fullName, userIp, depositType}: any, i:number) => (
+                            <div key={i.toString()}>
                               {
                                 type === "EXISTING" ? 
                                 

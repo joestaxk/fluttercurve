@@ -34,7 +34,7 @@ function DepositCompounding({state}:{state: userDataStateType}) {
                 <h1 className="text-2xl font-semibold text-[#514AB1]">{
                   !state.userCompounding ? 
                   helpers.currencyFormat(parseFloat("0"), state.currency) : 
-                  helpers.currencyFormatLong((parseInt(state.userCompounding?.totalEarning)), state.currency)
+                  helpers.currencyFormatLong((helpers.calculateFixerData("USD", state.currency, state.userCompounding?.totalEarning)), state.currency)
                 }</h1>
               </div>
 
@@ -44,7 +44,7 @@ function DepositCompounding({state}:{state: userDataStateType}) {
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Total Deposits</h3>
-                <h1 className="text-2xl font-semibold text-[#514AB1]">{helpers.currencyFormatLong(state.userCompounding?.totalDeposit || "0.00", state.currency)}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, state.userCompounding?.totalDeposit || "0.00"), state.currency)}</h1>
               </div>
 
               <img src={`/${state.currency}.png`} width={50} height={50} alt="money"/>
@@ -118,11 +118,11 @@ function Deposits({state} :{state: userDataStateType}) {
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48"><mask id="ipSFiveStarBadge0"><path fill="#fff" stroke="#fff" strokeLinecap="round" strokeLinejoin="round"  strokeWidth="4" d="M23.103 20.817a1 1 0 0 1 1.794 0l2.985 6.048a1 1 0 0 0 .753.548l6.675.97a1 1 0 0 1 .554 1.705l-4.83 4.708a1 1 0 0 0-.288.885l1.14 6.648a1 1 0 0 1-1.45 1.054l-5.97-3.138a1 1 0 0 0-.931 0l-5.97 3.138a1 1 0 0 1-1.452-1.054l1.14-6.648a1 1 0 0 0-.287-.885l-4.83-4.708a1 1 0 0 1 .554-1.706l6.675-.97a1 1 0 0 0 .753-.547l2.985-6.048ZM36 4H12v10l12 5l12-5V4Z"/></mask><path fill="gold" d="M0 0h48v48H0z" mask="url(#ipSFiveStarBadge0)"/></svg>
                             <span>Investment Completed.</span>
                         </div>
-                        <div className="text-4xl text-[#3ddc75] font-bold">{helpers.currencyFormatLong(data.progressAmt, state.currency)}</div>
+                        <div className="text-4xl text-[#3ddc75] font-bold">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, data.progressAmt), state.currency)}</div>
                     </div> : 
                     <div className="">
                         <div className="text-md mb-1 text-[#212121cc]">Earning So far.</div>
-                        <div className="text-4xl text-[#3333bddf] font-bold">{helpers.currencyFormatLong(data.progressAmt, state.currency)}</div>
+                        <div className="text-4xl text-[#3333bddf] font-bold">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, data.progressAmt), state.currency)}</div>
                     </div>
                     }
 

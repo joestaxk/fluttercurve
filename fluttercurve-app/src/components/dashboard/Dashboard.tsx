@@ -9,6 +9,7 @@ import ConnectWallet from "./connectWallet";
 import { Link } from "react-router-dom";
 import { ProfileContext } from "../../context/profile-context";
 import  useAlert from "../../hooks/alert";
+import instance from "../../lib/requestService";
 
 
 function Dashboard({children, state}:{children: any, state: userDataStateType}) {
@@ -17,6 +18,15 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
     const [width] = useResize();
     const [showWallet, setShowWallet] = useState(false)
     const {profileDataContext} = useContext(ProfileContext)
+    const [currency, setcurrency] = useState([]);
+
+    useEffect(() => {
+        instance.get("/service/getCurrencies").then((res) => {
+           setcurrency(res.data)
+        }).catch((err:any) => {
+            console.log(err.response.data)
+        })
+    }, [])
 
     useEffect(() => {
         if(nav) {
@@ -28,6 +38,16 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
         }
     }, [nav])
 
+    function handleCurrencyX(ev:any) {
+        const newCurrency = ev.target.value;
+        if(newCurrency !== state.currency) {
+            instance.post('/service/switchCurrency', {currency: newCurrency}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}}).then(({data}) => {
+                if(data.updated) {
+                    location.reload()
+                }
+            })
+        }
+    }
 
     return (
         <>
@@ -62,7 +82,26 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
                     </div>
                 </div>
 
+
+
                 <div className="flex items-center gap-3 relative">
+                    <button className="border-[1px] border-gray-300 text-gray-100 rounded-md cursor-pointer">
+                    <select
+                    onChange={handleCurrencyX}
+                    className="w-full p-1 bg-transparent md:text-lg text-sm"
+                    name="currency"
+                    required
+                    >
+                    {
+                        currency.length ? 
+                        currency.map(({id, currency}:any) => (
+                            <option key={id} value={currency} selected={state.currency === currency}>{currency}</option>
+                        )) : <option value=''>Currency Loading...</option>
+                    }
+
+                    </select>
+                    </button>
+
                     <div className="relative" id="show">
                         <div className="cursor-pointer flex gap-1" onClick={() => setShow(!show)}>
                             <div className="relative">
@@ -75,7 +114,7 @@ function Dashboard({children, state}:{children: any, state: userDataStateType}) 
                                     crossOrigin="anonymous"
                                 />
                                 {
-                                    state?.isVerified && <svg className="absolute right-0 bottom-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill="blue" fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 0 0 1.745-.723a3.066 3.066 0 0 1 3.976 0a3.066 3.066 0 0 0 1.745.723a3.066 3.066 0 0 1 2.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 0 1 0 3.976a3.066 3.066 0 0 0-.723 1.745a3.066 3.066 0 0 1-2.812 2.812a3.066 3.066 0 0 0-1.745.723a3.066 3.066 0 0 1-3.976 0a3.066 3.066 0 0 0-1.745-.723a3.066 3.066 0 0 1-2.812-2.812a3.066 3.066 0 0 0-.723-1.745a3.066 3.066 0 0 1 0-3.976a3.066 3.066 0 0 0 .723-1.745a3.066 3.066 0 0 1 2.812-2.812Zm7.44 5.252a1 1 0 0 0-1.414-1.414L9 10.586L7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clipRule="evenodd"/></svg>
+                                    state?.isVerified && <svg className="absolute right-0 bottom-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 20 20"><path fill={state?.isKyc === "APPROVED" ? "gold" : "skyblue"} fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 0 0 1.745-.723a3.066 3.066 0 0 1 3.976 0a3.066 3.066 0 0 0 1.745.723a3.066 3.066 0 0 1 2.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 0 1 0 3.976a3.066 3.066 0 0 0-.723 1.745a3.066 3.066 0 0 1-2.812 2.812a3.066 3.066 0 0 0-1.745.723a3.066 3.066 0 0 1-3.976 0a3.066 3.066 0 0 0-1.745-.723a3.066 3.066 0 0 1-2.812-2.812a3.066 3.066 0 0 0-.723-1.745a3.066 3.066 0 0 1 0-3.976a3.066 3.066 0 0 0 .723-1.745a3.066 3.066 0 0 1 2.812-2.812Zm7.44 5.252a1 1 0 0 0-1.414-1.414L9 10.586L7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clipRule="evenodd"/></svg>
                                 }
                             </div>
                             <div className="text-[#f3f1f1] md:block hidden">

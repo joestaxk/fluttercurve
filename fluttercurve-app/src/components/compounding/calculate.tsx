@@ -58,14 +58,14 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
             setValidation((prevState:any) => { return {...prevState, amount: false}})
         }
         // MIN VALIDATION
-        if(data.initialAmt < parseInt(compoundingPlans.minAmt)) {
+        if(data.initialAmt < helpers.calculateFixerData("USD", state.currency, parseInt(compoundingPlans.minAmt))) {
             setValidation((prevState:any) => { return {...prevState, min: true}})
             return false
         }else {
             setValidation((prevState:any) => { return {...prevState, min: false}})
         }
         // MAX VALIDATION
-        if(data.initialAmt > parseInt(compoundingPlans.maxAmt)) {
+        if(data.initialAmt > helpers.calculateFixerData("USD", state.currency, parseInt(compoundingPlans.maxAmt))) {
             setValidation((prevState:any) => { return {...prevState, max: true}})
             return false
         }else {
@@ -94,10 +94,10 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
         const _data = {
             compoundingPeriod: data.compoundingPeriod,
             id: depositID,
-            amount: data.initialAmt,
+            amount: helpers.calculateFixerData(state.currency, "USD", data.initialAmt),
             currency:state.currency
         }
-
+  
         setLoadingState(true)
         try {
             const response = await auth.makeInvestment(helpers.getCookie('xat'), _data);
@@ -148,7 +148,7 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
                         <label htmlFor="font-bold text-[#212121cc] text-xl mb-1">Enter Amount to Invest</label>
                         <div className={`${validate.amount ? "text-[#d62c2c] border-[#d62c2c]": "border-[#ccc] focus-within:border-[#4385ff]"} min-h-fit border-[1px] w-full flex`}>
                             <div className="w-[80%]">
-                                <input type="number" name="initialAmt" ref={amtRef} defaultValue={helpers.currencyFormatLong(compoundingPlans?.minAmt as any, state.currency)} className="w-full p-4 outline-none" placeholder="0.0"/>
+                                <input type="number" name="initialAmt" ref={amtRef} defaultValue={helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, compoundingPlans?.minAmt as any), state.currency)} className="w-full p-4 outline-none" placeholder="0.0"/>
                             </div>
                             <div className="w-[20%] flex flex-col items-center font-bold bg-[#ebebeb] text-[#526288] ">
                                 <div>{compoundingPlans?.interestRate}%</div>
@@ -157,10 +157,10 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
                         </div>
                         <div className="flex justify-between mt-2">
                             <div className={`${validate.min ? "text-[#d62c2c]": ""}`}>
-                                Min. of <span className={`font-bold ${validate.min ? "text-[#d62c2c]": "text-[#526288]"}`}>{helpers.currencyFormatLong(compoundingPlans?.minAmt as any, state.currency)}</span>
+                                Min. of <span className={`font-bold ${validate.min ? "text-[#d62c2c]": "text-[#526288]"}`}>{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, compoundingPlans?.minAmt as any), state.currency)}</span>
                             </div>
                             <div className={`${validate.max ? "text-[#d62c2c]": ""}`}>
-                                 Max. of <span className={`font-bold ${validate.max ? "text-[#d62c2c]": "text-[#526288]"}`}>{helpers.currencyFormatLong(compoundingPlans?.maxAmt as any, state.currency)}</span>
+                                 Max. of <span className={`font-bold ${validate.max ? "text-[#d62c2c]": "text-[#526288]"}`}>{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, compoundingPlans?.maxAmt as any), state.currency)}</span>
                             </div>
                         </div>
                     </div>
@@ -205,33 +205,29 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
                 <div className="flex flex-wrap gap-2 mt-4">
                     <div className="w-[48%] min-h-[100px]">
                         <div className="text-lg font-[400] mb-2">Future investment value</div>
-                        <div className="text-4xl font-semibold text-[#5e88e9]">
+                        <div className="md:text-4xl text-xl font-semibold text-[#5e88e9]">
                             {
-                                (parseInt(intrestCalc.FIV.toFixed(2)) < 600000 )?
-                                helpers.currencyFormatLong(intrestCalc.FIV.toFixed(2) as any, state.currency) :
                                 helpers.currencyFormat(intrestCalc.FIV.toFixed(2) as any, state.currency)
                             }
                         </div>
                     </div>
                     <div className="w-[48%] min-h-[100px] ">
                         <div className="text-lg font-[400] mb-2">Total interest earned </div>
-                        <div className="text-4xl font-semibold text-[#33ce69]">
+                        <div className="md:text-4xl text-xl font-semibold text-[#33ce69]">
                             {
-                                (parseInt(intrestCalc.TIE.toFixed(2)) < 600000 )?
-                                helpers.currencyFormatLong(intrestCalc.TIE.toFixed(2) as any, state.currency) :
                                 helpers.currencyFormat(intrestCalc.TIE.toFixed(2) as any, state.currency)
                             }
                         </div>
                     </div>
                     <div className="w-[48%] min-h-[100px] ">
                         <div className="text-lg font-[400] mb-2">Initial Balance</div>
-                        <div className="text-4xl font-semibold text-[gray]">
-                            {helpers.currencyFormatLong(intrestCalc.IB as any, state.currency)}
+                        <div className="md:text-4xl text-xl font-semibold text-[gray]">
+                            {helpers.currencyFormat( intrestCalc.IB as any, state.currency)}
                         </div>
                     </div>
                     <div className="w-[48%] min-h-[100px] ">
                         <div className="text-lg font-[400] mb-2">Effective Interest Rate</div>
-                        <div className="text-4xl text-[#ff8800] font-semibold">{intrestCalc.EIR.toFixed(2)} <sup>%</sup></div>
+                        <div className="md:text-4xl text-xl text-[#ff8800] font-semibold">{intrestCalc.EIR.toFixed(2) as any} <sup>%</sup></div>
                         <p className="text-[#404040] mt-3 text-[15px]">The effective interest rate is the rate of interest / earnings that you receive on your investment after compounding has been included.</p>
                     </div>
                 </div>
@@ -252,8 +248,8 @@ export default function CalculateCompoundingInvestmentPlan({state, compoundingPl
                                 multiIntrestCalc.length ? multiIntrestCalc.map((data, i) => (
                                     <tr key={i.toString()}>
                                         <td className="text-left py-4 pl-2">{data?.period}</td>
-                                        <td className="text-left py-4 pl-2">{helpers.currencyFormatLong(data?.TIE as any, state.currency)}</td>
-                                        <td className="text-left py-4 pl-2">{helpers.currencyFormatLong(data?.FIV as any, state.currency)}</td>
+                                        <td className="text-left py-4 pl-2">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency,data?.TIE as any), state.currency)}</td>
+                                        <td className="text-left py-4 pl-2">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency,data?.FIV as any), state.currency)}</td>
                                     </tr>
                                 )):<tr></tr>
                             }

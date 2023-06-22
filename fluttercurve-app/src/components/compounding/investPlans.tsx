@@ -75,11 +75,11 @@ export default function CompoundingInvesmentPlan({state}:{state: userDataStateTy
                   <div className="">
                       <div className="p-4 border-b-[#ccc] border-b-[1px] flex justify-between">
                           <div className="font-bold text-[#526288]">Minimum Amount:</div>
-                          <div className="text-[#212121cc]">{helpers.currencyFormatLong(minAmt, state.currency)}</div>
+                          <div className="text-[#212121cc]">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, minAmt), state.currency)}</div>
                       </div>
                       <div className="p-4 border-b-[#ccc] border-b-[1px] flex justify-between">
                           <div className="font-bold text-[#526288]">Maximum Amount:</div>
-                          <div className="text-[#212121cc]">{helpers.currencyFormatLong(maxAmt, state.currency)}</div>
+                          <div className="text-[#212121cc]">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, maxAmt), state.currency)}</div>
                       </div>
                       <div className="p-4 border-b-[#ccc] border-b-[1px] flex justify-between">
                           <div className="font-bold text-[#526288]">Duration:</div>

@@ -4,6 +4,7 @@ export type userDataStateType = {
     fullName: string,
     email: string,
     isVerified: boolean,
+    isKyc: "APPROVED"|"DECLINED",
     isAdmin: boolean,
     currency: "USD"|"GDP",
     country: "",

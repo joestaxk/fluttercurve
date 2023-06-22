@@ -2,6 +2,7 @@ import instance from "./requestService";
 
 
 interface authInterface {
+    currencyConversion: any;
     getAllCompoundingSuccessfulInvesment: any;
     getMe: any;
     getAllCompoundingDepositRequest: any;
@@ -135,6 +136,11 @@ auth.getActiveWithdrawal = async function(access_token: string) {
 
 auth.getDepositPlans = async function(access_token: string) {
     return await instance.get(`/service/getDepositPlans`, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
+//  CONVERSION
+auth.currencyConversion = async function(access_token: string) {
+    return await instance.get(`/service/currencyConversion`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 export default auth;
     
