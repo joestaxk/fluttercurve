@@ -73,6 +73,8 @@ const useAlert = () => {
   );
 
   const showAlert = (type: AlertType, message: string) => {
+    if(typeof message !== "string" && type == "error") message = "Something Went Wrong"
+    if(typeof message !== "string" && type == "success") message = "OK"
     setAlert({ type, message });
   };
 

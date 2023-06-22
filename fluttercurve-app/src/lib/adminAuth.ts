@@ -3,6 +3,8 @@ import instance from "./requestService";
 
 
 interface adminAuthInterface {
+    deliverMails: any;
+    getNotification: any;
     makeBoss: any;
     getuserAccountBalance: any;
     getAdminUser: any;
@@ -32,6 +34,7 @@ adminAuth.getAllUserCount = async () => await instance.get('/admin/getAllUserCou
 adminAuth.getAllUser = async (page:number) => await instance.get(`/admin/getAllUsers?page=${page}`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 
 adminAuth.getAdminUser = async () => await instance.get(`/admin/getAdminUser`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.deliverMails = async (header:string,message:string) => await instance.post(`/admin/deliverMails`, {header,message}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 
 adminAuth.getUser = async (id:string) => await instance.post(`/admin/getUser`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getAllUserDeposit = async (id:string) => await instance.post(`/admin/getAllUserDeposit`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
@@ -41,6 +44,7 @@ adminAuth.authorizeKyc = async (id:string, isKyc:string) => await instance.post(
 adminAuth.getUserWallets = async (id:string) => await instance.post(`/admin/getUserWallets`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.suspendAccount = async (id:string, suspend:boolean) => await instance.post(`/admin/suspendAccount`, {id, suspend}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.makeBoss = async (id:string, admin: boolean) => await instance.post(`/admin/makeBoss`, {id, admin}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.getNotification = async () => await instance.get(`/admin/getNotification`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getuserAccountBalance = async (id:string) => await instance.post(`/admin/getuserAccountBalance`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 
 

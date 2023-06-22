@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import adminAuth from "../../lib/adminAuth"
 import helpers from "../../helpers";
 import { motion } from "framer-motion";
 import ListData, { ManageUserLoader } from "./listData";
 import useAlert from "../../hooks/alert";
 import ButtonSpinner from "../utils/buttonSpinner";
-
 
 export default function ManageUser() {
     const [switches, setSwitches] = useState<boolean>(false);
@@ -64,7 +63,15 @@ function ListUsers({setSwitch}: any) {
     let [page, setPage] = useState(1)
     const [loading, setloading] = useState(false)
     const {AlertComponent, showAlert} = useAlert()
+    const [sUser, setParams] = useState("")
+    const inputRef:{current: any} = useRef(null)
 
+    useEffect(() => {
+        if(inputRef.current){
+            inputRef.current.focus()
+        }
+    }, [])
+    
     async function LoadUser() {
         setloading(true)
         try {
@@ -104,7 +111,13 @@ function ListUsers({setSwitch}: any) {
         }, 1000)()
     }
 
-    
+    useEffect(() => {
+        if(location.search) {
+            const s:string = location?.search?.replace("?", "").split("=")[1].replace("%20", " ");
+            setParams(s)
+            // captureKeyLogs
+        }
+    }, [])
     return (
         <>
          <motion.div 
@@ -118,7 +131,7 @@ function ListUsers({setSwitch}: any) {
 
                 <div className="">
                     <div className="border-[1px] border-gray-200 rounded-lg  focus-within:border-blue-500">
-                        <input type="text" placeholder="Filter by fullname only" className="outline-none p-3 bg-transparent w-full disabled:bg-slate-100" onKeyUp={captureKeyLogs}  disabled={!userList?.data}/>
+                        <input ref={inputRef} type="text" placeholder="Filter by fullname only. We search only this page." defaultValue={sUser} className="outline-none p-3 bg-transparent w-full disabled:bg-slate-100" onChangeCapture={captureKeyLogs}  disabled={!userList?.data}/>
                     </div>
                 </div>
             </div>
@@ -126,9 +139,9 @@ function ListUsers({setSwitch}: any) {
             {typeof fakeList?.data === "undefined" ? <ManageUserLoader /> : 
             <>
                 <motion.div
-                  initial = {{opacity: 0, x: -5}}
-                  animate = {{opacity: 1, x:0, transition: {delay: 5}}}
-                  exit={{transition: {delay: .5}, x: -5, opacity: 0}} 
+                  initial = {{opacity: 0, y: -5}}
+                  animate = {{opacity: 1, y:0, transition: {delay: .5}}}
+                  exit={{transition: {delay: .5}, y: -5, opacity: 0}} 
                   className="w-full overflow-y-auto rounded-2xl border-[1px] border-gray-100 mt-5">
                     <table className="w-full border-[#e6e4e4] border-[1px]">
                         <thead className="bg-[#f3f3f3]">

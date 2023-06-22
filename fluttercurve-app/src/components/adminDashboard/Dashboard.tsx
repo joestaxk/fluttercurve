@@ -114,7 +114,7 @@ export function NormalMode() {
 
 export function DropdownOverlay({ cb }: {cb: () => void}) {
     return (
-        <div onClick={cb} className="fixed inset-x-0 inset-y-0 bg-[#212121cc] z-50"></div>
+        <div onClick={cb} className="fixed inset-x-0 inset-y-0 bg-[#212121a8] z-50"></div>
     )
 }
 
