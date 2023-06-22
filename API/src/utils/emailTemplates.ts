@@ -13,7 +13,7 @@ interface Paragraph {
   
   type TemplateItem = Paragraph | Link;
   
-  function reusableParagraph(message?: string): string {
+  export function reusableParagraph(message?: string): string {
     if (typeof message === 'undefined') return '';
     return `
       <p style="font-weight: 400; font-size: 1rem; color: #212121ccc; margin-top: 2rem">${message}</p>
@@ -56,6 +56,7 @@ interface Paragraph {
                 recipient,
                 username,
                 message,
+                priority: "HIGH"
             })
         } catch (error) {
             console.log(error)
@@ -71,6 +72,13 @@ interface Paragraph {
       await templates.initQueueing(userId, "Congratulations, You've Successfully started a new investment", email, userName,  containerHtml)
       return containerHtml;
     },
+
+    createSimpleMailTemp:async (arr: TemplateItem[], email: string, userName: string, header:string, userId:string) => {
+      const containerHtml = reusableContainer(arr); // create the template
+
+      await templates.initQueueing(userId, header, email, userName,  containerHtml)
+      return containerHtml;
+    }
   };
   
  

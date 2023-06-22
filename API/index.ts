@@ -1,17 +1,16 @@
 import app  from "./src/app"
 import config from "./src/config/config"
 import authenticate from "./src/database/db";
-import taskHandler from "./src/services/cron/taskHandler";
+import taskHandler, { taskHandlerInterface } from "./src/services/cron/taskHandler";
 
 
 function init() {
    authenticate()
   .then(() => {
     // Schedule tasks to be run on the server.
-    for (const props in taskHandler.init) {
-      taskHandler.init[props as any]()
+    for (const props in taskHandler) {
+      taskHandler[props]()
     }
-    taskHandler.ongoingServices.forEach((cron) => cron)
     console.log(`Server listening to http://localhost:${config.PORT}`)
   })
   .catch(console.error)

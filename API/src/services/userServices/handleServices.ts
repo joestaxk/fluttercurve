@@ -5,6 +5,7 @@ import userAccount from "../../models/Users/userAccount";
 import Client from "../../models/Users/users";
 import templates from "../../utils/emailTemplates";
 import helpers from "../../utils/helpers";
+import adminNotification from "../../models/Users/adminNotifications";
 
 interface handlerServiceInterface {
     // get the user wallet account
@@ -27,7 +28,7 @@ handleServices.successfulDepositCharge = async function(chargeID:string) {
     if(!res?.clientId) return;
 
     // we got the user so as to send client mail
-    const {uuid, id, userName, email, currency}:any =  await Client.findOne({where: {uuid: res.clientId}})
+    const {uuid, id, userName, fullName, email, ipAddress, currency}:any =  await Client.findOne({where: {uuid: res.clientId}})
 
     // STORE A EMAIL and send later
     await templates.successfulChargeMailTemplate(uuid, [
@@ -48,6 +49,14 @@ handleServices.successfulDepositCharge = async function(chargeID:string) {
     const ifAny = await userAccount.findOne({where: {clientId: id}});
     // Each time a new user wallet is created, that user just made some investment.
     await userDeposit.update({status: "SUCCESSFUL"}, {where: {chargeID}})
+    // new deposit alert
+    await adminNotification.create({
+        clientId: uuid,
+        type: "DEPOSIT",
+        fullName,
+        depositType: res.plan,
+        userIp: ipAddress,
+    })
     if(!ifAny) {
         // create new account for the user
         await userAccount.create({

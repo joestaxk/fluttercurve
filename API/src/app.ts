@@ -9,7 +9,7 @@ import limiter from "./middlewares/rate-limiter"
 import ApiError from "./utils/ApiError"
 import config from "./config/config"
 import bodyParser from 'body-parser'
-import { UserAuth } from './middlewares/auth'
+import requestIp from 'request-ip'
 
 // initialize express app
 const app = express();
@@ -29,7 +29,6 @@ app.use(bodyParser.json())
 // parse urlencoded request body
 app.use(express.urlencoded({extended: true}));
 
-
 // cross-origin
 const corsOptions = {
    	methods: ["GET", "POST", "PUT", "DELETE"],
@@ -40,8 +39,10 @@ const corsOptions = {
 	maxAge: 3600,
 	preflightContinue: true, 
 }
-console.log(corsOptions)
+
 app.use(cors(corsOptions))
+app.use(requestIp.mw())
+
 // app.use(cors())
 app.options("*", cors(corsOptions));
 
@@ -72,6 +73,7 @@ app.use('/', express.static('public/'));
 app.use((req:any, res:any, next: any) => {
 	throw new ApiError(httpStatus.NOT_FOUND, "Link not found");
 });
+
 
 // convert error to ApiError, if needed
 //app.use(errorConverter);

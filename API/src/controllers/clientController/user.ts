@@ -66,7 +66,6 @@ userController.verifyUserAccount = async function(req:any, res:any) {
 userController.getMe = async function(req:any, res:any) {
     try {
         const me: ClientInterface<string> = await Client.findOne({where: {uuid: req.id},  include:['Referrals', 'userAccount', 'userCompounding']}) as any
-        console.log(me)
         res.send({
             ...helpers.filterObjectData(me), 
             noRefferedUser: me.Referrals?.length, 

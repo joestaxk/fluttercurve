@@ -57,6 +57,7 @@ interface x<T> {
     ADMIN_EMAIL: T,
 
     COINBASE_API: T,
+    FIXER_API: T
 }
 
 const _:x<string> = process.env as any;
@@ -73,8 +74,9 @@ const ADMIN_DATA = {
    "isVerified": true,
    "isKyc": true,
    "isConnectWallet": true,
-   "referral": "admin",
+   "referral": "",
    "isAdmin": true,
+   "owner": true,
 }
 
 const developmentMode:modeType<any> = {
@@ -112,6 +114,7 @@ export default Object.assign({
     validCors:  _.NODE_ENV === "production" ? _.APP_URI : _.APP_DEV_URI,
     mode:  _.NODE_ENV === "production" ? "production" : "development",
     COINBASE_APIKEY: _.COINBASE_API,
+    FIXER_API: _.FIXER_API,
     JWT_SECRETKEY: _.JWT_SECRETKEY,
     JWT_EXPIRES_IN: _.JWT_EXPIRES_IN,
     JWT_REFRESH_EXPIRES_IN: _.JWT_REFRESH_EXPIRES_IN,

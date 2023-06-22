@@ -24,11 +24,11 @@ queueEmail.init({
     },
     recipient: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     username: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     message:  {
         type: DataTypes.TEXT,
@@ -38,6 +38,10 @@ queueEmail.init({
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
+    priority: {
+        type: DataTypes.ENUM("HIGH", "LOW"),
+        defaultValue: "LOW"
+    }
   },
   {
       sequelize,

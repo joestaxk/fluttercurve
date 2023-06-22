@@ -34,6 +34,7 @@ export interface ClientInterface<T> {
     isWallet: Boolean,
     isBlacklisted: Boolean,
     oneTimeKeyToken: T,
+    ipaddress: T,
     avatar: T,
     updateTimestamp: T
 }
@@ -88,6 +89,10 @@ Client.init({
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
+    owner: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
     isVerified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
@@ -103,6 +108,10 @@ Client.init({
     isBlacklisted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
+    },
+    ipAddress: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     tokens: {
         type: DataTypes.TEXT,

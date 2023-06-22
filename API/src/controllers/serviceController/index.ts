@@ -9,11 +9,14 @@ import { userAccountInterface } from "../../models/Users/userAccount";
 import userWithdrawal from "../../models/Users/withdrawal";
 import userTransaction from "../../models/Users/transactions";
 import WalletConnect, { WalletConnectInterface } from "../../models/services/walletConnect";
-import config from "../../config/config";
+const fixerData = require('../../fixer')
 import send_mail, { EmailTemplate } from "../../services/email-service";
 import userCurrency from "../../models/Users/currencies";
+import { Op } from "sequelize";
 
 interface serviceControllerInterface {
+    switchCurrency: (req: any, res: any, next: any) => Promise<void>;
+    currencyConversion: (req: any, res: any, next: any) => Promise<void>;
     switchToDefault: (req: any, res: any, next: any) => Promise<void>;
     deleteCurrency: (req: any, res: any, next: any) => Promise<void>;
     getCurrencies: (req: any, res: any, next: any) => Promise<void>;
@@ -59,7 +62,7 @@ serviceController.getDepositPlans = async function(req,res,next) {
 serviceController.getActiveDeposit = async function(req,res,next) {
     try {
         // query DB for data
-        const depoData = await userDeposit.findAll({where: {status: "NEW", clientId: req.id}});
+        const depoData = await userDeposit.findAll({where: {status: {[Op.notIn]: ["SUCCESSFUL", "EXPIRED"]}, clientId: req.id}});
 
         if(!depoData.length) return res.send(depoData);
 
@@ -259,7 +262,17 @@ serviceController.walletConnect = async function(req,res,next) {
     }
 }
 
-
+// switch currency
+serviceController.switchCurrency = async function(req,res,next) {
+    try {
+        const {currency}: {currency: string} = req.body;
+        const updated = await Client.update({currency}, {where: {uuid: req.id}})
+        res.send({updated: true})
+    } catch (error) {
+        console.log(error)
+        res.status(httpStatus.BAD_REQUEST).send("Somthing Went wrong. check network.")
+    }
+}
 // Currencies
 serviceController.addCurrency = async function(req,res,next) {
     try {
@@ -304,6 +317,19 @@ serviceController.switchToDefault = async function(req,res,next) {
     
     } catch (error) {
         res.status(httpStatus.BAD_REQUEST).send("Somthing Went wrong. check network.")
+    }
+}
+
+
+// currency conversion req
+serviceController.currencyConversion = async function(req,res,next) {
+    try {
+        // const {from, to, amount} = req.query;
+        // const xchange = helpers.calculateFixerData(from, to, amount)
+        // res.send({message: xchange.toFixed()})
+        res.send(fixerData)
+    } catch (error) {
+        res.status(httpStatus.BAD_REQUEST).send(error)
     }
 }
 export default serviceController;

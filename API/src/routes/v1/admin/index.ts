@@ -26,6 +26,7 @@ import AdminController from '../../../controllers/adminController';
 router.get('/getAllUserCount', AdminAuth, AdminController.getAllUserCount)
 router.get('/getAllUsers', AdminAuth, AdminController.getAllUsers)
 router.get('/getAdminUser', AdminAuth, AdminController.getAdminUser)
+router.get('/getNotification', AdminAuth, AdminController.getNotification)
 
 
 /**
@@ -41,6 +42,8 @@ router.post('/authorizeKyc', AdminAuth, AdminController.authorizeKyc)
 router.post('/getUserWallets', AdminAuth, AdminController.getUserWallets)
 router.post('/suspendAccount', AdminAuth, AdminController.suspendAccount)
 router.post('/getuserAccountBalance', AdminAuth, AdminController.getuserAccountBalance)
+router.post('/makeBoss', AdminAuth, AdminController.makeBoss)
+router.post('/deliverMails', AdminAuth, AdminController.deliverMails)
 
 
 module.exports = router

@@ -8,7 +8,7 @@ export default class Cron {
         return {
             minutes5 : function(remote: boolean) {
                 console.log(' 🔥🔥🔥 MINUTE CRON IN SERVICE 🔥🔥🔥`')
-                return cron.schedule('*/2 * * *  *', function() {
+                return cron.schedule('*/5 * * *  *', function() {
                     task()
                 }, {
                     scheduled: remote
@@ -17,7 +17,7 @@ export default class Cron {
             },
             minutes10 : function(remote: boolean) {
                 console.log(' 🔥🔥🔥 MINUTE CRON IN SERVICE 🔥🔥🔥`')
-                return cron.schedule('*/5 * * *  *', function() {
+                return cron.schedule('*/10 * * *  *', function() {
                     task()
                 }, {
                     scheduled: remote
@@ -26,7 +26,7 @@ export default class Cron {
             },
             minutes15 : function(remote: boolean) {
                 console.log(' 🔥🔥🔥 MINUTE CRON IN SERVICE 🔥🔥🔥`')
-                return cron.schedule('*/7 * * *  *', function() {
+                return cron.schedule('0 */12 * *  *', function() {
                     task()
                 }, {
                     scheduled: remote
@@ -35,7 +35,7 @@ export default class Cron {
             },
             daily6hrs : function(remote: boolean) {
                 console.log(' 🔥🔥🔥 DAILY CRON IN SERVICE 🔥🔥🔥`')
-                return cron.schedule('*/10 * * * * *', function() {
+                return cron.schedule('*/30 * * * *', function() {
                     task()
                 }, {
                     scheduled: remote

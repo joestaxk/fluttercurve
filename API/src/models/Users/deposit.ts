@@ -18,7 +18,7 @@ userDeposit.init({
     },
     type: {
         type: DataTypes.STRING,
-        defaultValue: "compounding"
+        defaultValue: "normal"
     },
     chargeID: {
         type: DataTypes.STRING,

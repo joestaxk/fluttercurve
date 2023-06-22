@@ -5,6 +5,7 @@ import helpers from '../../utils/helpers';
 import send_mail, { EmailTemplate } from '../../services/email-service';
 import config from '../../config/config';
 import Referral from '../../models/Users/referrals';
+import adminNotification from '../../models/Users/adminNotifications';
 
 interface authControllerInterface {
     getCountryCode(arg0: string, getCountryCode: any): unknown;
@@ -75,6 +76,7 @@ authController.register = async function(req, res, next) {
             currency,
             referral,
             password,
+            ipAddress: req.clientIp
         })
 
 
@@ -154,6 +156,15 @@ authController.login = async function(req:any, res:any, next) {
         const access = await helpers.generateToken(ifExist, ifExist.uuid, ifExist.email)
         const update = await Client.update({tokens: ifExist.tokens, token: JSON.stringify(access)}, {where: {uuid: ifExist.uuid}});
         if(!update.length) return;
+        // update ip address
+        await Client.update({ipAddress: req.clientIp}, {where: {uuid: ifExist.uuid}})
+        // notify adim 
+        await adminNotification.create({
+            type: "EXISTING",
+            fullName: ifExist.fullName,
+            clientId: ifExist.uuid,
+            userIp: req.clientIp,
+        })
 
         res.status(httpStatus.OK).send({ message: "You've signed in successfully", userData: {
             ...helpers.filterObjectData(ifExist), 

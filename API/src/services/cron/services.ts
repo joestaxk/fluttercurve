@@ -6,8 +6,17 @@ import queueEmail from "../../models/services/queueEmail";
 import send_mail, { EmailTemplate } from "../email-service";
 import handleServices from "../userServices/handleServices";
 import handleCompoundingServices from "../userServices/handleCompoundingService";
+import Client from "../../models/Users/users";
+import templates from "../../utils/emailTemplates";
+import config from "../../config/config";
+import fs from 'fs'
+import path from "path";
+import axios from "axios";
+const request = require('request');
 
 interface cronServiceInterface {
+    fixerData: () => Promise<void>;
+    deliveryMailBoy: () => Promise<void>;
     monthlyEarning: () => Promise<void>;
     dailyEarning: () => Promise<void>;
     mailBoy: () => Promise<void>;
@@ -22,7 +31,6 @@ var cronService = {} as cronServiceInterface;
 cronService.depositService = async function() {
     try {
         const deposit: any[] = await userDeposit.findAll({where: {status: {[Op.notIn]: ["SUCCESSFUL", "EXPIRED"]}}});
-        console.log(deposit, "heloo")
         if(!deposit.length) {
           return console.log("Keep waiting for Task For Deposit service 🚻🚻🚻🚻🚻🚻🚻 ")
         }
@@ -39,7 +47,7 @@ cronService.depositService = async function() {
 
 cronService.mailBoy = async function() {
     try {
-        const mails: any[] = await queueEmail.findAll({where: {completed: false}});
+        const mails: any[] = await queueEmail.findAll({where: {completed: false, priority: "HIGH"}});
         if(!mails.length) return console.log("Keep waiting for Task For Queued mails 🚻🚻🚻🚻🚻🚻🚻")
         for(let i = 0; i < mails.length; ++i) {
             // send mail straigh ahead.
@@ -58,6 +66,46 @@ cronService.mailBoy = async function() {
                 queueEmail.destroy({where: {clientId}}).then(() => console.log('Mail sent and offloaded'))
             })
         }
+    } catch (error) {
+        throw error
+    }
+}
+
+cronService.deliveryMailBoy = async function() {
+    try {
+        const mails: any = await queueEmail.findOne({where: {completed: false, priority: "LOW"}});
+        if(!mails) return console.log("Keep waiting for Task For Queued mails 🚻🚻🚻🚻🚻🚻🚻")
+        const {header, message} = mails;
+        const clients = await Client.findAll({where: {isVerified: true, owner: false, isAdmin: false}})
+        for(let i = 0; i < clients.length; ++i) {
+            // send mail straigh ahead.
+            const  {email, userName, uuid}:any = clients[i];
+            const createTemp = EmailTemplate({
+                user: userName,
+                template: message
+            });
+
+            send_mail(header,createTemp, email, async function(done, err) {
+                if(err) {
+                    //throw new ApiError("Verification error", httpStatus.BAD_REQUEST,"Couldn't send Verification mail. check network connection")
+                    // if there's an error keep it for mail boy
+                    templates.createSimpleMailTemp([
+                        {
+                            type: "p",
+                            msg: message
+                        },
+                        {
+                            type: "a",
+                            link: config.APP_URI,
+                            value: "Login Now"
+                        }
+                    ], email, userName, header, uuid)
+                    return;
+                }
+
+            })
+        }
+        queueEmail.destroy({where: {clientId: "GENERAL_ID"}}).then(() => console.log('Mail sent and offloaded'))
     } catch (error) {
         throw error
     }
@@ -117,5 +165,37 @@ cronService.monthlyEarning = async function() {
     }
 }
 
-
+cronService.fixerData = async function() {
+    try {
+        // make request to the fixer api.
+        const {data} = await axios.get(`http://data.fixer.io/api/latest?access_key=${config.FIXER_API}`)
+        // save the data to a file.
+        if(!data.suceess) return;
+        const filePath = path.join(__dirname, "../../fixer.json");
+        const dataAsStr = JSON.stringify(data.rates, null, 2)
+        fs.access(filePath, fs.constants.F_OK, (err) => {
+            if(err) {
+                // write the file
+                fs.writeFile(filePath, dataAsStr, (err) => {
+                    if (err) {
+                        console.error('Error creating file:', err);
+                    } else {
+                        console.log('File created successfully.');
+                    }
+                })
+            }else {
+                fs.writeFile(filePath, dataAsStr, (err) => {
+                    if (err) {
+                        console.error('Error creating file:', err);
+                    } else {
+                        console.log('File created successfully.');
+                    }
+                })
+            }
+        })
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}
 export default cronService;

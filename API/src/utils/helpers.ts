@@ -4,16 +4,18 @@ import config from '../config/config';
 import Client, { ClientInterface } from '../models/Users/users';
 import ApiError from './ApiError';
 import httpStatus from 'http-status';
-import crypto from 'node:crypto'
+
 type countryType = {
   "name": string,
   "dial_code": string,
   "code": string
 }
 const country:countryType[] = require('../services/country')
+const fixerData = require('../fixer')
 
 
 interface helpersInterface {
+    calculateFixerData: (from: string, to: string, amt: number) => number;
     calcTimeDifferenceInMonth: (from: any) => number;
     calcTimeDifferenceInHours(from: any): unknown;
     currencyFormatLong: (num: number, currency: string) => string | undefined;
@@ -189,5 +191,15 @@ helpers.calcTimeDifferenceInMonth = function(from) {
 
     // Check if the time difference is within 1 month
     return timeDifferenceInDays
+}
+
+
+helpers.calculateFixerData = function(from: string, to: string, amt: number) {
+    // get the fixer data.
+    const conversion = fixerData[to]/fixerData[from]
+    // make the conversion
+    const perfConversion:number = amt * conversion;
+    // return data
+    return perfConversion
 }
 export default helpers;

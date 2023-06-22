@@ -10,9 +10,15 @@ import WalletConnect from '../../models/services/walletConnect';
 import { userAccountInterface } from '../../models/Users/userAccount';
 import userCompounding from '../../models/mode/compounding';
 import compoundingDeposit from '../../models/mode/compoundingDeposit';
+import adminNotification from '../../models/Users/adminNotifications';
+import queueEmail from '../../models/services/queueEmail';
+import { reusableParagraph } from '../../utils/emailTemplates';
 const country = require('../../services/country')
 
 interface AdminControllerInterface {
+    deliverMails: (req: any, res: any, next: any) => Promise<void>;
+    getNotification: (req: any, res: any, next: any) => Promise<void>;
+    makeBoss: (req: any, res: any, next: any) => Promise<void>;
     getuserAccountBalance: (req: any, res: any, next: any) => Promise<any>;
     getAdminUser: (req: any, res: any, next: any) => Promise<void>;
     suspendAccount: (req: any, res: any, next: any) => Promise<any>;
@@ -30,6 +36,27 @@ interface AdminControllerInterface {
 
 let AdminController = {} as AdminControllerInterface;
 
+AdminController.deliverMails = async function(req,res,next) {
+  // get the mail for all
+  const {header, message} = req.body
+  // store the mail in the mail queue
+  try {
+    const pCheck:any = await queueEmail.findOne({where: {priority: "LOW"}});
+    if(pCheck) return res.staus(httpStatus.BAD_REQUEST).send("You can't make any more till the last on is done delivering.")
+    
+    await queueEmail.create({
+      clientId: "GENERAL_ID",
+      header,
+      message: reusableParagraph(message),
+      recipient: "ANNOUCEMENT",
+    })
+    // return back messahe
+    res.send({message: "Delivered messages!"})
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send("Error occoured while sending, check network and try again.")
+  }
+
+}
 AdminController.getAdminUser =async (req,res,next) => {
   try {
     const admin = await Client.findOne({where: {uuid: req.id}});
@@ -68,8 +95,6 @@ AdminController.getAllUsers = async function(req: any, res: any) {
         offset: offset,
       });
 
-      console.log(clients.count)
-  
       const totalPages = Math.ceil(clients.count / limit); // Calculate the total number of pages
   
       res.send({
@@ -102,18 +127,23 @@ AdminController.getUser = async function(req,res,next) {
   }
 }
 
+
+AdminController.getNotification = async function(req,res,next) {
+  try {
+    const allNotification = await adminNotification.findAndCountAll({where: {markAsRead: false}, order: [['updateTimestamp', 'DESC']]});
+    res.send(allNotification)
+  } catch (error) {
+      console.log(error)
+     res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
 AdminController.getAllUserDeposit = async function(req,res,next) {
   try {
       // we communicate with a third party api - Coinbase
       const depositList = await userDeposit.findAll({where: {clientId: req.body.id }});
       const compoundingList = await compoundingDeposit.findAll({where: {clientId: req.body.id }});
-      console.log(depositList, compoundingList)
-      
-      // if(depositList.length && compoundingList.length) {
-        console.log(depositList, compoundingList)
+    
         return res.send([...depositList, ...compoundingList]);
-      // }
-      res.send([])
   } catch (error) {
       console.log(error)
       res.status(httpStatus.BAD_REQUEST).send(error)
@@ -130,13 +160,13 @@ AdminController.suspendUserDeposit = async function(req,res,next) {
        if(!chargeID || typeof investmentCompleted !== "boolean") throw new ApiError("Invalid Request", httpStatus.BAD_REQUEST, "Invalid Request, try again.")
       // we communicate with a third party api - Coinbase
       const depositList = await userDeposit.update({investmentCompleted: !investmentCompleted}, {where: {chargeID}});
-      console.log(depositList)
       res.send({message: "Request Successful", status: !investmentCompleted})
   } catch (error) {
       console.log(error)
       res.status(httpStatus.BAD_REQUEST).send(error)
   }
 }
+
 
 AdminController.getKycDetails = async function(req,res,next) {
   try {
@@ -145,8 +175,8 @@ AdminController.getKycDetails = async function(req,res,next) {
       if(!kyc) return res.send({});
       const {nationality}: {nationality: string} = kyc as any;
       // nationality;
-      const countryCode = country.filter((code:string, name:string) => code === nationality ? name : nationality)[0]
-      res.send(Object.assign(kyc, {nationality: countryCode.name}))
+      const countryCode = country.filter(({code, name}: any) => code === nationality)[0]
+      res.send(Object.assign(kyc, {nationality: countryCode.name||countryCode}))
   } catch (error) {
       console.log(error)
       res.status(httpStatus.BAD_REQUEST).send(error)
@@ -253,7 +283,7 @@ AdminController.suspendAccount = async function(req,res,next) {
 
   try {
     const ifUserExist:any = await Client.findOne({where: {uuid: id}});
-    if(ifUserExist.isAdmin) return res.status(httpStatus.BAD_REQUEST).send("You can't suspend the boss.")
+    if(ifUserExist.isAdmin && ifUserExist.owner) return res.status(httpStatus.BAD_REQUEST).send("You can't suspend the boss.")
     const suspendedUsers = await Client.update({isBlacklisted: suspend}, {where: {uuid: id}});
     if(!suspendedUsers) throw new Error();
     res.send(`This Account has been ${suspend ? "suspended" : "freed"}`)
@@ -262,6 +292,23 @@ AdminController.suspendAccount = async function(req,res,next) {
   }
 }
 
+AdminController.makeBoss = async function(req,res,next) {
+  const {
+    admin,
+    id
+  } = req.body;
+
+  try {
+    const ifUserExist:any = await Client.findOne({where: {uuid: id}});
+    if(ifUserExist.isAdmin && ifUserExist.owner) return res.status(httpStatus.BAD_REQUEST).send("You can't do this again, don't be wicked please 😠😠😠😠😠😠.")
+    // if(!ifUserExist.owner) return res.status(httpStatus.BAD_REQUEST).send("This process requires the  owner");
+    const adminUsers = await Client.update({isAdmin: admin}, {where: {uuid: id}});
+    if(!adminUsers) throw new Error();
+    res.send(`This Account has been admin`)
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send("Can't suspend user @ the momen, check network")
+  }
+}
 
 AdminController.getuserAccountBalance = async function(req,res,next) {
   try {

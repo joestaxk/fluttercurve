@@ -35,6 +35,8 @@ router.get('/getActiveDeposit',  UserAuth, serviceController.getActiveDeposit);
 
 router.get('/getActiveWithdrawal',  UserAuth, serviceController.getActiveWithdrawal);
 
+router.get('/currencyConversion',  UserAuth, serviceController.currencyConversion);
+
 
 /**
     Deposit []
@@ -72,6 +74,9 @@ router.post("/addCurrency", AdminAuth, serviceController.addCurrency)
 router.get("/getCurrencies", serviceController.getCurrencies)
 router.post("/deleteCurrency", AdminAuth, serviceController.deleteCurrency)
 router.post("/switchToDefault", AdminAuth, serviceController.switchToDefault)
+
+/// change user default account
+router.post("/switchCurrency", UserAuth, serviceController.switchCurrency)
 
 
 module.exports = router 

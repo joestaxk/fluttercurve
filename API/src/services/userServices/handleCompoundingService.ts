@@ -5,6 +5,7 @@ import templates from "../../utils/emailTemplates";
 import helpers from "../../utils/helpers";
 import userCompounding from "../../models/mode/compounding";
 import compoundingDeposit from "../../models/mode/compoundingDeposit";
+import adminNotification from "../../models/Users/adminNotifications";
 
 interface handlerServiceInterface {
     successfulCompoundingCharge: (chargeID: string) => Promise<void>;
@@ -27,7 +28,7 @@ handleCompoundingServices.successfulCompoundingCharge = async function(chargeID:
     const res:any = await compoundingDeposit.findOne({where: {chargeID}});
     if(!res?.clientId) return;
 
-    const {uuid, id, userName, email, }:any =  await Client.findOne({where: {uuid: res.clientId}})
+    const {uuid, id, userName, email, fullName, ipAddress }:any =  await Client.findOne({where: {uuid: res.clientId}})
 
     // STORE A EMAIL and send later
     await templates.successfulChargeMailTemplate(uuid, [
@@ -46,9 +47,15 @@ handleCompoundingServices.successfulCompoundingCharge = async function(chargeID:
     // UPDATE USERACCOUNT
     // get the user compounding wallet account
     const ifAny = await userCompounding.findOne({where: {clientId: id}});
-
     // Each time a new user wallet is created, that user just made some investment.
     await compoundingDeposit.update({status: "SUCCESSFUL"}, {where: {chargeID}})
+    await adminNotification.create({
+        clientId: uuid,
+        type: "DEPOSIT",
+        fullName,
+        depositType: res.plan,
+        userIp: ipAddress,
+    })
     if(!ifAny) {
         // create new account for the user
         await userCompounding.create({
