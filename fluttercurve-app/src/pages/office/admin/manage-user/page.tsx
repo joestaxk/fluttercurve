@@ -52,7 +52,7 @@ function Page({state}:{state: userDataStateType}) {
         <div className={`fixed z-[51] bottom-0 right-0 mb-4 mr-3 min-w-15 border-[1px] border-purple-500 transition-all duration-800 ${!expand ? "min-h-15 flex justify-center items-center rounded-full p-1 bg-gray-100" : " min-h-[400px] rounded-lg"}`}>
           {expand ?
           <>
-           <div className="z-[500] w-[400px] min-h-[400px] p-5 pr-0 bg-white   rounded-lg">
+           <div className="z-[500] md:w-[400px] w-full  min-h-[400px] p-5 pr-0 bg-white   rounded-lg">
             <div className="mb-3">
               <h1 className="text-blue-500 text-2xl font-medium">Send Mail to your users</h1>
               <p className="text-md text-gray-600">You can only send mail to verified user's only.</p>
