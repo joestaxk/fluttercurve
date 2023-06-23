@@ -38,7 +38,6 @@ function Page({state}:{state: userDataStateType}) {
     }
 
     fetchData().then(({data}:any) => {
-      console.log(data)
       let calcAmt = 0;
       data.forEach(({investedAmt}: any) => {
         calcAmt += parseInt(investedAmt);

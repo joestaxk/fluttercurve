@@ -136,7 +136,7 @@ function Deposits({state} :{state: userDataStateType}) {
 
                     <div className="flex justify-between mb-3">
                         <div className="">Invested Amount: </div>
-                        <div className="">{helpers.currencyFormatLong(data.investedAmt, state.currency)}</div>
+                        <div className="">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency,data.investedAmt), state.currency)}</div>
                     </div>
 
                     <div className="flex justify-between">

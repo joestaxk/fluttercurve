@@ -30,7 +30,6 @@ export default function Compounding({state}:{state: userDataStateType}) {
         async function fetchData() {
             try {
                 let {data}: any = await auth.getAllCompoundingDepositRequest(cookies['xat']);
-                console.log(data)
                 if(data.length) {
                     setData(data as any)
                 }

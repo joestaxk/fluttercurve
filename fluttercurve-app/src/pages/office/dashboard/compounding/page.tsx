@@ -4,7 +4,6 @@ import Dashboard from "../../../../components/dashboard/Dashboard";
 import withDashboard from "../../../../hocs/withDashboard";
 
 function Page({state}:{state: any}) {
-  console.log(state)
     return (
       <main>
         <Dashboard state={state}>

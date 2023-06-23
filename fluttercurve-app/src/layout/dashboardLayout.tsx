@@ -31,7 +31,6 @@ export default function DashboardLayout() {
       //   return null;
       // }else if(userData['avatar'] && !profile_data) {
         const profileData:string = await helpers.loadImg() as string;
-        console.log(profileData)
         helpers.storeLocalItem('profile_data', profileData);
         setProfileData(profileData)
       }

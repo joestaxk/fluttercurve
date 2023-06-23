@@ -39,7 +39,6 @@ export default function Login() {
       setMsgDesc(data.message);
       if (data.userData.isAdmin) {
         setCookie("xat", data.session.accessToken);
-        console.log(data)
         helpers.storeLocalItem("admin_data", data.userData);
         location.href = "/office/admin";
         return;

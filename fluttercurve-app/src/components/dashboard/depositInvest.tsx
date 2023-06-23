@@ -102,9 +102,9 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
     
         if(typeof reqAcctBal.data === "number") {
           setLoadingState(false)
-          return console.log(reqAcctBal)
+          // return console.log(reqAcctBal)
         }
-        return console.log(reqAcctBal)
+        // return console.log(reqAcctBal)
       } catch (error:any) {
         showAlert("error", error.response.data.description.desc)
         setLoadingState(false)
