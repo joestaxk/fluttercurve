@@ -78,7 +78,7 @@ taskHandler.clearNotifications = function(){
         if(notifications.count > 20) {
             return await adminNotification.destroy({where: {markAsRead: false}});
         }
-    }, "minutes5", "fixerData", true);
+    }, "daily6hrs", "fixerData", true);
 }
 
 
