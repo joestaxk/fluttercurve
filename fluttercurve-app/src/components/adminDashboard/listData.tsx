@@ -53,8 +53,8 @@ export function ManageUserLoader() {
         <>
         <motion.div  exit={{transition: {delay: .5}, opacity: 0}} className="w-full  flex gap-3 flex-col">
             {
-                [1,2,3,4,5,6,7].map(() => (
-                    <>
+                [1,2,3,4,5,6,7].map((_el:any, i:number) => (
+                    <div  key={i.toString()}>
                         <div className="w-[70%] mt-3 rounded-t-lg min-h-[50px] border-[1px] border-gray-200 animate-pulse delay-0">
                             <div className="border-[1px] border-gray-200 p-4 bg-gray-50 w-full"></div>
                             <div className="flex justify-between">
@@ -75,7 +75,7 @@ export function ManageUserLoader() {
                                 </div>
                             </div>
                         </div>
-                    </>
+                    </div>
                 ))
             }
         </motion.div>

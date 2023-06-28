@@ -88,7 +88,7 @@ export default function CurrencyData() {
           <div className="flex flex-wrap items-center gap-3 p-4">
             <div className="bg-orange-200 flex w-full items-center p-6 rounded-lg text-orange-600">
                 <div className="mr-3">
-                    <b><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 80c-8.66 0-16.58 7.36-16 16l8 216a8 8 0 0 0 8 8h0a8 8 0 0 0 8-8l8-216c.58-8.64-7.34-16-16-16Z"/><circle cx="256" cy="416" r="16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg> </b> 
+                    <b><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M256 80c-8.66 0-16.58 7.36-16 16l8 216a8 8 0 0 0 8 8h0a8 8 0 0 0 8-8l8-216c.58-8.64-7.34-16-16-16Z"/><circle cx="256" cy="416" r="16" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32"/></svg> </b> 
                 </div>
                 <div className="">
                     <span>
@@ -153,7 +153,7 @@ export default function CurrencyData() {
                                                     animate={{opacity: 1, transition: {duration: .5}}}
                                                     exit={{opacity: 0, transition: {duration: .5}}}
                                                     className="hidden group-hover:block">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="red" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4.001h16v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-14ZM14 10l-4 4m0-4l4 4"/></svg>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="red" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4.001h16v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-14ZM14 10l-4 4m0-4l4 4"/></svg>
                                                     </motion.button>
                                                 </div>
                                             </label>

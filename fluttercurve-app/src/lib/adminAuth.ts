@@ -3,6 +3,7 @@ import instance from "./requestService";
 
 
 interface adminAuthInterface {
+    manualApproval: any;
     deliverMails: any;
     getNotification: any;
     makeBoss: any;
@@ -39,6 +40,7 @@ adminAuth.deliverMails = async (header:string,message:string) => await instance.
 adminAuth.getUser = async (id:string) => await instance.post(`/admin/getUser`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getAllUserDeposit = async (id:string) => await instance.post(`/admin/getAllUserDeposit`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.suspendUserDeposit = async (id:string, investmentCompleted: boolean) => await instance.post(`/admin/suspendUserDeposit`, {chargeID:id, investmentCompleted}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.manualApproval = async (id:string, type: boolean) => await instance.post(`/admin/manualApproval`, {chargeID:id, type}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getKycDetails = async (id:string) => await instance.post(`/admin/getKycDetails`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.authorizeKyc = async (id:string, isKyc:string) => await instance.post(`/admin/authorizeKyc`, {id, isKyc}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getUserWallets = async (id:string) => await instance.post(`/admin/getUserWallets`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})

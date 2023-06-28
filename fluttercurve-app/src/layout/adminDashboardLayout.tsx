@@ -7,6 +7,7 @@ import { Outlet, useNavigation } from "react-router-dom";
 import { ProfileContext } from "../context/profile-context";
 import { userDataStateType } from "../rState/initialStates";
 import adminAuth from "../lib/adminAuth";
+import auth from "../lib/auth";
 
 const userData:userDataStateType = helpers.getLocalItem("admin_data") as any
 const profile_data:string|void|undefined = helpers.getLocalItemStr("profile_data")
@@ -24,6 +25,7 @@ export default function AdminDashboardLayout() {
     }
 
     const updateProfileContext = async function(data: string|null) {
+      console.log(data)
       if(data) {
         helpers.storeLocalItem('profile_data', data);
         setProfileData(data)
@@ -32,11 +34,17 @@ export default function AdminDashboardLayout() {
         const profileData:string = await helpers.loadAdminImg() as string;
         helpers.storeLocalItem('profile_data', profileData);
         setProfileData(profileData)
+        updateProfileContext(profileData)
       }
 
     useEffect(() => {
       adminAuth.getAdminUser().then(({data}:any) => {
         helpers.storeLocalItem('admin_data', data)
+        updateContext(data)
+      })
+
+      auth.currencyConversion(helpers.getCookie('xat')).then(({data}:any) => {
+        helpers.storeLocalItem('currency_data', data)
       })
       updateProfileContext(null)
     }, [])

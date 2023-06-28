@@ -31,9 +31,8 @@ export default function Withdrawal({state}: {state: userDataStateType}) {
        return showAlert("error", "Deposit funds.")
       }
     try {
-      const reqAcctBal = await auth.getAccountBalance(cookies['xat']);
-
-      if(typeof reqAcctBal.data !== "number") {
+      const reqAcctBal = await auth.getAccountBalance(cookies['xat'], {mode: data.mode, amount: data.amount});
+      if(typeof reqAcctBal.data?.accountBal !== "number") {
         setLoadingState(false)
         return;
       }
@@ -57,7 +56,8 @@ export default function Withdrawal({state}: {state: userDataStateType}) {
 
 
   return (
-    <div className="p-3 mb-5">
+    <>
+        <div className="p-3 mb-5">
       <h1 className="text-3xl mb-1 text-[#333]">Make Withdraw?</h1>
       <p className="mb-8 text-[#333333ca]">If you don&apos;t get recieve any funds after 24hrs make sure you contact our support team.</p>
       <div className="flex justify-start">
@@ -140,8 +140,20 @@ export default function Withdrawal({state}: {state: userDataStateType}) {
         </div>
       </div>
       {AlertComponent}
-    </div>
+        </div>
 
+       {/* <div className="pl-3">
+       <table className="w-full border-[#e6e4e4] border-[1px]">
+              <thead className="bg-[#f3f3f3]">
+                  <tr className="text-left">
+                      <th className="p-3 font-medium">Name</th>
+                      <th className="p-3 font-medium">Status</th>
+                      <th className="p-3 font-medium">Role</th>
+                  </tr>
+              </thead>
+        </table>
+       </div> */}
+    </>
   );
 }
 

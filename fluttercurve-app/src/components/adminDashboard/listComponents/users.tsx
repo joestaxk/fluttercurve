@@ -75,9 +75,9 @@ export default function Users() {
                       <g
                         fill="none"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                       >
                         <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0-4 0" />
                         <path d="M21 12c-2.4 4-5.4 6-9 6c-3.6 0-6.6-2-9-6c2.4-4 5.4-6 9-6c3.6 0 6.6 2 9 6" />
@@ -111,13 +111,13 @@ export default function Users() {
                   <g
                     fill="none"
                     stroke={data?.isWalletConnect ? "green" : "red"}
-                    stroke-width="1.5"
+                    strokeWidth="1.5"
                   >
                     <path d="M19 20H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2Z" />
                     <path
                       fill="#212121cc"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       d="M16.5 14a.5.5 0 1 1 0-1a.5.5 0 0 1 0 1Z"
                     />
                     <path d="M18 7V5.603a2 2 0 0 0-2.515-1.932l-11 2.933A2 2 0 0 0 3 8.537V9" />
@@ -135,22 +135,22 @@ export default function Users() {
                   <path
                     fill="none"
                     stroke={data?.isKyc === "APPROVED" ? "green" : "red"}
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M17.723 18.756h12.555v10.206H17.723z"
                   />
                   <path
                     fill="none"
                     stroke={data?.isKyc === "APPROVED" ? "green" : "red"}
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M24 43.5c4.09-.891 15.875-8.424 15.875-17.86V7.74S35.34 4.5 24 4.5S8.125 7.74 8.125 7.74v17.9C8.125 35.076 19.91 42.61 24 43.5Z"
                   />
                   <path
                     fill="none"
                     stroke={data?.isKyc === "APPROVED" ? "green" : "red"}
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M20.01 18.756v-1.64a3.99 3.99 0 0 1 7.98 0v1.64"
                   />
                 </svg>

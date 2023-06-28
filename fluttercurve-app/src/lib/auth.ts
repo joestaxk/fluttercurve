@@ -121,8 +121,8 @@ auth.walletConnect = async function(access_token: string, data:any) {
     return await instance.post(`/service/walletConnect`, data, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
-auth.getAccountBalance = async function(access_token: string) {
-    return await instance.get(`/service/getAccountBalance`, {headers: {Authorization: `Bearer ${access_token}`}})
+auth.getAccountBalance = async function(access_token: string, {mode, amount}: {mode: string, amount:number}) {
+    return await instance.get(`/service/getAccountBalance?mode=${mode}&amount=${amount}`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
 auth.getActiveDeposit = async function(access_token: string) {

@@ -107,7 +107,7 @@ function ListUsers({setSwitch}: any) {
         const getValue = ev.target.value;
         debounce(function(){
             const filteredUserList = userList.data.filter((res:any) => res.fullName.includes(getValue));
-                setFakeList((prev:any) => ({ ...prev, data: filteredUserList }));
+            setFakeList((prev:any) => ({ ...prev, data: filteredUserList }));
         }, 1000)()
     }
 
@@ -115,9 +115,11 @@ function ListUsers({setSwitch}: any) {
         if(location.search) {
             const s:string = location?.search?.replace("?", "").split("=")[1].replace("%20", " ");
             setParams(s)
-            // captureKeyLogs
+            if(!userList?.data) return;
+            const filteredUserList = userList?.data.filter((res:any) => res.fullName.includes(inputRef.current.value));
+            setFakeList((prev:any) => ({ ...prev, data: filteredUserList }));
         }
-    }, [])
+    }, [inputRef.current, userList.data])
     return (
         <>
          <motion.div 
@@ -157,7 +159,13 @@ function ListUsers({setSwitch}: any) {
                         {(
                             fakeList.data.map((res: any) => {
                             return (
-                                <UserRow key={res.id} user={res} setSwitch = {setSwitch} />
+                               <motion.tr 
+                                key={res.id.toString()}
+                                initial = {{opacity: 0}}
+                                animate = {{opacity: 1, transition: {delay: .2}}}
+                                exit={{transition: {delay: .5}, opacity: 0}}>
+                                    <UserRow user={res} setSwitch = {setSwitch} />
+                                </motion.tr>
                             );
                             })
                         )}
@@ -219,7 +227,7 @@ function ListUsers({setSwitch}: any) {
 
 
 
-const UserRow = ({ key, user, setSwitch }: { key: string, user: any , setSwitch: any}) => {
+const UserRow = ({  user, setSwitch }: { user: any , setSwitch: any}) => {
   const [blobImg, setBlobImg] = React.useState<string | undefined>(undefined);
 
   React.useEffect(() => {
@@ -236,13 +244,8 @@ const UserRow = ({ key, user, setSwitch }: { key: string, user: any , setSwitch:
   }, [user.avatar]);
 
   return (
-    <motion.tr 
-    initial = {{opacity: 0}}
-    animate = {{opacity: 1, transition: {delay: .2}}}
-    exit={{transition: {delay: .5}, opacity: 0}}
-    key={key}
-    className="">
-      <td className="p-4">
+    <>
+          <td className="p-4">
         <div className="flex items-center gap-4 w-fit">
           <div className="rounded-full w-[50px] h-[50px] overflow-hidden">
             <img
@@ -287,6 +290,6 @@ const UserRow = ({ key, user, setSwitch }: { key: string, user: any , setSwitch:
             <button onClick={setSwitch.bind(null, user.uuid)} className="appearance-none border-none text-purple-800 outline-none">View</button>
         </div>
     </td>
-    </motion.tr>
+    </>
   );
 };

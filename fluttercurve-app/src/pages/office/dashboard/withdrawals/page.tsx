@@ -93,7 +93,7 @@ function Page({state}:{state: userDataStateType}) {
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center  shadow lg:w-[23%] n:w-[48%] w-full  rounded-lg  h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Pending Withdrawals</h3>
-                <h1 className="text-2xl font-semibold text-[#514AB1]">{helpers.currencyFormat(helpers.calculateFixerData("USD", state.currency,activeWithdraw), state?.currency)}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency,activeWithdraw), state?.currency)}</h1>
               </div>
 
               <div className="">
@@ -108,7 +108,7 @@ function Page({state}:{state: userDataStateType}) {
                 <h1 className="text-2xl font-semibold text-[#514AB1]">{
                   !state.userAccount ? 
                   helpers.currencyFormat(parseFloat("0"), state.currency) : 
-                  helpers.currencyFormat(helpers.calculateFixerData("USD", state.currency, (parseInt(state.userAccount.totalDeposit) + parseInt(state.userAccount.totalEarning) - parseInt(state.userAccount.totalWithdrawal))), state.currency)
+                  helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, (parseInt(state.userAccount.totalDeposit) + parseInt(state.userAccount.totalEarning) - parseInt(state.userAccount.totalWithdrawal))), state.currency)
                 }</h1>
               </div>
 

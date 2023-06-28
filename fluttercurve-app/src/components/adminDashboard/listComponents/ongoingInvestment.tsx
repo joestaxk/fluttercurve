@@ -1,16 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { CreateUserIDContext, ManageSingleUserLoader } from "../listData";
-import { Switch } from '@headlessui/react';
 import adminAuth from "../../../lib/adminAuth";
 import helpers from "../../../helpers";
 import useAlert from "../../../hooks/alert";
+import ButtonSpinner from "../../utils/buttonSpinner";
 
 export default function OngoingInvestment() {
     const [user, setUser] = useState<any>([]);
     const [data, setData] = useState<any>([]);
-    const [enable, setEnable] = useState<any>(false);
     const {showAlert, AlertComponent} = useAlert()
-
+    const [suspendLoading, setSuspendLoad] = useState(false)
+    const [approvalLoading, setApprovalLoad] = useState(false)
     const context = useContext(CreateUserIDContext);
 
     useEffect(() => {
@@ -29,12 +29,24 @@ export default function OngoingInvestment() {
     }, [user]);
 
     function suspendData({chargeID, investmentCompleted}: {chargeID: string, investmentCompleted: string}) {
-        setEnable(!investmentCompleted)
+        setSuspendLoad(true)
         adminAuth.suspendUserDeposit(chargeID, investmentCompleted).then((res:any) => {
+            setSuspendLoad(false)
             showAlert("success", res.data.message)
         }).catch((err: any) => {
+            setSuspendLoad(false)
             showAlert("error", err.response.data.description)
-            setEnable(!investmentCompleted)
+            console.log(err)
+        })
+    }
+    function manualApproval({chargeID, type}: {chargeID: string, type: string}, ev:any) {
+        setApprovalLoad(true);
+        adminAuth.manualApproval(chargeID, type).then((res:any) => {
+            setApprovalLoad(false)
+            showAlert("success", res.data.message)
+        }).catch((err: any) => {
+            setApprovalLoad(false);
+            showAlert("error", err.response.data.description)
             console.log(err)
         })
     }
@@ -66,7 +78,7 @@ export default function OngoingInvestment() {
                                         <td className="p-3 font-medium text-slate-600">No Investment</td>
                                     </tr>
                                 ) : (
-                                    data.map(({ plan, status, chargeID, investedAmt, progressAmt, duration, remainingDays, investmentCompleted}: any) => (
+                                    data.map(({ plan, type, status, chargeID, investedAmt, progressAmt, duration, remainingDays, investmentCompleted}: any) => (
                                         <tr key={chargeID} className="text-left">
                                             <td className="p-3 font-medium flex gap-1 items-center">
                                                 <div className="relative">
@@ -76,43 +88,26 @@ export default function OngoingInvestment() {
                                                 <div className={status === "SUCCESSFUL" ? `text-emerald-600` : `text-gray-600` }>{status}</div>
                                             </td>
                                             <td className="p-3 font-medium text-slate-600">{plan} Plan</td>
-                                            <td className="p-3 font-medium text-slate-600">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", context?.user.currency,investedAmt), context?.user.currency)} </td>
-                                            <td className="p-3 font-medium text-emerald-500">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", context?.user.currency,progressAmt), context?.user.currency)}</td>
+                                            <td className="p-3 font-medium text-slate-600">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", context?.user.currency, investedAmt), context?.user.currency)} </td>
+                                            <td className="p-3 font-medium text-emerald-500">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", context?.user.currency, progressAmt), context?.user.currency)}</td>
                                             <td className="p-3 font-medium text-slate-600">{remainingDays}/{duration} days</td>
                                             <td className="p-3 font-medium">
-                                                <Switch
-                                                    checked={enable}
-                                                    onClick={suspendData.bind(null, {chargeID, investmentCompleted})}
-                                                    onChange={setEnable}
-                                                    className={`${
-                                                        enable ? 'bg-blue-600' : 'bg-gray-200'
-                                                    } relative inline-flex h-6 w-11 items-center rounded-full opacity-60`}
-                                                >
-                                                    <span className="sr-only">Enable notifications</span>
-                                                    <span
-                                                        className={`${
-                                                            enable ? 'translate-x-6' : 'translate-x-1'
-                                                        } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                                                    />
-                                                </Switch>
+                                            <button 
+                                                onClick={suspendData.bind(null, {chargeID, investmentCompleted})}
+                                                className="bg-gray-700 p-2 rounded-lg flex gap-1 items-center text-gray-100 disabled:opacity-60 disabled:cursor-not-allowed" disabled={investmentCompleted}>
+                                                    {suspendLoading && <ButtonSpinner />}
+                                                    <span>Suspend</span>
+                                                </button>
                                             </td>
 
-                                            <td className="p-3 font-medium">
-                                                <Switch
-                                                    checked={enable}
-                                                    onClick={suspendData.bind(null, {chargeID, investmentCompleted})}
-                                                    onChange={setEnable}
-                                                    className={`${
-                                                        enable ? 'bg-blue-600' : 'bg-gray-200'
-                                                    } relative inline-flex h-6 w-11 items-center rounded-full opacity-60`}
-                                                >
-                                                    <span className="sr-only">Enable notifications</span>
-                                                    <span
-                                                        className={`${
-                                                            enable ? 'translate-x-6' : 'translate-x-1'
-                                                        } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                                                    />
-                                                </Switch>
+                                            <td className="p-3 font-medium" 
+                                            >
+                                                <button 
+                                                onClick={manualApproval.bind(null, {chargeID, type})}
+                                                className="bg-green-700 p-2 rounded-lg flex gap-1 items-center text-gray-100 disabled:opacity-60 disabled:cursor-not-allowed" disabled={status === "SUCCESSFUL"}>
+                                                    {approvalLoading && <ButtonSpinner />}
+                                                    <span>Approve</span>
+                                                </button>
                                             </td>
                                         </tr>
                                     ))

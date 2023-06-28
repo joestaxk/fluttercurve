@@ -36,9 +36,9 @@ const router = createBrowserRouter([
     },
     {
         element: <DashboardLayout />,
-        // ErrorBoundary: function(){
-        //     return <ApplicationErrorPage />
-        // },
+        ErrorBoundary: function(){
+            return <ApplicationErrorPage />
+        },
         children: [
             {
                 path: '/office',

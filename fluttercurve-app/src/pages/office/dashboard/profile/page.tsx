@@ -25,6 +25,11 @@ function Page({state}:{state: userDataStateType}) {
     loadingPics: false,
   })
   const { AlertComponent, showAlert } = useAlert();
+  const [viewPwd, setViewPwd] = useState({
+    oPass: false,
+    cpass: false,
+    pass: false,
+  });
 
   async function handleAvatarUpload(ev:any) {
      const fileData = ev.target.files;
@@ -223,23 +228,146 @@ function Page({state}:{state: userDataStateType}) {
           <form action="" onSubmit={handlePasswordUpdate}>
             <div className="mb-4">
               <label className="font-bold text-[#324a67] mb-1 text-[.9rem] md:text-base " htmlFor="oldPass">Old Password</label>
-              <div className="text-[#3e4a67] border-[1px] border-[#cccc]">
-                <input type="password" id="oldPass" name="oldPassword" placeholder="**********" className="outline-none appearance-none w-full p-3" required/>
+              <div className="text-[#3e4a67] border-[1px] border-[#cccc] relative">
+                <input type={viewPwd.oPass ? "text" : "password"} id="oldPass" name="oldPassword" placeholder="**********" className="outline-none appearance-none w-full p-3" required/>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setViewPwd((PREV) => {
+                      return { ...PREV, oPass: !viewPwd.oPass };
+                    })
+                  }
+                  className="appearance-none border-none absolute right-2 top-3"
+                >
+                  {!viewPwd.oPass ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="25"
+                      height="25"
+                      viewBox="0 0 12 12"
+                    >
+                      <path
+                        fill="#212121cc"
+                        d="M1.974 6.659a.5.5 0 0 1-.948-.317c-.01.03 0-.001 0-.001a1.633 1.633 0 0 1 .062-.162c.04-.095.099-.226.18-.381c.165-.31.422-.723.801-1.136C2.834 3.827 4.087 3 6 3c1.913 0 3.166.827 3.931 1.662a5.479 5.479 0 0 1 .98 1.517l.046.113c.003.008.013.06.023.11L11 6.5s.084.333-.342.474a.5.5 0 0 1-.632-.314v-.003l-.006-.016a3.678 3.678 0 0 0-.172-.376a4.477 4.477 0 0 0-.654-.927C8.584 4.673 7.587 4 6 4s-2.584.673-3.194 1.338a4.477 4.477 0 0 0-.795 1.225a2.209 2.209 0 0 0-.03.078l-.007.018ZM6 5a2 2 0 1 0 0 4a2 2 0 0 0 0-4ZM5 7a1 1 0 1 1 2 0a1 1 0 0 1-2 0Z"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                    >
+                      <g
+                        fill="none"
+                        stroke="#212121cc"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                      >
+                        <path d="M6.873 17.129c-1.845-1.31-3.305-3.014-4.13-4.09a1.693 1.693 0 0 1 0-2.077C4.236 9.013 7.818 5 12 5c1.876 0 3.63.807 5.13 1.874" />
+                        <path d="M14.13 9.887a3 3 0 1 0-4.243 4.242M4 20L20 4M10 18.704A7.124 7.124 0 0 0 12 19c4.182 0 7.764-4.013 9.257-5.962a1.694 1.694 0 0 0-.001-2.078A22.939 22.939 0 0 0 19.57 9" />
+                      </g>
+                    </svg>
+                  )}
+                </button>
               </div>
             </div>
 
             <div className="flex  gap-3 md:flex-row flex-col mb-4">
               <div className="md:w-1/2 w-full">
                 <label className="font-bold text-[#324a67] mb-1 text-[.9rem] md:text-base " htmlFor="password">New Password</label>
-                <div className="text-[#3e4a67] border-[1px] border-[#cccc]">
-                  <input type="password" id="password" title="Password is required" name="newPassword" className="outline-none appearance-none w-full p-3" autoComplete="off" required/>
+                <div className="text-[#3e4a67] border-[1px] border-[#cccc] relative">
+                  <input type={viewPwd.oPass ? "text" : "password"} id="password" title="Password is required" name="newPassword" className="outline-none appearance-none w-full p-3" autoComplete="off" required/>
+                  <button
+                  type="button"
+                  onClick={() =>
+                    setViewPwd((PREV) => {
+                      return { ...PREV, pass: !viewPwd.pass };
+                    })
+                  }
+                  className="appearance-none border-none absolute right-2 top-3"
+                >
+                  {!viewPwd.pass ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="25"
+                      height="25"
+                      viewBox="0 0 12 12"
+                    >
+                      <path
+                        fill="#212121cc"
+                        d="M1.974 6.659a.5.5 0 0 1-.948-.317c-.01.03 0-.001 0-.001a1.633 1.633 0 0 1 .062-.162c.04-.095.099-.226.18-.381c.165-.31.422-.723.801-1.136C2.834 3.827 4.087 3 6 3c1.913 0 3.166.827 3.931 1.662a5.479 5.479 0 0 1 .98 1.517l.046.113c.003.008.013.06.023.11L11 6.5s.084.333-.342.474a.5.5 0 0 1-.632-.314v-.003l-.006-.016a3.678 3.678 0 0 0-.172-.376a4.477 4.477 0 0 0-.654-.927C8.584 4.673 7.587 4 6 4s-2.584.673-3.194 1.338a4.477 4.477 0 0 0-.795 1.225a2.209 2.209 0 0 0-.03.078l-.007.018ZM6 5a2 2 0 1 0 0 4a2 2 0 0 0 0-4ZM5 7a1 1 0 1 1 2 0a1 1 0 0 1-2 0Z"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                    >
+                      <g
+                        fill="none"
+                        stroke="#212121cc"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                      >
+                        <path d="M6.873 17.129c-1.845-1.31-3.305-3.014-4.13-4.09a1.693 1.693 0 0 1 0-2.077C4.236 9.013 7.818 5 12 5c1.876 0 3.63.807 5.13 1.874" />
+                        <path d="M14.13 9.887a3 3 0 1 0-4.243 4.242M4 20L20 4M10 18.704A7.124 7.124 0 0 0 12 19c4.182 0 7.764-4.013 9.257-5.962a1.694 1.694 0 0 0-.001-2.078A22.939 22.939 0 0 0 19.57 9" />
+                      </g>
+                    </svg>
+                  )}
+                </button>
                 </div>
               </div>
                 
               <div className="md:w-1/2 w-full">
                 <label className="font-bold text-[#324a67] mb-1 text-[.9rem] md:text-base " htmlFor="cpass">Confirm Password</label>
-                <div className="text-[#3e4a67] border-[1px] border-[#cccc]">
-                  <input type="password" id="cpass" name="confirmPassword" title="Confirm Password is required"  className="outline-none appearance-none w-full p-3" autoComplete="off" required/>
+                <div className="text-[#3e4a67] border-[1px] border-[#cccc] relative">
+                  <input type={viewPwd.cpass ? "text" : "password"} id="cpass" name="confirmPassword" title="Confirm Password is required"  className="outline-none appearance-none w-full p-3" autoComplete="off" required/>
+                  <button
+                  type="button"
+                  onClick={() =>
+                    setViewPwd((PREV) => {
+                      return { ...PREV, cpass: !viewPwd.cpass };
+                    })
+                  }
+                  className="appearance-none border-none absolute right-2 top-3"
+                >
+                  {!viewPwd.cpass ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="25"
+                      height="25"
+                      viewBox="0 0 12 12"
+                    >
+                      <path
+                        fill="#212121cc"
+                        d="M1.974 6.659a.5.5 0 0 1-.948-.317c-.01.03 0-.001 0-.001a1.633 1.633 0 0 1 .062-.162c.04-.095.099-.226.18-.381c.165-.31.422-.723.801-1.136C2.834 3.827 4.087 3 6 3c1.913 0 3.166.827 3.931 1.662a5.479 5.479 0 0 1 .98 1.517l.046.113c.003.008.013.06.023.11L11 6.5s.084.333-.342.474a.5.5 0 0 1-.632-.314v-.003l-.006-.016a3.678 3.678 0 0 0-.172-.376a4.477 4.477 0 0 0-.654-.927C8.584 4.673 7.587 4 6 4s-2.584.673-3.194 1.338a4.477 4.477 0 0 0-.795 1.225a2.209 2.209 0 0 0-.03.078l-.007.018ZM6 5a2 2 0 1 0 0 4a2 2 0 0 0 0-4ZM5 7a1 1 0 1 1 2 0a1 1 0 0 1-2 0Z"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                    >
+                      <g
+                        fill="none"
+                        stroke="#212121cc"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                      >
+                        <path d="M6.873 17.129c-1.845-1.31-3.305-3.014-4.13-4.09a1.693 1.693 0 0 1 0-2.077C4.236 9.013 7.818 5 12 5c1.876 0 3.63.807 5.13 1.874" />
+                        <path d="M14.13 9.887a3 3 0 1 0-4.243 4.242M4 20L20 4M10 18.704A7.124 7.124 0 0 0 12 19c4.182 0 7.764-4.013 9.257-5.962a1.694 1.694 0 0 0-.001-2.078A22.939 22.939 0 0 0 19.57 9" />
+                      </g>
+                    </svg>
+                  )}
+                </button>
                 </div>
               </div>
             </div>
