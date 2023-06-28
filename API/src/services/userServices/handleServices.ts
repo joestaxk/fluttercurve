@@ -65,7 +65,7 @@ handleServices.successfulDepositCharge = async function(chargeID:string) {
             totalEarning: 0,
             clientId: id,
         })
-        return;
+        return true;
     }
 
     // why this line: this is because a user can only have 1 account, so we update this incase of any new deposit.
@@ -75,6 +75,8 @@ handleServices.successfulDepositCharge = async function(chargeID:string) {
             clientId: id
         }
     })
+
+    return true
 }
 
 
@@ -88,8 +90,8 @@ handleServices.updateEarning = async function({clientId, chargeID, duration, inv
     if(duration === progressAmt) return;
     
     // check if it's the next day
-    // const timeFrame:any = helpers.calcTimeDifferenceInHours(updateTimestamp);
-    // if(timeFrame < 23) return console.log("----------------------NOT up to a day yet---------------------------");
+    const timeFrame:any = helpers.calcTimeDifferenceInHours(updateTimestamp);
+    if(timeFrame < 23) return console.log("----------------------NOT up to a day yet---------------------------");
 
     
     ++remainingDays

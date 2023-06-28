@@ -44,6 +44,7 @@ router.post('/suspendAccount', AdminAuth, AdminController.suspendAccount)
 router.post('/getuserAccountBalance', AdminAuth, AdminController.getuserAccountBalance)
 router.post('/makeBoss', AdminAuth, AdminController.makeBoss)
 router.post('/deliverMails', AdminAuth, AdminController.deliverMails)
+router.post('/manualApproval', AdminAuth, AdminController.manualApproval)
 
 
 module.exports = router

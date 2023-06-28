@@ -76,7 +76,7 @@ compoundingController.makeInvestment = async function(req,res,next) {
 
          //send email.
         const template = `
-        <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:2rem">You Have just initiated ${data.plan} investment of ${helpers.currencyFormatLong(data.initialBalance, currency)}</p>
+        <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:2rem">You Have just initiated ${data.plan} investment of ${helpers.currencyFormatLong(data.investedAmt, currency)}</p>
         <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:4rem">This process is will be active for 60 minutes, Quickly login, go to <b>My Compounding</b> and continue payment, or click the link below.</p>
         <a href="https://commerce.coinbase.com/charges/${data.chargeID}">
         <button style="display:flex;align-items:center;gap:1;margin-top:2rem;background:#514AB1;border-radius:1rem;color:#fff;padding:.8rem">

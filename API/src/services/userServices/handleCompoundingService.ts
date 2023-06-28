@@ -8,9 +8,8 @@ import compoundingDeposit from "../../models/mode/compoundingDeposit";
 import adminNotification from "../../models/Users/adminNotifications";
 
 interface handlerServiceInterface {
-    successfulCompoundingCharge: (chargeID: string) => Promise<void>;
+    successfulCompoundingCharge: (chargeID: string) => Promise<true | undefined>;
     // get the user wallet account
-    successfulDepositCharge(chargeID: string): unknown;
     updateEarning: ({ plan, duration, investedAmt, progressAmt, remainingDays, investmentCompleted, status, expiresAt, createdAt, updateTimestamp }: any) => Promise<void>;
 }
 
@@ -64,7 +63,7 @@ handleCompoundingServices.successfulCompoundingCharge = async function(chargeID:
             totalEarning: 0,
             clientId: id,
         })
-        return;
+        return true;
     }
 
     // why this line: this is because a user can only have 1 account, so we update this incase of any new deposit.
@@ -74,6 +73,7 @@ handleCompoundingServices.successfulCompoundingCharge = async function(chargeID:
             clientId: id
         }
     })
+    return true;
 }
 
 
@@ -87,8 +87,8 @@ handleCompoundingServices.updateEarning = async function({clientId, chargeID, pl
     if(duration === progressAmt) return;
     
     // check if it's the next MONTH
-    // const timeFrame:any = helpers.calcTimeDifferenceInMonth(updateTimestamp);
-    // if(timeFrame < 1) return;
+    const timeFrame:any = helpers.calcTimeDifferenceInMonth(updateTimestamp);
+    if(timeFrame < 1) return;
 
     
     ++remainingDays

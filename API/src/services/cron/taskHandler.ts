@@ -1,3 +1,4 @@
+import adminNotification from "../../models/Users/adminNotifications";
 import calculateCompoundingPlan from "../calcDepositPlans";
 import Cron from "./init";
 import cronService from "./services";
@@ -53,29 +54,32 @@ taskHandler.deliverEmails = function() {
 // daily cron
 taskHandler.calculateDailyEarnings = function(){
     console.log("---- reading calculate Daily Earnings --------")
-    newJob.add(cronService.dailyEarning, "daily6hrs", "calculateDailyEarnings", true);  
+    newJob.add(cronService.dailyEarning, "minutes15", "calculateDailyEarnings", true);  
 }
 
 // monthly cron
 taskHandler.calculateMonthlyEarnings = function(){
     console.log("---- reading calculate Monthly Earnings --------")
-    newJob.add(cronService.monthlyEarning, "daily6hrs", "calculateMonthlyEarnings", true);
+    newJob.add(cronService.monthlyEarning, "minutes15", "calculateMonthlyEarnings", true);
 }
  
 // fixer data
 taskHandler.fixerData = function(){
     console.log("---- reading calculate Monthly Earnings --------")
-    newJob.add(cronService.fixerData, "minutes15", "fixerData", true);
+    newJob.add(cronService.fixerData, "daily6hrs", "fixerData", true);
 }
 
-// taskHandler.init = {
-//     depositCronUpdates: taskHandler.depositCronUpdates,
-//     depositCompoundingCronUpdates: taskHandler.depositCompoundingCronUpdates,
-//     QueuedMail: taskHandler.QueuedMail,
-//     deliverEmails: taskHandler.deliverEmails,
-//     calculateDailyEarnings: taskHandler.calculateDailyEarnings,
-//     calculateMonthlyEarnings: taskHandler.calculateMonthlyEarnings
-// } as any
+// clear notification
+taskHandler.clearNotifications = function(){
+    console.log("---- reading calculate Monthly Earnings --------")
+    newJob.add(async function() {
+        // get all notifications
+        const notifications = await adminNotification.findAndCountAll({});
+        if(notifications.count > 20) {
+            return await adminNotification.destroy({where: {markAsRead: false}});
+        }
+    }, "minutes5", "fixerData", true);
+}
 
 
 export default taskHandler;

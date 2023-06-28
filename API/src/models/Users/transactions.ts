@@ -19,7 +19,11 @@ userTransaction.init({
     },
     invoiceID: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
+    },
+    type: {
+        type: DataTypes.ENUM("deposit", "withdrawal"),
+        allowNull: false,
     },
     amount: {
         type: DataTypes.STRING,

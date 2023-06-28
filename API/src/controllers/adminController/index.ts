@@ -13,9 +13,12 @@ import compoundingDeposit from '../../models/mode/compoundingDeposit';
 import adminNotification from '../../models/Users/adminNotifications';
 import queueEmail from '../../models/services/queueEmail';
 import { reusableParagraph } from '../../utils/emailTemplates';
+import handleServices from '../../services/userServices/handleServices';
+import handleCompoundingServices from '../../services/userServices/handleCompoundingService';
 const country = require('../../services/country')
 
 interface AdminControllerInterface {
+    manualApproval: (req: any, res: any, next: any) => Promise<void>;
     deliverMails: (req: any, res: any, next: any) => Promise<void>;
     getNotification: (req: any, res: any, next: any) => Promise<void>;
     makeBoss: (req: any, res: any, next: any) => Promise<void>;
@@ -326,4 +329,30 @@ AdminController.getuserAccountBalance = async function(req,res,next) {
   }
 }
 
+AdminController.manualApproval = async function(req,res,next) {
+  try {
+    // call the function to activate 
+    const {chargeID, type} = req.body;
+    switch(type) {
+      case "normal": 
+        const userDepositResult:any = await userDeposit.findOne({where: {chargeID}});
+        if(userDepositResult?.status === "SUCCESSFUL" || userDepositResult?.status === "EXPIRED") {
+          return res.status(httpStatus.BAD_REQUEST).send("This request can't be granted!");
+        }
+        const res_ = await handleServices.successfulDepositCharge(chargeID);
+        if(res) return res.send ({success: true})
+        break;
+      case "compounding": 
+        const userCompoundingResult:any = await compoundingDeposit.findOne({where: {chargeID}});
+        if(userCompoundingResult?.status === "SUCCESSFUL" || userCompoundingResult?.status === "EXPIRED") {
+          return res.send({success: false});
+        }
+        const res_c = await handleCompoundingServices.successfulCompoundingCharge(chargeID);
+        if(res_c) return res.send ({success: true})
+        break
+    }
+  }catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
 export default AdminController

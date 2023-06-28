@@ -92,14 +92,28 @@ serviceController.getActiveWithdrawal = async function(req,res,next) {
 
 serviceController.getAccountBalance = async function(req,res,next) {
     try {
+        const {mode, amount} = req.query;
+        console.log(mode)
         // query DB for data
-        const getAccount:ClientInterface<string> = await Client.findOne({where: {uuid: req.id}}) as any;
-        const acct = getAccount.userAccount as userAccountInterface<string>;
-        if(!acct) throw new ApiError("account balance", httpStatus.BAD_REQUEST, {data: 0, desc: "Use E-currency. insufficient funds."})
+        const getAccount:ClientInterface<string> = await Client.findOne({where: {uuid: req.id},  include:['userAccount', 'userCompounding']}) as any;
+        const {userAccount, userCompounding}:any = await getAccount as any
+        const convertCurrency = helpers.calculateFixerData(getAccount.currency, "USD", amount)
 
-        let accountBal = (parseInt(acct.totalDeposit) + parseInt(acct.totalEarning)) - parseInt(acct.totalWithdrawal);
-        accountBal = accountBal < 0 ? 0 : accountBal;
-        res.send(accountBal);
+        if(mode === "compounding"){ 
+            let accountBal = (parseInt(userCompounding.totalDeposit) + parseInt(userCompounding.totalEarning)) - parseInt(userCompounding.totalWithdrawal);
+            console.log(accountBal, convertCurrency)
+
+            if(accountBal < convertCurrency) {
+                throw new ApiError("account balance", httpStatus.BAD_REQUEST, {data: 0, desc: "Use E-currency. insufficient funds."})
+            }
+            return res.send({accountBal})
+        }else if(mode === "normal"){
+            let accountBal = (parseInt(userAccount.totalDeposit) + parseInt(userAccount.totalEarning)) - parseInt(userAccount.totalWithdrawal);
+            if(accountBal  < convertCurrency) {
+                throw new ApiError("account balance", httpStatus.BAD_REQUEST, {data: 0, desc: "Use E-currency. insufficient funds."})
+            }
+            return res.send({accountBal})
+        }
     } catch (error) {
         console.log(error)
         res.status(httpStatus.BAD_REQUEST).send(error)
@@ -222,6 +236,7 @@ serviceController.newWithdrawalRequest = async function(req,res,next) {
         userId: req.id,
         invoiceID: helpers.generateInvoiceId(),
         amount,
+        type: 'withdrawal',
         mode
        })
         //send email.

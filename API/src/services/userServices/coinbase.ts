@@ -65,41 +65,36 @@ static async updateById(table: any, chargeID: string, type:string, cb:(arg0:any)
     if(!chargeID) return false;
 
     try {
-             if(type === "normal") {
-                return await handleServices.successfulDepositCharge(chargeID)
-             }
-            await handleCompoundingServices.successfulCompoundingCharge(chargeID)
-            // const { Charge, CheckOut } = (new Coinbase()).#instance();
-            // // retrieve data
-            // Charge.retrieve(chargeID, function (error:any, response:any) {
-            //     if(error) return cb(error); // return error if any
-            //     // check last status
-            //     const checkStatus = response.timeline[response.timeline.length -1];
-            //     // update or delete data
-            //     switch (checkStatus.status.toUpperCase()) {
-            //         case "EXPIRED":
-            //                 table.destroy({where: {chargeID}}).catch((err:any) => cb(err))
-            //                 console.log(chargeID, "Deleted.")
-            //             break;
+            const { Charge, CheckOut } = (new Coinbase()).#instance();
+            // retrieve data
+            Charge.retrieve(chargeID, async function (error:any, response:any) {
+                if(error) return cb(error); // return error if any
+                // check last status
+                const checkStatus = response.timeline[response.timeline.length -1];
+                // update or delete data
+                switch (checkStatus.status.toUpperCase()) {
+                    case "EXPIRED":
+                            table.destroy({where: {chargeID}}).catch((err:any) => cb(err))
+                            console.log(chargeID, "Deleted.")
+                        break;
 
-            //             case "PENDING":
-            //                 table.update({status: checkStatus.status}, {where: {chargeID}}).catch((err:any) => cb(err))
-            //             break;
+                        case "PENDING":
+                            table.update({status: checkStatus.status}, {where: {chargeID}}).catch((err:any) => cb(err))
+                        break;
 
-            //             case "COMPLETED":
-            //                 // QUEUE MAIL.
-            //                 handleServices.successfulCharge(chargeID) // for normal deposit
-                            // if(type === "normal"){
-                            //     return await handleServices.successfulDepositCharge(chargeID)
-                            // }
-                            // await handleCompoundingServices.successfulCompoundingCharge(chargeID)
-            //             break;
+                        case "COMPLETED":
+                            // QUEUE MAIL.
+                            if(type === "normal") {
+                                return await handleServices.successfulDepositCharge(chargeID)
+                             }
+                            await handleCompoundingServices.successfulCompoundingCharge(chargeID)
+                        break;
 
-            //             default:
-            //                table.update({status: checkStatus.status}, {where: {chargeID}}).catch((err:any) => cb(err))
-            //             break;
-            //     }
-            // });
+                        default:
+                           table.update({status: checkStatus.status}, {where: {chargeID}}).catch((err:any) => cb(err))
+                        break;
+                }
+            });
               console.log("🦾🦾🦾 Task Completed 🚀🚀🚀🚀🚀🚀")
         } catch (error) {
             throw error;

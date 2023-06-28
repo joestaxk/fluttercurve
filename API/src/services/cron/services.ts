@@ -12,7 +12,6 @@ import config from "../../config/config";
 import fs from 'fs'
 import path from "path";
 import axios from "axios";
-const request = require('request');
 
 interface cronServiceInterface {
     fixerData: () => Promise<void>;
@@ -168,7 +167,8 @@ cronService.monthlyEarning = async function() {
 cronService.fixerData = async function() {
     try {
         // make request to the fixer api.
-        const {data} = await axios.get(`http://data.fixer.io/api/latest?access_key=${config.FIXER_API}`)
+        const {data} = await axios.get(`http://data.fixer.io/api/latest?access_key=${config.FIXER_API}& base = USD`)
+        console.log(data)
         // save the data to a file.
         if(!data.suceess) return;
         const filePath = path.join(__dirname, "../../fixer.json");
@@ -195,7 +195,7 @@ cronService.fixerData = async function() {
         })
     } catch (error) {
         console.log(error)
-        throw error
+        // throw error
     }
 }
 export default cronService;
