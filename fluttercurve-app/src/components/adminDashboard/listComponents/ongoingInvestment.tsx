@@ -39,7 +39,7 @@ export default function OngoingInvestment() {
             console.log(err)
         })
     }
-    function manualApproval({chargeID, type}: {chargeID: string, type: string}, ev:any) {
+    function manualApproval({chargeID, type}: {chargeID: string, type: string}) {
         setApprovalLoad(true);
         adminAuth.manualApproval(chargeID, type).then((res:any) => {
             setApprovalLoad(false)
