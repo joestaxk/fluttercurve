@@ -7,6 +7,14 @@ export default async function buildDepositPlans() {
         // create the first and data for the plans.
         const data = [
             {
+                plan: "Eth Staking",
+                minAmt: "100",
+                maxAmt: "50000",
+                duration: "7",
+                gurantee: "100",
+                dailyInterestRate: "0.25",
+            },
+            {
                 plan: "Deluxe",
                 minAmt: "50000",
                 maxAmt: "90000",

@@ -38,7 +38,7 @@ DepositPlan.init({
     },
     guarantee: {
         type: DataTypes.STRING,
-        defaultValue: "0"
+        defaultValue: "100"
     },
     dailyInterestRate: {
         type: DataTypes.STRING,
