@@ -140,7 +140,7 @@ function Deposits({state} :{state: userDataStateType}) {
                     </div>
 
                     <div className="flex justify-between">
-                        <div className="">Remaining days: </div>
+                        <div className="">Ongoing Plan: </div>
                         <div className="">{!data.remainingDays ? "Just started" : data.remainingDays + " days"}</div>
                     </div>
 
