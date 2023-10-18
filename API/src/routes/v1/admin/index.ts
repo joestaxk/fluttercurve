@@ -27,6 +27,11 @@ router.get('/getAllUserCount', AdminAuth, AdminController.getAllUserCount)
 router.get('/getAllUsers', AdminAuth, AdminController.getAllUsers)
 router.get('/getAdminUser', AdminAuth, AdminController.getAdminUser)
 router.get('/getNotification', AdminAuth, AdminController.getNotification)
+router.get('/getAllActiveDeposit', AdminAuth, AdminController.getAllActiveDeposit)
+
+router.get('/getAllUnmarkNotification', AdminAuth, AdminController.getAllUnmarkNotification)
+router.get('/deleteAllNotification', AdminAuth, AdminController.deleteAllNotification)
+
 
 
 /**
@@ -45,6 +50,12 @@ router.post('/getuserAccountBalance', AdminAuth, AdminController.getuserAccountB
 router.post('/makeBoss', AdminAuth, AdminController.makeBoss)
 router.post('/deliverMails', AdminAuth, AdminController.deliverMails)
 router.post('/manualApproval', AdminAuth, AdminController.manualApproval)
+//@update
+router.post('/markAllAsRead', AdminAuth, AdminController.markAllAsRead)
+
+//@delete
+router.post('/deleteSingleUser', AdminAuth, AdminController.deleteSingleUser)
+router.post('/deleteMultipleUsers', AdminAuth, AdminController.deleteMultipleUsers)
 
 
 module.exports = router

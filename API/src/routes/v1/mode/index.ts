@@ -5,10 +5,6 @@ const router = Router.Router();
  
 import compoundingController from '../../../controllers/compoundingController';
 import { UserAuth } from '../../../middlewares/auth';
-import { buildCompondingPlans } from '../../../services/buildDepositPlans';
-
-
-buildCompondingPlans().then(res => {})
 
 /**
    Make Investment
@@ -22,8 +18,6 @@ router.post('/makeInvestment', UserAuth, compoundingController.makeInvestment);
     @method GET
 **/
 router.get('/getCompoundingPlans', UserAuth, compoundingController.getCompoundingPlans);
-
-
 
 /**
    GET Investment

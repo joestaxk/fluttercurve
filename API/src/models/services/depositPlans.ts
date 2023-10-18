@@ -54,7 +54,3 @@ DepositPlan.init({
 
 
 export default DepositPlan;
-
-
-// handle this 
-buildDepositPlans().then(res => {})

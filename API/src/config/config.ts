@@ -72,6 +72,7 @@ const ADMIN_DATA = {
    "currency": "USD",
    "password": _.ADMIN_PASSWORD,
    "isVerified": true,
+   "ipAddress": "",
    "isKyc": true,
    "isConnectWallet": true,
    "referral": "",

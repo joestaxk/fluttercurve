@@ -15,9 +15,15 @@ import queueEmail from '../../models/services/queueEmail';
 import { reusableParagraph } from '../../utils/emailTemplates';
 import handleServices from '../../services/userServices/handleServices';
 import handleCompoundingServices from '../../services/userServices/handleCompoundingService';
+import { sequelize } from '../../database/db';
 const country = require('../../services/country')
 
 interface AdminControllerInterface {
+    deleteSingleUser: (req: any, res: any, next: any) => Promise<void>;
+    deleteMultipleUsers: (req: any, res: any, next: any) => Promise<void>;
+    deleteAllNotification: (req: any, res: any, next: any) => Promise<void>;
+    getAllUnmarkNotification: (req: any, res: any, next: any) => Promise<void>;
+    markAllAsRead: (req: any, res: any, next: any) => Promise<void>;
     manualApproval: (req: any, res: any, next: any) => Promise<void>;
     deliverMails: (req: any, res: any, next: any) => Promise<void>;
     getNotification: (req: any, res: any, next: any) => Promise<void>;
@@ -31,6 +37,7 @@ interface AdminControllerInterface {
     getKycDetails: (req: any, res: any, next: any) => Promise<void>;
     suspendUserDeposit: (req: any, res: any, next: any) => Promise<void>;
     getAllUserDeposit: (req: any, res: any, next: any) => Promise<void>;
+    getAllActiveDeposit: (req: any, res: any, next: any) => Promise<void>;
     getUser: (req: any, res: any, next: any) => Promise<void>;
     getAllUsers: (req: any, res: any) => Promise<void>;
     getAllUserCount: (req: any, res: any, next: any) => Promise<void>;
@@ -69,6 +76,46 @@ AdminController.getAdminUser =async (req,res,next) => {
   }
 }
 
+AdminController.deleteSingleUser =async (req,res,next) => {
+  try {
+    const userId = req.body.id;
+    const user:ClientInterface<string|any> = await Client.findOne({where: {uuid: userId}}) as any;
+
+    if (!user) {
+      throw new ApiError({description: `User with ID ${userId} not found.`, httpStatus: httpStatus[404]});
+    }
+    await Client.destroy({where: {uuid: userId}})
+    res.send(user.fullName + "'s account has been deleted")
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
+AdminController.deleteMultipleUsers =async (req,res,next) => {
+  try {
+    const userIds = req.body.userIds
+    for (const userId of userIds) {
+      const user = await Client.findOne({where: {uuid: userId}});
+
+      if (!user) {
+        throw new ApiError({description: `User Ids contain invalids.`, httpStatus: httpStatus[404]});
+      }
+
+      // Use transactions to ensure atomicity of operations
+      await sequelize.transaction(async (t) => {
+        // Perform any additional cascading deletes here
+        // For example, if the User model has associations, you can delete them here
+        await user.destroy({ transaction: t, force: true });
+      });
+
+    }
+    res.send(`All selected users has been deleted.`);
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
+
 AdminController.getAllUserCount = async function(req,res,next){
   try {
       Client.findAndCountAll({}).then((user) => {
@@ -99,9 +146,10 @@ AdminController.getAllUsers = async function(req: any, res: any) {
       });
 
       const totalPages = Math.ceil(clients.count / limit); // Calculate the total number of pages
-  
+      const clientData = clients.rows.map((res:any) => {return {...helpers.filterObjectData(res), id: res.id, uuid: res.uuid}})
+
       res.send({
-        data: clients.rows,
+        data: clientData,
         page: page,
         limit: limit,
         totalRecords: clients.count,
@@ -133,13 +181,57 @@ AdminController.getUser = async function(req,res,next) {
 
 AdminController.getNotification = async function(req,res,next) {
   try {
-    const allNotification = await adminNotification.findAndCountAll({where: {markAsRead: false}, order: [['updateTimestamp', 'DESC']]});
+    const allNotification = await adminNotification.findAndCountAll({where: {}, order: [['createdAt', 'DESC']]});
     res.send(allNotification)
   } catch (error) {
       console.log(error)
      res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
   }
 }
+
+
+
+AdminController.markAllAsRead = async function(req,res,next) {
+  try {
+    await adminNotification.update({ markAsRead: true }, {
+      where: {
+        markAsRead: false
+      }
+    });
+
+    res.send("You've Marked All Notifications")
+  } catch (error) {
+      console.log(error)
+     res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
+AdminController.getAllUnmarkNotification = async function(req,res,next) {
+  try {
+    const data = await adminNotification.findAndCountAll({where: {
+        markAsRead: false
+      }
+    });
+    res.send(data)
+  } catch (error) {
+      console.log(error)
+     res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
+
+
+AdminController.deleteAllNotification = async function(req,res,next) {
+  try {
+    await adminNotification.destroy({where: {markAsRead: true}})
+    res.send("You've cleared all notifications")
+  } catch (error) {
+      console.log(error)
+     res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
+
 AdminController.getAllUserDeposit = async function(req,res,next) {
   try {
       // we communicate with a third party api - Coinbase
@@ -152,6 +244,20 @@ AdminController.getAllUserDeposit = async function(req,res,next) {
       res.status(httpStatus.BAD_REQUEST).send(error)
   }
 }
+
+AdminController.getAllActiveDeposit = async function(req,res,next) {
+  try {
+      // we communicate with a third party api - Coinbase
+      const depositList = await userDeposit.findAll({where: {investmentCompleted: false}});
+      const compoundingList = await compoundingDeposit.findAll({where: {investmentCompleted: false }});
+      
+      return res.send([...depositList, ...compoundingList]);
+  } catch (error) {
+      console.log(error)
+      res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
 
 AdminController.suspendUserDeposit = async function(req,res,next) {
   try {
