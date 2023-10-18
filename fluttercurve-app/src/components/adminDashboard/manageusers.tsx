@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import adminAuth from "../../lib/adminAuth";
 import helpers from "../../helpers";
 import { motion } from "framer-motion";
@@ -80,6 +80,69 @@ function ListUsers({ setSwitch }: any) {
   const [sUser, setParams] = useState("");
   const inputRef: { current: any } = useRef(null);
 
+  const [checks, setCheckAll] = useState(false);
+  const [mapIds, setMapsOnCheck] = useState({} as any); // Initialize as an empty object
+  const [deleteUserData, setDeleteUserData] = useState([]);
+
+  // loading for single deleted user
+  const [singleDeletedLoader, setSingleDeletedLoader] = useState(false);
+  const [multipleDeletedLoader, setMultipleDeletedLoader] = useState(false);
+
+  //Handling checkings
+  const checkAllListeners = function (ev: any) {
+    const isChecked = ev.target.checked;
+    setCheckAll(isChecked);
+
+    const checkboxes = document.querySelectorAll("[data-check]");
+
+    checkboxes.forEach((checkbox) => {
+      const id: any = checkbox.getAttribute("data-check");
+      setMapsOnCheck((prev: any) => ({ ...prev, [id]: isChecked }));
+    });
+  };
+
+  const checkSingleListener = function (ev: any, id: string) {
+    if (id) {
+      setMapsOnCheck((prev: any) => {
+        return { ...prev, [id]: ev.target.checked };
+      });
+    }
+  };
+
+  useEffect(() => {
+    const selectedUserIds: any = Object.keys(mapIds).filter((id) => mapIds[id]);
+    setDeleteUserData(selectedUserIds);
+    if (selectedUserIds.length >= 2) {
+      setCheckAll(true);
+    } else {
+      setCheckAll(false);
+    }
+  }, [mapIds, checks]);
+
+  // @delete multiple user
+  useEffect(() => {
+    // go back to default
+    setCheckAll(false);
+    setDeleteUserData([]);
+  }, [multipleDeletedLoader]);
+  const deleteMultipleUsers = function () {
+    if (deleteUserData.length < 2)
+      return showAlert("error", "Select more than 1 user");
+    setMultipleDeletedLoader(true);
+    adminAuth
+      .deleteMultipleUsers(deleteUserData)
+      .then((res: any) => {
+        // preload
+        setMultipleDeletedLoader(false);
+        // alert
+        showAlert("success", res.data);
+      })
+      .catch((err: any) => {
+        setMultipleDeletedLoader(false);
+        showAlert("error", err.response.data?.name.description);
+      });
+  };
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -105,7 +168,7 @@ function ListUsers({ setSwitch }: any) {
 
   useEffect(() => {
     LoadUser();
-  }, [page]);
+  }, [page, singleDeletedLoader, multipleDeletedLoader]);
 
   function debounce(func: any, delay: number) {
     let timeout: any;
@@ -140,6 +203,7 @@ function ListUsers({ setSwitch }: any) {
       setFakeList((prev: any) => ({ ...prev, data: filteredUserList }));
     }
   }, [inputRef.current, userList.data]);
+
   return (
     <>
       <motion.div
@@ -183,6 +247,28 @@ function ListUsers({ setSwitch }: any) {
               <table className="w-full border-[#e6e4e4] border-[1px]">
                 <thead className="bg-[#f3f3f3]">
                   <tr className="text-left">
+                    <th className="p-3 font-medium">
+                      <div className="flex gap-2">
+                        <input
+                          onChange={checkAllListeners}
+                          checked={checks}
+                          type="checkbox"
+                          className="p-3"
+                          name="check_all"
+                          id="ck_all"
+                        />
+                        {checks && (
+                          <button
+                            onClick={deleteMultipleUsers}
+                            className="border-red-600 border appearance-none rounded-lg p-1 bg-red-600 text-white"
+                          >
+                            {multipleDeletedLoader
+                              ? "Deleting All"
+                              : "Delete All"}
+                          </button>
+                        )}
+                      </div>
+                    </th>
                     <th className="p-3 font-medium">Name</th>
                     <th className="p-3 font-medium">Status</th>
                     <th className="p-3 font-medium">Role</th>
@@ -191,6 +277,8 @@ function ListUsers({ setSwitch }: any) {
 
                 <tbody className="border-[#e6e4e4] border-[1px]">
                   {fakeList.data.map((res: any) => {
+                    console.log(res)
+                    if(res.isAdmin) return;
                     return (
                       <motion.tr
                         key={res.id.toString()}
@@ -198,7 +286,15 @@ function ListUsers({ setSwitch }: any) {
                         animate={{ opacity: 1, transition: { delay: 0.2 } }}
                         exit={{ transition: { delay: 0.5 }, opacity: 0 }}
                       >
-                        <UserRow user={res} setSwitch={setSwitch} />
+                        <UserRow
+                          user={res}
+                          mapIds={mapIds}
+                          checkFn={checkSingleListener}
+                          setSwitch={setSwitch}
+                          showAlert={showAlert}
+                          singleDeletedLoader={singleDeletedLoader}
+                          setSingleDeletedLoader={setSingleDeletedLoader}
+                        />
                       </motion.tr>
                     );
                   })}
@@ -290,7 +386,23 @@ function ListUsers({ setSwitch }: any) {
   );
 }
 
-const UserRow = ({ user, setSwitch }: { user: any; setSwitch: any }) => {
+const UserRow = ({
+  user,
+  mapIds,
+  checkFn,
+  setSwitch,
+  showAlert,
+  singleDeletedLoader,
+  setSingleDeletedLoader,
+}: {
+  user: any;
+  mapIds: any;
+  checkFn: any;
+  setSwitch: any;
+  showAlert: any;
+  singleDeletedLoader: any;
+  setSingleDeletedLoader: any;
+}) => {
   const [blobImg, setBlobImg] = React.useState<string | undefined>(undefined);
   const [userData, setUser] = useState<any>([]);
 
@@ -309,35 +421,70 @@ const UserRow = ({ user, setSwitch }: { user: any; setSwitch: any }) => {
 
   useEffect(() => {
     adminAuth
-      .getAllUserDeposit(user.id)
+      .getAllActiveDeposit()
       .then((res: any) => {
         setUser([...res?.data]);
       })
       .catch((error: any) => {
         console.log(error);
       });
-  }, [user.ID]);
+  }, [user?.id]);
+
+  const deleteSingleUser = function (id: string) {
+    setSingleDeletedLoader(true);
+    adminAuth
+      .deleteSingleUser(id)
+      .then((res: any) => {
+        setSingleDeletedLoader(false);
+        showAlert("success", res.data);
+      })
+      .catch((err: any) => {
+        setSingleDeletedLoader(false);
+        showAlert("error", err.response.data?.name.description);
+      });
+  };
 
   return (
     <>
+      <td className="w-30">
+        <div className="ml-3">
+          <input
+            checked={mapIds[user.uuid]}
+            data-check={user.uuid}
+            onChange={(ev) => checkFn(ev, user.uuid)}
+            type="checkbox"
+            className="p-3"
+            name="check_single"
+            id={`check_single_${user.uuid}`}
+          />
+        </div>
+      </td>
+
       <td className="p-4">
         <div className="flex items-center gap-4 w-fit">
-          {userData?.map(({ status }: any) => (
-            <div className="relative mr-3">
-              <div
-                className={`animate-ping w-[15px] h-[15px] rounded-3xl ${
-                  status === "SUCCESSFUL" ? `bg-emerald-300` : "bg-gray-300"
-                }`}
-              ></div>
-              <div
-                className={`absolute top-1 left-[3px] w-[7.5px] h-[7.5px] rounded-3xl ${
-                  status === "SUCCESSFUL" ? `bg-emerald-800` : "bg-gray-400"
-                }`}
-              ></div>
-            </div>
-          ))}
-
-          <div className="rounded-full w-[50px] h-[50px] overflow-hidden">
+          <div className="relative rounded-full w-[50px] h-[50px] overflow-hidden">
+            {userData?.map(({ investmementCompleted, clientId }: any) => {
+              if (clientId === user.uuid) {
+                return (
+                  <div className="absolute right-2 z-10 bottom-5 mr-3">
+                    <div
+                      className={`absolute animate-ping w-[15px] h-[15px] rounded-3xl ${
+                        !investmementCompleted
+                          ? `bg-emerald-300`
+                          : "bg-gray-300"
+                      }`}
+                    ></div>
+                    <div
+                      className={`absolute top-1 left-[3px] w-[7.5px] h-[7.5px] rounded-3xl ${
+                        !investmementCompleted
+                          ? `bg-emerald-800`
+                          : "bg-gray-400"
+                      }`}
+                    ></div>
+                  </div>
+                );
+              }
+            })}
             <img
               src={blobImg || "/avatar-1.png"}
               className="object-cover w-full h-full"
@@ -353,16 +500,16 @@ const UserRow = ({ user, setSwitch }: { user: any; setSwitch: any }) => {
       <td className="p-4">
         <div
           className={`
-            border-[1px] 
-            w-fit p-1 rounded-3xl
-            ${
-              !user.isVerified
-                ? "border-[#d1b7b7] bg-red-100 text-red-700"
-                : user.isKyc !== "APPROVED" || !user.isWalletConnect
-                ? "border-[#e2cfc5] bg-orange-100 text-orange-700"
-                : "border-[#bdddbd] bg-green-100 text-emerald-700"
-            }
-            `}
+              border-[1px] 
+              w-fit p-1 rounded-3xl
+              ${
+                !user.isVerified
+                  ? "border-[#d1b7b7] bg-red-100 text-red-700"
+                  : user.isKyc !== "APPROVED" || !user.isWalletConnect
+                  ? "border-[#e2cfc5] bg-orange-100 text-orange-700"
+                  : "border-[#bdddbd] bg-green-100 text-emerald-700"
+              }
+              `}
         >
           {!user.isVerified && "Email / "}
           {user.isKyc !== "APPROVED" && "Kyc /"}
@@ -382,6 +529,13 @@ const UserRow = ({ user, setSwitch }: { user: any; setSwitch: any }) => {
             className="appearance-none border-none text-purple-800 outline-none"
           >
             View
+          </button>
+
+          <button
+            onClick={deleteSingleUser.bind(null, user.uuid)}
+            className="appearance-none border-none text-red-800 font-semibold outline-none"
+          >
+            {singleDeletedLoader ? "Deleting User" : "Delete User"}
           </button>
         </div>
       </td>

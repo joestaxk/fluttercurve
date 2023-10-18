@@ -3,6 +3,11 @@ import instance from "./requestService";
 
 
 interface adminAuthInterface {
+    deleteMultipleUsers: any;
+    deleteSingleUser: any;
+    deleteAllNotification: any;
+    getAllUnmarkNotification: any;
+    markAllAsRead: any;
     manualApproval: any;
     deliverMails: any;
     getNotification: any;
@@ -15,6 +20,7 @@ interface adminAuthInterface {
     getKycDetails: any;
     suspendUserDeposit: any;
     getAllUserDeposit: any;
+    getAllActiveDeposit: any;
     getUser: any;
     getAllUser: any;
     getAllUserCount: any;
@@ -39,6 +45,7 @@ adminAuth.deliverMails = async (header:string,message:string) => await instance.
 
 adminAuth.getUser = async (id:string) => await instance.post(`/admin/getUser`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getAllUserDeposit = async (id:string) => await instance.post(`/admin/getAllUserDeposit`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.getAllActiveDeposit = async () => await instance.get(`/admin/getAllActiveDeposit`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.suspendUserDeposit = async (id:string, investmentCompleted: boolean) => await instance.post(`/admin/suspendUserDeposit`, {chargeID:id, investmentCompleted}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.manualApproval = async (id:string, type: boolean) => await instance.post(`/admin/manualApproval`, {chargeID:id, type}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getKycDetails = async (id:string) => await instance.post(`/admin/getKycDetails`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
@@ -48,6 +55,14 @@ adminAuth.suspendAccount = async (id:string, suspend:boolean) => await instance.
 adminAuth.makeBoss = async (id:string, admin: boolean) => await instance.post(`/admin/makeBoss`, {id, admin}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getNotification = async () => await instance.get(`/admin/getNotification`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getuserAccountBalance = async (id:string) => await instance.post(`/admin/getuserAccountBalance`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+// @notifications
+adminAuth.markAllAsRead = async () => await instance.post(`/admin/markAllAsRead`, {}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.getAllUnmarkNotification = async () => await instance.get(`/admin/getAllUnmarkNotification`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.deleteAllNotification = async () => await instance.get(`/admin/deleteAllNotification`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+//@delete user
+adminAuth.deleteSingleUser = async (id:string) => await instance.post(`/admin/deleteSingleUser`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.deleteMultipleUsers = async (userIds:string[]) => await instance.post(`/admin/deleteMultipleUsers`, {userIds}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+
 
 
 
