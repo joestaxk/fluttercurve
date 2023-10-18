@@ -277,7 +277,6 @@ function ListUsers({ setSwitch }: any) {
 
                 <tbody className="border-[#e6e4e4] border-[1px]">
                   {fakeList.data.map((res: any) => {
-                    console.log(res)
                     if(res.isAdmin) return;
                     return (
                       <motion.tr
