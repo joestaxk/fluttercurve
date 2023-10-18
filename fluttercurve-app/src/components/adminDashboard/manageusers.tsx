@@ -430,6 +430,8 @@ const UserRow = ({
   }, [user?.id]);
 
   const deleteSingleUser = function (id: string) {
+    const confirmThis = confirm("Do you want to delete User with this ID " + id);
+    if(!confirmThis) return;
     setSingleDeletedLoader(true);
     adminAuth
       .deleteSingleUser(id)
