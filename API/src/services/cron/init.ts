@@ -26,7 +26,7 @@ export default class Cron {
             },
             minutes15 : function(remote: boolean) {
                 console.log(' 🔥🔥🔥 MINUTE CRON IN SERVICE 🔥🔥🔥`')
-                return cron.schedule('*/2 * * * * *', function() {
+                return cron.schedule('*/15 * * * *', function() {
                     task()
                 }, {
                     scheduled: remote

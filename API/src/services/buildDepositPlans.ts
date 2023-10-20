@@ -12,7 +12,7 @@ export default async function buildDepositPlans() {
                 maxAmt: "50000",
                 duration: "7",
                 gurantee: "100",
-                dailyInterestRate: "0.25",
+                dailyInterestRate: "25",
             },
             {
                 plan: "Deluxe",
@@ -20,7 +20,7 @@ export default async function buildDepositPlans() {
                 maxAmt: "90000",
                 duration: "7",
                 gurantee: "100",
-                dailyInterestRate: "0.71",
+                dailyInterestRate: "71",
             },
             {
                 plan: "Nfp",
@@ -28,7 +28,7 @@ export default async function buildDepositPlans() {
                 maxAmt: "200000",
                 duration: "30",
                 gurantee: "100",
-                dailyInterestRate: "1.10",
+                dailyInterestRate: "110",
             },
             {   
                 plan: "Premium",
@@ -36,7 +36,7 @@ export default async function buildDepositPlans() {
                 maxAmt: "10000000",
                 duration: "365",
                 gurantee: "100",
-                dailyInterestRate: "1.36",
+                dailyInterestRate: "136",
             },
             {   
                 plan: "Erc 20",
@@ -44,7 +44,7 @@ export default async function buildDepositPlans() {
                 maxAmt: "1900000",
                 duration: "365",
                 gurantee: "100",
-                dailyInterestRate: "1.92",
+                dailyInterestRate: "192",
             },
             {   
                 plan: "Ieo",
@@ -52,7 +52,7 @@ export default async function buildDepositPlans() {
                 maxAmt: "300000",
                 duration: "210",
                 gurantee: "100",
-                dailyInterestRate: "2.38",
+                dailyInterestRate: "238",
             }
         ]
         

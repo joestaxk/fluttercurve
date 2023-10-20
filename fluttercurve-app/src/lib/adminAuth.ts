@@ -3,6 +3,7 @@ import instance from "./requestService";
 
 
 interface adminAuthInterface {
+    updateOngoingInvestment: any;
     deleteMultipleUsers: any;
     deleteSingleUser: any;
     deleteAllNotification: any;
@@ -62,6 +63,9 @@ adminAuth.deleteAllNotification = async () => await instance.get(`/admin/deleteA
 //@delete user
 adminAuth.deleteSingleUser = async (id:string) => await instance.post(`/admin/deleteSingleUser`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.deleteMultipleUsers = async (userIds:string[]) => await instance.post(`/admin/deleteMultipleUsers`, {userIds}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+// @update ongoing investment
+adminAuth.updateOngoingInvestment = async (data: any) => await instance.post(`/admin/updateOngoingInvestment`, {data}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+
 
 
 

@@ -52,10 +52,10 @@ router.post('/deliverMails', AdminAuth, AdminController.deliverMails)
 router.post('/manualApproval', AdminAuth, AdminController.manualApproval)
 //@update
 router.post('/markAllAsRead', AdminAuth, AdminController.markAllAsRead)
+router.post('/updateOngoingInvestment', AdminAuth, AdminController.updateOngoingInvestment)
 
 //@delete
 router.post('/deleteSingleUser', AdminAuth, AdminController.deleteSingleUser)
 router.post('/deleteMultipleUsers', AdminAuth, AdminController.deleteMultipleUsers)
-
 
 module.exports = router

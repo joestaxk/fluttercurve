@@ -1,4 +1,4 @@
-import httpStatus from 'http-status'
+import httpStatus, { NOT_FOUND } from 'http-status'
 import ApiError from '../../utils/ApiError';
 import Client, { ClientInterface } from '../../models/Users/users';
 import userDeposit from '../../models/Users/deposit';
@@ -19,6 +19,7 @@ import { sequelize } from '../../database/db';
 const country = require('../../services/country')
 
 interface AdminControllerInterface {
+    updateOngoingInvestment: (req: any, res: any, next: any) => Promise<void>;
     deleteSingleUser: (req: any, res: any, next: any) => Promise<void>;
     deleteMultipleUsers: (req: any, res: any, next: any) => Promise<void>;
     deleteAllNotification: (req: any, res: any, next: any) => Promise<void>;
@@ -205,6 +206,32 @@ AdminController.markAllAsRead = async function(req,res,next) {
      res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
   }
 }
+
+
+AdminController.updateOngoingInvestment = async function(req,res,next) {
+  try {
+    const data = req.body.data;
+
+    const user:ClientInterface<string|any> = await Client.findOne({where: {uuid: data.id}}) as any;
+    if(!user) throw new ApiError({name: "Invalid user", description: "User not Found", httpCode: httpStatus[404]})
+
+    userDeposit.update(
+      {
+        investedAmt: data.depositedAmt,
+        progressAmt: data.earnings.toString(),
+        remainingDays: data.remainingDays,
+
+      },
+      { where: { clientId: user.uuid } }
+    );
+
+    res.send("User Data has been updated")
+  } catch (error) {
+      console.log(error)
+     res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
 
 AdminController.getAllUnmarkNotification = async function(req,res,next) {
   try {
