@@ -14,7 +14,7 @@ export default function OngoingInvestment() {
   const [approvalLoading, setApprovalLoad] = useState(false);
   const context = useContext(CreateUserIDContext);
 
-  const [toggleUpdateState, setToggleUpdateState] = useState(false);
+  const [toggleUpdateState, setToggleUpdateState] = useState<any>({});
   const [ongoingUpdateLoader, setOngoingUpdateLoader] = useState(false);
 
   useEffect(() => {
@@ -76,12 +76,11 @@ export default function OngoingInvestment() {
   function updateOngoingInvestment(ev: any) {
     ev.preventDefault();
     const forms = ev.target;
-    console.log(forms);
     const data = {
-      id: context.ID,
-      depositedAmt: forms.depositedAmt.value,
-      earnings: forms.earnings.value,
-      remainingDays: forms.remainingDays.value,
+        id: forms.submitForm.dataset.chargeid,
+        depositedAmt: forms.depositedAmt.value,
+        earnings: forms.earnings.value,
+        remainingDays: forms.remainingDays.value,
     };
 
     setOngoingUpdateLoader(true);
@@ -89,7 +88,7 @@ export default function OngoingInvestment() {
       .updateOngoingInvestment(data)
       .then((res: any) => {
         setOngoingUpdateLoader(false);
-        setToggleUpdateState(false);
+        setToggleUpdateState((prev:any) => {return {...prev, [data.id] : false}})
         showAlert("success", res.data);
       })
       .catch((err: any) => {
@@ -107,7 +106,7 @@ export default function OngoingInvestment() {
             <h2 className="text-xl font-medium text-[#212121cc]">
               Investments
             </h2>
-            {toggleUpdateState && (
+            {!toggleUpdateState && (
               <p className="text-red-500 text-sm my-2">
                 Notice the change in currency, make sure you know what you're
                 doing before making the changes
@@ -202,7 +201,7 @@ export default function OngoingInvestment() {
                               )}{" "}
                             </div>
 
-                            {toggleUpdateState && (
+                            {toggleUpdateState[chargeID] && (
                               <input
                                 type="number"
                                 name="depositedAmt"
@@ -223,7 +222,7 @@ export default function OngoingInvestment() {
                               )}
                             </div>
 
-                            {toggleUpdateState && (
+                            {toggleUpdateState[chargeID] && (
                               <input
                                 type="number"
                                 name="earnings"
@@ -236,7 +235,7 @@ export default function OngoingInvestment() {
                             <div className="">
                               {remainingDays}/{duration} days
                             </div>
-                            {toggleUpdateState && (
+                            {toggleUpdateState[chargeID] && (
                               <input
                                 type="number"
                                 name="remainingDays"
@@ -278,10 +277,12 @@ export default function OngoingInvestment() {
                           </td>
 
                           <td>
-                          {toggleUpdateState && <div className="flex relative group">
+                          {toggleUpdateState[chargeID] && <div className="flex relative group">
                                 {/* SAVE DATA */}
                                 <button
                                   type="submit"
+                                  name="submitForm"
+                                  data-chargeId= {chargeID}
                                   className="w-10 z-10 h-10 rounded-full bg-gray-300 flex items-center justify-center hover:bg-gray-100 transition-all"
                                 >
                                   <PencilSquareIcon className="h-6 w-6" />
@@ -291,7 +292,7 @@ export default function OngoingInvestment() {
                                 <button
                                   type="button"
                                   onClick={() =>
-                                    setToggleUpdateState(false)
+                                    setToggleUpdateState((prev:any) => {return {...prev, [chargeID] : false}})
                                   }
                                   className="w-10 h-10 group-hover:left-7 inset-0 duration-300 rounded-full absolute bg-red-300 flex items-center justify-center hover:bg-red-100 transition-all"
                                 >
@@ -301,11 +302,11 @@ export default function OngoingInvestment() {
                             }
 
                             <div className="">
-                              {!toggleUpdateState && (
+                              {!toggleUpdateState[chargeID] && (
                                 <button
                                   type="button"
                                   onClick={() =>
-                                    setToggleUpdateState(!toggleUpdateState)
+                                    setToggleUpdateState((prev:any) => {return {...prev, [chargeID] : !toggleUpdateState[chargeID]}})
                                   }
                                   title=""
                                   className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center hover:bg-gray-100 transition-all"

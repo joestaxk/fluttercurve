@@ -212,7 +212,9 @@ AdminController.updateOngoingInvestment = async function(req,res,next) {
   try {
     const data = req.body.data;
 
-    const user:ClientInterface<string|any> = await Client.findOne({where: {uuid: data.id}}) as any;
+    console.log(data)
+
+    const user:any = await userDeposit.findOne({where: {chargeID: data.id}});
     if(!user) throw new ApiError({name: "Invalid user", description: "User not Found", httpCode: httpStatus[404]})
 
     userDeposit.update(
@@ -222,7 +224,7 @@ AdminController.updateOngoingInvestment = async function(req,res,next) {
         remainingDays: data.remainingDays,
 
       },
-      { where: { clientId: user.uuid } }
+      { where: { chargeID: user.chargeID } }
     );
 
     res.send("User Data has been updated")
