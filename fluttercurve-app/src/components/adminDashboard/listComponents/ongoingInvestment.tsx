@@ -50,7 +50,6 @@ export default function OngoingInvestment() {
       .catch((err: any) => {
         setSuspendLoad(false);
         showAlert("error", err.response.data.description);
-        console.log(err);
       });
   }
   function manualApproval({
@@ -95,7 +94,7 @@ export default function OngoingInvestment() {
       })
       .catch((err: any) => {
         setOngoingUpdateLoader(false);
-        showAlert("success", err.response.data);
+        showAlert("success", err.response.data.description);
       });
   }
   return (

@@ -158,7 +158,7 @@ export default function Users() {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-3 p-4">
-            <div className="flex item-center  gap-3">
+            <div className="flex item-center gap-3">
               <div className="">
                 <img
                   src={blobImg || "/avatar-1.png"}
@@ -189,9 +189,9 @@ export default function Users() {
                     />
                   </svg>
                 </div>
-                <div className="h-[60px] w-[80px] ml-2 p-1">
+                <div className="h-[60px] min-w-[80px] ml-2 p-1">
                   <h4 className="font-medium">Country</h4>
-                  <p className="text-slate-600">{context.user?.country}</p>
+                  <p className="text-slate-600 whitespace-nowrap">{context.user?.country}</p>
                 </div>
               </div>
 
