@@ -51,7 +51,7 @@ taskHandler.deliverEmails = function() {
 }
 
 
-// daily cron
+// // daily cron
 taskHandler.calculateDailyEarnings = function(){
     console.log("---- reading calculate Daily Earnings --------")
     newJob.add(cronService.dailyEarning, "minutes15", "calculateDailyEarnings", true);  
@@ -68,18 +68,5 @@ taskHandler.fixerData = function(){
     console.log("---- reading calculate Monthly Earnings --------")
     newJob.add(cronService.fixerData, "daily6hrs", "fixerData", true);
 }
-
-// clear notification
-taskHandler.clearNotifications = function(){
-    console.log("---- reading calculate Monthly Earnings --------")
-    newJob.add(async function() {
-        // get all notifications
-        const notifications = await adminNotification.findAndCountAll({});
-        if(notifications.count > 20) {
-            return await adminNotification.destroy({where: {markAsRead: false}});
-        }
-    }, "daily6hrs", "fixerData", true);
-}
-
 
 export default taskHandler;

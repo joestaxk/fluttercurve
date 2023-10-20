@@ -174,7 +174,7 @@ export default function DepositInvesment({state}:{state: userDataStateType}) {
                   <div className=" p-4 mb-3 flex w-full justify-between">
                      <div className="text-2xl font-semi-bold text-[#2b2b2b]">{plan} plan</div>
                      <div className="flex gap-3">
-                       {dailyInterestRate  > 0.25 && <div className="text-[#199878] font-medium">{dailyInterestRate}%</div>}
+                       {(parseInt(dailyInterestRate)/100)  > 0.25 && <div className="text-[#199878] font-medium">{parseInt(dailyInterestRate)/100}%</div>}
                        <div className="text-[#212121cc]">everyday</div>
                      </div>
                   </div>

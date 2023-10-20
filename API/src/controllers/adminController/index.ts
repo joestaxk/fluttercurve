@@ -285,7 +285,7 @@ AdminController.getKycDetails = async function(req,res,next) {
       const {nationality}: {nationality: string} = kyc as any;
       // nationality;
       const countryCode = country.filter(({code, name}: any) => code === nationality)[0]
-      res.send(Object.assign(kyc, {nationality: countryCode.name||countryCode}))
+      res.send(Object.assign(kyc, {nationality: countryCode?.name||countryCode}))
   } catch (error) {
       console.log(error)
       res.status(httpStatus.BAD_REQUEST).send(error)

@@ -166,10 +166,8 @@ helpers.calcTimeDifferenceInHours = function(from) {
 
     // Calculate the difference in milliseconds between the two timestamps
     var timeDifference = currentTimestamp - givenTimestamp;
-
     // Convert the time difference to hours
     var timeDifferenceInHours = timeDifference / (1000 * 60 * 60);
-
     return timeDifferenceInHours
 }
 

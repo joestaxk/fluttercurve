@@ -30,6 +30,7 @@ var cronService = {} as cronServiceInterface;
 cronService.depositService = async function() {
     try {
         const deposit: any[] = await userDeposit.findAll({where: {status: {[Op.notIn]: ["SUCCESSFUL", "EXPIRED"]}}});
+        console.log('🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥')
         if(!deposit.length) {
           return console.log("Keep waiting for Task For Deposit service 🚻🚻🚻🚻🚻🚻🚻 ")
         }
@@ -135,7 +136,7 @@ cronService.depositCompoundingService = async function() {
 // FOR NORMAL DEPOSIT.
 cronService.dailyEarning = async function() {
     try {
-        const deposit: any[] = await userDeposit.findAll({where: {investmentCompleted: false}});
+        const deposit: any[] = await userDeposit.findAll({where: {investmentCompleted: false, status: "SUCCESSFUL"}});
         if(!deposit.length) {
           return console.log("Keep waiting for Task for daily earning🚻🚻🚻🚻🚻🚻🚻")
         }
