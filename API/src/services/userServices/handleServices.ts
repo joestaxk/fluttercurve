@@ -112,6 +112,7 @@ handleServices.updateEarning = async function ({
   status,
   investmentCompleted,
   updateTimestamp,
+  expiresAt
 }: any) {
   if (status !== "SUCCESSFUL") return;
 
@@ -134,8 +135,9 @@ handleServices.updateEarning = async function ({
   }
 
   // Check if it's been at least 7 days (168 hours) since the last update
+  const expiredTimeFrame: any = helpers.calcTimeDifferenceInHours(expiresAt);
   const sevenDays = 168;
-  if (timeFrame < sevenDays) {
+  if (expiredTimeFrame < sevenDays) {
     return console.log("Not enough time has passed (less than 7 days).");
   }
 
@@ -149,10 +151,17 @@ handleServices.updateEarning = async function ({
 
   console.log(earnings)
 
+
+  await userDeposit.increment("progressAmt", {
+    by: earnings,
+    where: { chargeID } ,
+  });
+
+
   userDeposit.update(
     {
-      progressAmt: earnings.toString(),
       remainingDays: 1,
+      expiresAt: (new Date()).toLocaleString()
     },
     { where: { chargeID } }
   );
@@ -167,22 +176,19 @@ handleServices.updateEarning = async function ({
   });
 };
 
+
 function calculateEarnings(
   investedAmt: number,
   interestRate: number,
   targetDay: number
 ) {
   // Calculate the value of the investment at the end of the target day
-  var valueAtTargetDay: number =
-    investedAmt * Math.pow(1 + interestRate, targetDay);
-
-  // Calculate the earnings for the target day
-  var earningsForTargetDay: any = valueAtTargetDay - investedAmt;
-
+  var valueAtTargetDay =
+    investedAmt * (interestRate)
   // Round the earnings to 2 decimal places
-  earningsForTargetDay = earningsForTargetDay.toFixed(2);
+  const earningsForTargetDay = valueAtTargetDay.toFixed(2);
 
   return parseFloat(earningsForTargetDay);
-}
+} 
 
 export default handleServices;

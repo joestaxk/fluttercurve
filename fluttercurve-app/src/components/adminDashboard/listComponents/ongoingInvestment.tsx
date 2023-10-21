@@ -157,7 +157,9 @@ export default function OngoingInvestment() {
                         duration,
                         remainingDays,
                         investmentCompleted,
-                      }: any) => (
+                      }: any) => {
+                        if(status === "RESOLVED") return;
+                        return (
                         <tr key={chargeID} className="text-left">
                           <td className="p-3 font-medium flex gap-1 items-center">
                             <div className="relative">
@@ -317,7 +319,7 @@ export default function OngoingInvestment() {
                             </div>
                           </td>
                         </tr>
-                      )
+                      )}
                     )
                   )}
                 </tbody>
