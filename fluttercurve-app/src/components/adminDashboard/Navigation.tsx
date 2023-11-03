@@ -32,14 +32,14 @@ export default function Navigation({setNav}: {setNav: (arg0:boolean) => void}) {
                   <div className="">Manage User</div>
               </div>
             </ActiveLink>
-            {/* <ActiveLink href="/office/admin/manage-plans">
+            <ActiveLink href="/office/admin/manage-plans">
               <div className="flex gap-2 xxl:text-xl text-lg hover:font-medium items-center ">
                   <div className="">
                   <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="none" stroke="#514AB1" strokeWidth="2" d="M18 4V0v4ZM7 18H5h2Zm12 0H9h10ZM7 14H5h2Zm12 0H9h10ZM6 4V0v4ZM1 9h22H1Zm0 14h22V4H1v19Z"/></svg>
                   </div>
                   <div className="">Manage Plans</div>
               </div>
-            </ActiveLink> */}
+            </ActiveLink>
             <ActiveLink href="/office/admin/account-settings">
               <div className="flex gap-2 xxl:text-xl text-lg hover:font-medium items-center ">
                   <div className="">

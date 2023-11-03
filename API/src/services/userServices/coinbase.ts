@@ -1,5 +1,9 @@
 var coinbase = require('coinbase-commerce-node');
+import httpStatus from "http-status";
 import config from "../../config/config";
+import serviceController from "../../controllers/serviceController";
+import adminNotification from "../../models/Users/adminNotifications";
+import ApiError from "../../utils/ApiError";
 import handleCompoundingServices from "./handleCompoundingService";
 import handleServices from "./handleServices";
   
@@ -38,10 +42,48 @@ interface listChargesInterface<T> {
 }
 
 export default class Coinbase {
-    #API_KEY: string = config.COINBASE_APIKEY;
-    #instance() {
-    const Client = coinbase.Client;
-    Client.init((new Coinbase()).#API_KEY);
+    API_KEY: string = "";
+
+    async getCoinbaseApiKey() {
+        try {
+            const res = await serviceController.getGeneralSettings();
+
+            if(res?.coinBaseApiKey){
+                this.API_KEY = res.coinBaseApiKey
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async testRunApiKey() {
+        try {
+            const {Charge} =  await this.#instance();
+            const bodyData: chargeInterface<string> = {
+                description: "Testing",
+                metadata: {
+                  customer_id: "123",
+                  customer_name: "Test",
+                },
+                name: "Test",
+                pricing_type: "fixed_price",
+                local_price: {
+                  amount: "12345",
+                  currency: "USD",
+                },
+              };
+            const createChargeObj = new Charge(bodyData);
+            await createChargeObj.save();
+        } catch (error:any) {
+            const errBody = JSON.parse(error.body)['error']
+            throw new ApiError(errBody.type, httpStatus[401], errBody.message)
+        }
+    }
+
+    async #instance() {
+        await this.getCoinbaseApiKey()
+        const Client = coinbase.Client;
+        Client.init(this.API_KEY);
         return {
             Charge: coinbase.resources.Charge,
             CheckOut: new (coinbase.resources.Checkout)
@@ -50,7 +92,7 @@ export default class Coinbase {
 
 static async createCharge(data: chargeInterface<string>) {
     try {
-        const { Charge } = (new Coinbase()).#instance();
+        const { Charge } = await (new Coinbase()).#instance();
        
         const createChargeObj = new Charge(data);
 
@@ -65,7 +107,7 @@ static async updateById(table: any, chargeID: string, type:string, cb:(arg0:any)
     if(!chargeID) return false;
 
     try {
-            const { Charge, CheckOut } = (new Coinbase()).#instance();
+            const { Charge, CheckOut } = await (new Coinbase()).#instance();
             // retrieve data
             Charge.retrieve(chargeID, async function (error:any, response:any) {
                 if(error) return cb(error); // return error if any

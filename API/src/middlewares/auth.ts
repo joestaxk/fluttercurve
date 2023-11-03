@@ -56,6 +56,7 @@ const UserAuth = async function(req: any,res:any,next:any) {
          }
 
          req.id = ifUserExist.uuid;
+         req.primaryKey = ifUserExist.id;
          req.userName = ifUserExist.userName
          req.email = ifUserExist.email
          next()
@@ -122,6 +123,7 @@ const AdminAuth = async function(req: any,res:any,next:any) {
          }
 
          req.id = ifUserExist.uuid;
+         req.primaryKey = ifUserExist.id;
          next()
      }else {
          throw new ApiError("Unauthorization user", httpStatus.UNAUTHORIZED, "no bearer token")

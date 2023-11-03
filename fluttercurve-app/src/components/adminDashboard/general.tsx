@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import CurrencyData from "./general/currency"
+import CoinbaseApi from "./general/api"
 
 export default function General() {
 
@@ -17,6 +18,8 @@ export default function General() {
 
                 {/* update currency */}
                 <CurrencyData />
+                {/* Update coinbase API */}
+                <CoinbaseApi />
             </div>
         </motion.div>
     )

@@ -42,6 +42,86 @@ handleServices.successfulDepositCharge = async function (chargeID: string) {
   const { uuid, id, userName, fullName, email, ipAddress, currency }: any =
     await Client.findOne({ where: { uuid: res.clientId } });
 
+  // UPDATE USERACCOUNT
+  // get the user wallet account
+  const ifAny = await userAccount.findOne({ where: { clientId: id } });
+  // Each time a new user wallet is created, that user just made some investment.
+
+  // Before we set a new deposit as "SUCCESSFUL", lets make sure the plan is just updating an existig plan
+  // with same plan name
+  const checkForAnyExistingPlan: any = await userDeposit.findOne({
+    where: {
+      clientID: uuid,
+      plan: res?.plan,
+      status: "SUCCESSFUL",
+    },
+  });
+  // whatever goes in here is existing plans
+  if (checkForAnyExistingPlan) {
+    // get the new invested amount and then add it to the old one.
+    const newInvestedAmt = (
+      parseFloat(res.investedAmt) +
+      parseFloat(checkForAnyExistingPlan.investedAmt)
+    ).toString();
+
+    const newProgressAmt = (
+      parseFloat(res.progressAmt) +
+      parseFloat(checkForAnyExistingPlan.progressAmt)
+    ).toString();
+
+    // update the existing one
+    const u = (
+      await userDeposit.update(
+        {
+          investedAmt: newInvestedAmt,
+          progressAmt: newProgressAmt,
+          clientID: res.chargeID,
+        },
+        { where: { chargeID: checkForAnyExistingPlan.chargeID } }
+      )
+    )[0];
+
+    if (u) {
+      // destroy the new investment record
+      userDeposit.destroy({
+        where: {
+          chargeID: res.chargeID,
+        },
+      });
+    }
+  }else {
+    // Each time a new user wallet is created, that user just made some investment.
+    await userDeposit.update({ status: "SUCCESSFUL" }, { where: { chargeID } });
+  }
+
+  // new deposit alert
+  await adminNotification.create({
+    clientId: uuid,
+    type: "DEPOSIT",
+    fullName,
+    depositType: res.plan,
+    userIp: ipAddress,
+  });
+
+  if (!ifAny) {
+    // create new account for the user
+    await userAccount.create({
+      totalDeposit: parseInt(res.investedAmt),
+      totalWithdrawal: 0,
+      totalEarning: 0,
+      clientId: id,
+    });
+    return true;
+  }
+
+  // why this line: this is because a user can only have 1 account, so we update this incase of any new deposit.
+  await userAccount.increment("totalDeposit", {
+    by: parseInt(res.investedAmt),
+    where: {
+      clientId: id,
+    },
+  });
+
   // STORE A EMAIL and send later
   await templates.successfulChargeMailTemplate(
     uuid,
@@ -66,38 +146,6 @@ handleServices.successfulDepositCharge = async function (chargeID: string) {
     userName
   );
 
-  // UPDATE USERACCOUNT
-  // get the user wallet account
-  const ifAny = await userAccount.findOne({ where: { clientId: id } });
-  // Each time a new user wallet is created, that user just made some investment.
-  await userDeposit.update({ status: "SUCCESSFUL" }, { where: { chargeID } });
-  // new deposit alert
-  await adminNotification.create({
-    clientId: uuid,
-    type: "DEPOSIT",
-    fullName,
-    depositType: res.plan,
-    userIp: ipAddress,
-  });
-  if (!ifAny) {
-    // create new account for the user
-    await userAccount.create({
-      totalDeposit: parseInt(res.investedAmt),
-      totalWithdrawal: 0,
-      totalEarning: 0,
-      clientId: id,
-    });
-    return true;
-  }
-
-  // why this line: this is because a user can only have 1 account, so we update this incase of any new deposit.
-  await userAccount.increment("totalDeposit", {
-    by: parseInt(res.investedAmt),
-    where: {
-      clientId: id,
-    },
-  });
-
   return true;
 };
 
@@ -112,7 +160,7 @@ handleServices.updateEarning = async function ({
   status,
   investmentCompleted,
   updateTimestamp,
-  expiresAt
+  expiresAt,
 }: any) {
   if (status !== "SUCCESSFUL") return;
 
@@ -141,41 +189,38 @@ handleServices.updateEarning = async function ({
     return console.log("Not enough time has passed (less than 7 days).");
   }
 
-// //   what if we suspend the payment for 2 weeks
-// const calculateWksSuspended = (timeFrame/sevenDays)
+  // //   what if we suspend the payment for 2 weeks
+  // const calculateWksSuspended = (timeFrame/sevenDays)
   const earnings = calculateEarnings(
     parseInt(investedAmt) + parseInt(progressAmt),
     parseFloat(intrestRate),
     duration
   );
-
-  console.log(earnings)
-
-
   await userDeposit.increment("progressAmt", {
     by: earnings,
-    where: { chargeID } ,
+    where: { chargeID },
   });
-
 
   userDeposit.update(
     {
       remainingDays: 1,
-      expiresAt: (new Date()).toLocaleString()
+      expiresAt: new Date().toLocaleString(),
     },
     { where: { chargeID } }
   );
 
-  const { id } = (await Client.findOne({ where: { uuid: clientId } })) as any;
-
-  await userAccount.increment("totalEarning", {
-    by: earnings,
-    where: {
-      clientId: id,
-    },
-  });
+  const getUserId = (await Client.findOne({
+    where: { uuid: clientId },
+  })) as any;
+  if (getUserId)
+    // console.log(getUserId)
+    await userAccount.increment("totalEarning", {
+      by: earnings,
+      where: {
+        clientId: getUserId.id,
+      },
+    });
 };
-
 
 function calculateEarnings(
   investedAmt: number,
@@ -183,12 +228,11 @@ function calculateEarnings(
   targetDay: number
 ) {
   // Calculate the value of the investment at the end of the target day
-  var valueAtTargetDay =
-    investedAmt * (interestRate)
+  var valueAtTargetDay = investedAmt * interestRate;
   // Round the earnings to 2 decimal places
   const earningsForTargetDay = valueAtTargetDay.toFixed(2);
 
   return parseFloat(earningsForTargetDay);
-} 
+}
 
 export default handleServices;

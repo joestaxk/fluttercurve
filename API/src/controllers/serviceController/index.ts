@@ -18,8 +18,16 @@ import send_mail, { EmailTemplate } from "../../services/email-service";
 import userCurrency from "../../models/Users/currencies";
 import { Op } from "sequelize";
 import buildDepositPlans from "../../services/buildDepositPlans";
+import generalSettings, { generalSettingsInterface } from "../../models/services/generalSettings";
 
 interface serviceControllerInterface {
+  deleteExisitngPlan: (req: any, res: any, next: any) => Promise<void>;
+  updateExitingPlan: (req: any, res: any, next: any) => Promise<void>;
+  createNewPlan: (req: any, res: any, next: any) => Promise<void>;
+  testRunApiKey: (req: any, res: any, next: any) => Promise<void>;
+  getGeneralSettings: () => Promise<generalSettingsInterface<string> | null>;
+  getCoinBaseApiKey: (req: any, res: any, next: any) => Promise<void>;
+  addCoinbaseKey: (req: any, res: any, next: any) => Promise<void>;
   switchCurrency: (req: any, res: any, next: any) => Promise<void>;
   currencyConversion: (req: any, res: any, next: any) => Promise<void>;
   switchToDefault: (req: any, res: any, next: any) => Promise<void>;
@@ -156,6 +164,11 @@ serviceController.getAccountBalance = async function (req, res, next) {
 
 serviceController.newDepositRequest = async function (req, res, next) {
   try {
+    const getApiKey = await serviceController.getGeneralSettings();
+    if(!getApiKey?.coinBaseApiKey) {
+      throw new ApiError("Not ready", httpStatus[404], "Provide an Api Key")
+    }
+
     // we communicate with a third party api - Coinbase
     const { chargeAPIData, depoInfoData } = req.body;
     const bodyData: chargeInterface<string> = {
@@ -193,6 +206,7 @@ serviceController.newDepositRequest = async function (req, res, next) {
       );
 
     const createDepositRecord = {
+      userId: req.primaryKey,
       clientId: req.id,
       chargeID: response.code,
       plan: response.name,
@@ -261,6 +275,73 @@ serviceController.getAllDepositRequest = async function (req, res, next) {
     res.status(httpStatus.BAD_REQUEST).send(error);
   }
 };
+
+
+// crud operations on deposit plan......................................................................
+
+// create
+serviceController.createNewPlan = async function(req,res,next) {
+  try {
+    const reqBody = req.body;
+
+    const data = {   
+        plan: reqBody.plan, 
+        minAmt: reqBody.minAmt,
+        maxAmt: reqBody.maxAmt,
+        duration: reqBody.duration,
+        guarantee: reqBody.guarantee,
+        dailyInterestRate: reqBody.interestRate,
+    }
+    await DepositPlan.create(data);
+
+    res.send(data.plan + " Plan creadted successfully")
+  } catch (error: any) {
+    res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
+
+// update
+serviceController.updateExitingPlan = async function(req,res,next) {
+  try {
+    const updatePlan = req.body;
+
+    const findPlanById:any = await DepositPlan.findByPk(updatePlan.id);
+
+    if(!findPlanById) throw new ApiError("NotFound", httpStatus.NOT_FOUND, "Plan does not exist")
+
+    const u = await DepositPlan.update({...updatePlan.data}, {where: {id: findPlanById.id}})
+
+    if(u[0]) {
+      res.send(findPlanById.plan + " Plan updated successfully")
+    }else {
+      throw "Something Went Wrong"
+    }
+  } catch (error: any) {
+    res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+  
+}
+
+
+// delete
+serviceController.deleteExisitngPlan = async function(req,res,next) {
+  try {
+    const updatePlan = req.body;
+
+    const findPlanById:any = await DepositPlan.findByPk(updatePlan.id);
+
+    if(!findPlanById) throw new ApiError("NotFound", httpStatus.NOT_FOUND, "Plan does not exist")
+
+    const u = await DepositPlan.destroy({where: {id: findPlanById.id}})
+
+    res.send(findPlanById.plan + " Plan Deleted successfully")
+  } catch (error: any) {
+    res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
+// .....................................................................................................
 
 serviceController.getAllSuccessfulInvesment = async function (req, res, next) {
   try {
@@ -437,4 +518,67 @@ serviceController.currencyConversion = async function (req, res, next) {
     res.status(httpStatus.BAD_REQUEST).send(error);
   }
 };
+
+// general data
+serviceController.getGeneralSettings = async function() {
+  if(!(await generalSettings.findAll({}))) return null
+  const getApiKey:generalSettingsInterface<string> = await generalSettings.findOne({where: {id: 1}}) as any;
+  // if(!getApiKey &&  !(
+    
+  // ).length) {
+  //   const data = {
+  //     appName: "FlutterCurve",
+  //   }  
+  // }
+  return getApiKey;
+}
+
+// Coinbase Api Key.
+serviceController.getCoinBaseApiKey = async function(req,res,next) {
+  try {
+    const getKey = await serviceController.getGeneralSettings()
+    res.send(getKey)
+  } catch (error:any) {
+    res.status(500).send(error)
+  }
+}
+
+
+serviceController.addCoinbaseKey = async function(req,res,next) {
+  try {
+    const settings = await serviceController.getGeneralSettings();
+    const {providedKey} = req.body;
+
+    if(!providedKey || providedKey.length < 9) throw new ApiError("validation", httpStatus.BAD_REQUEST, "Empty or invalid field")
+    if(!settings?.coinBaseApiKey && providedKey) {
+      // create 
+      await generalSettings.create({
+        coinBaseApiKey: providedKey
+      });
+      return res.send({message: "New Coinbase Api key added successfully"})
+    }
+
+    const u = (await generalSettings.update({
+      coinBaseApiKey: providedKey
+    }, {where: {id: 1}}))[0];
+
+    if(u) {
+      return res.send({message: "Coinbase Api Key updated successfully"})
+    }
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
+
+serviceController.testRunApiKey = async function (req,res,next) {
+  try {
+    const c = await (new Coinbase()).testRunApiKey();
+    res.send("OK")
+  } catch (error) {
+    console.log(error)
+    res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
 export default serviceController;

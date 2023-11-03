@@ -129,7 +129,7 @@ export default function CurrencyData() {
                      initial={{opacity: 0}}
                      animate={{opacity: 1, transition: {duration: .5}}}
                      exit={{opacity: 0, transition: {duration: .5}}}
-                     className="w-full max-h-[200px] overflow-y-auto shadow-gray-200 shadow-lg rounded-md absolute border-[1px] border-gray-200 bg-[#f4f4f4]">
+                     className="w-full max-h-[200px] overflow-y-auto shadow-gray-200 shadow-lg rounded-md absolute border-[1px] border-gray-200 bg-[#fff] z-10">
                         {
                             data.length ? data.map(({id, currency, isDefault}:any) => (
                                 <div key={id}>

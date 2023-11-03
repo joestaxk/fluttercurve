@@ -26,7 +26,7 @@ export default function OngoingInvestment() {
       .catch((error: any) => {
         console.log(error);
       });
-  }, [context.ID, ongoingUpdateLoader]);
+  }, [context.ID, ongoingUpdateLoader, suspendLoading, approvalLoading]);
 
   useEffect(() => {
     if (!user.length) return;

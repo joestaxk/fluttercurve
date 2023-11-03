@@ -16,6 +16,10 @@ userDeposit.init({
         type: DataTypes.UUID,
         allowNull: false,
     },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     type: {
         type: DataTypes.STRING,
         defaultValue: "normal"

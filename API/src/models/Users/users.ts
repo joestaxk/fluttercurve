@@ -6,6 +6,7 @@ import helpers from '../../utils/helpers';
 import userAccount from './userAccount';
 import Referral from './referrals';
 import userCompounding from '../mode/compounding';
+import userDeposit from './deposit';
 
 
 class Client extends Sequelize.Model {}
@@ -160,6 +161,19 @@ Client.hasOne(userAccount, {
   userAccount.belongsTo(Client, {
     foreignKey: {
       name: 'clientId',
+      allowNull: false,
+    },
+  });
+
+  Client.hasOne(userDeposit, {
+    foreignKey: {
+      name: 'userId',
+      allowNull: false,
+    },
+  });
+  userDeposit.belongsTo(Client, {
+    foreignKey: {
+      name: 'userId',
       allowNull: false,
     },
   });

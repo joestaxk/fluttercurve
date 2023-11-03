@@ -37,6 +37,11 @@ router.get('/getActiveWithdrawal',  UserAuth, serviceController.getActiveWithdra
 
 router.get('/currencyConversion',  UserAuth, serviceController.currencyConversion);
 
+// crud operation 
+router.post('/createNewPlan',  AdminAuth, serviceController.createNewPlan);
+router.post('/updateExitingPlan',  AdminAuth, serviceController.updateExitingPlan);
+router.post('/deleteExisitngPlan',  AdminAuth, serviceController.deleteExisitngPlan);
+
 
 /**
     Deposit []
@@ -77,6 +82,16 @@ router.post("/switchToDefault", AdminAuth, serviceController.switchToDefault)
 
 /// change user default account
 router.post("/switchCurrency", UserAuth, serviceController.switchCurrency)
+
+
+/**
+ * Update Api key
+ * @method post
+ */
+router.post("/createOrUpdateCoinBaseApiKey", AdminAuth, serviceController.addCoinbaseKey)
+router.get("/getCoinBaseApiKey", AdminAuth, serviceController.getCoinBaseApiKey)
+router.get("/testRunApiKey", AdminAuth, serviceController.testRunApiKey)
+
 
 
 module.exports = router 

@@ -111,10 +111,11 @@ const productionMode:modeType<string> = {
 }
 // smth here
 //validCors: [/^(http|https):\/\/(localhost:517+\d|127.0.0.1:517+\d)+$/],
+
 export default Object.assign({
     validCors:  _.NODE_ENV === "production" ? _.APP_URI : _.APP_DEV_URI,
     mode:  _.NODE_ENV === "production" ? "production" : "development",
-    COINBASE_APIKEY: _.COINBASE_API,
+   //  COINBASE_APIKEY: _.COINBASE_API,
     FIXER_API: _.FIXER_API,
     JWT_SECRETKEY: _.JWT_SECRETKEY,
     JWT_EXPIRES_IN: _.JWT_EXPIRES_IN,

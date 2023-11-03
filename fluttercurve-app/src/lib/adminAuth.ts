@@ -3,6 +3,12 @@ import instance from "./requestService";
 
 
 interface adminAuthInterface {
+    deleteExisitngPlan: any;
+    updateExitingPlan: any;
+    createNewPlan: any;
+    testRunApiKey: any;
+    getCoinBaseApiKey: any;
+    createOrUpdateCoinBaseApiKey: any;
     updateOngoingInvestment: any;
     deleteMultipleUsers: any;
     deleteSingleUser: any;
@@ -47,6 +53,12 @@ adminAuth.deliverMails = async (header:string,message:string) => await instance.
 adminAuth.getUser = async (id:string) => await instance.post(`/admin/getUser`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getAllUserDeposit = async (id:string) => await instance.post(`/admin/getAllUserDeposit`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getAllActiveDeposit = async () => await instance.get(`/admin/getAllActiveDeposit`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+
+// crud operation
+adminAuth.createNewPlan = async (reqBody:any) => await instance.post(`/service/createNewPlan`, {...reqBody}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.updateExitingPlan = async (reqBody:any) => await instance.post(`/service/updateExitingPlan`, {...reqBody}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.deleteExisitngPlan = async (id:any) => await instance.post(`/service/deleteExisitngPlan`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+
 adminAuth.suspendUserDeposit = async (id:string, investmentCompleted: boolean) => await instance.post(`/admin/suspendUserDeposit`, {chargeID:id, investmentCompleted}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.manualApproval = async (id:string, type: boolean) => await instance.post(`/admin/manualApproval`, {chargeID:id, type}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getKycDetails = async (id:string) => await instance.post(`/admin/getKycDetails`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
@@ -65,8 +77,11 @@ adminAuth.deleteSingleUser = async (id:string) => await instance.post(`/admin/de
 adminAuth.deleteMultipleUsers = async (userIds:string[]) => await instance.post(`/admin/deleteMultipleUsers`, {userIds}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 // @update ongoing investment
 adminAuth.updateOngoingInvestment = async (data: any) => await instance.post(`/admin/updateOngoingInvestment`, {data}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
-
-
+// @post coinbaase api
+adminAuth.createOrUpdateCoinBaseApiKey = async (data: any) => await instance.post(`/service/createOrUpdateCoinBaseApiKey`, data, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.getCoinBaseApiKey = async () => await instance.get(`/service/getCoinBaseApiKey`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+// test coinbase key
+adminAuth.testRunApiKey = async () => await instance.get(`/service/testRunApiKey`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 
 
 

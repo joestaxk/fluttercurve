@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { motion } from "framer-motion";
 import ButtonSpinner from "../../../../components/utils/buttonSpinner";
 import { Link } from "react-router-dom";
+import { ManagePlans } from "../../../../components/adminDashboard/managePlans";
 
 
 function Page({state}:{state: userDataStateType}) {
@@ -39,51 +40,9 @@ function Page({state}:{state: userDataStateType}) {
               <NormalMode />
             </div>
           </Dashboard>
-
-          <motion.div
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="flex justify-around flex-wrap w-full translate-y-[-4rem] gap-3 p-4">
-
-            <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center shadow lg:w-[23%] n:w-[48%] w-full rounded-lg h-[150px] p-4 flex items-center justify-between">
-              <div className="">
-                <h3 className="text-lg text-[#3c3c3c]">Total Users</h3>
-                <h1 className="text-2xl font-semibold text-[#4d6ae9]">5</h1>
-              </div>
-            </motion.div>
-
-            <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center shadow lg:w-[23%] n:w-[48%] w-full rounded-lg h-[150px] p-4 flex items-center justify-between">
-              <div className="">
-                <h3 className="text-lg text-[#3c3c3c]">OnGoing Plans</h3>
-                <h1 className="text-2xl font-semibold text-[#4d6ae9]">10</h1>
-              </div>
-
-              <Link to={"/#"}>see</Link>
-            </motion.div>
-
-            <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center shadow lg:w-[23%] n:w-[48%] w-full rounded-lg h-[150px] p-4 flex items-center justify-between">
-              <div className="">
-                <h3 className="text-lg text-[#3c3c3c]">Suspened Users</h3>
-                <h1 className="text-2xl font-semibold text-[#4d6ae9]">6</h1>
-              </div>
-
-              <div className="">
-                <Link to={"/#"}>see</Link>
-              </div>
-            </motion.div>
-
-
-            <motion.div variants={item}  className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center shadow lg:w-[23%] n:w-[48%] w-full rounded-lg h-[150px] p-4 flex items-center justify-between">
-              <div className="">
-                <h3 className="text-lg text-[#3c3c3c]">Total Verified Users</h3>
-                <h1 className="text-2xl font-semibold text-[#4d6ae9]">40</h1>
-              </div>
-
-              <Link to={"/#"}>see</Link>
-            </motion.div>
-          </motion.div>
         </Suspense>
+
+        <ManagePlans />
       </main>
     )
   }
