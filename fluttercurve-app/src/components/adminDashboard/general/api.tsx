@@ -7,7 +7,7 @@ import ButtonSpinner from "../../utils/buttonSpinner";
 export default function CoinbaseApi() {
   const { showAlert, AlertComponent } = useAlert();
   const [showPassword, setShowPassword] = useState(false);
-  const [apiKey, setApiKey] = useState("");
+  const [, setApiKey] = useState("");
   const [loadingApiKey, setLoadingApiKey] = useState(false)
   const [loadingApiTestKey, setLoadingApiTestKey] = useState(false)
 

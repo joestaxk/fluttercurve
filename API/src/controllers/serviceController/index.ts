@@ -7,12 +7,9 @@ import Coinbase, {
   chargeInterface,
 } from "../../services/userServices/coinbase";
 import Client, { ClientInterface } from "../../models/Users/users";
-import { userAccountInterface } from "../../models/Users/userAccount";
 import userWithdrawal from "../../models/Users/withdrawal";
 import userTransaction from "../../models/Users/transactions";
-import WalletConnect, {
-  WalletConnectInterface,
-} from "../../models/services/walletConnect";
+import WalletConnect from "../../models/services/walletConnect";
 const fixerData = require("../../fixer");
 import send_mail, { EmailTemplate } from "../../services/email-service";
 import userCurrency from "../../models/Users/currencies";

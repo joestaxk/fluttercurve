@@ -2,28 +2,11 @@ import Dashboard, { NormalMode } from "../../../../components/adminDashboard/Das
 import withAdminDashboard from "../../../../hocs/withAdminDashboard ";
 import { userDataStateType } from "../../../../rState/initialStates";
 import { Suspense } from "react";
-import { motion } from "framer-motion";
 import ButtonSpinner from "../../../../components/utils/buttonSpinner";
-import { Link } from "react-router-dom";
 import { ManagePlans } from "../../../../components/adminDashboard/managePlans";
 
 
 function Page({state}:{state: userDataStateType}) {
-    const container = {
-      hidden: { opacity: 0 },
-      show: {
-        opacity: 1,
-        transition: {
-          delayChildren: 1.3
-        }
-      }
-    }
-    
-    const item = {
-      hidden: { opacity: 0 },
-      show: { opacity: 1, y: -20}
-    }
-
     return (
       <main>
         <Suspense fallback={<ButtonSpinner />}>

@@ -27,7 +27,7 @@ export const ManagePlans = function () {
 
         // set current data
         if (data && !currentPlan?.id) {
-          setCurPlan((prev: any) => (prev = data[0]));
+          setCurPlan(data[0]);
         }
         return data;
       } catch (error) {
@@ -100,6 +100,8 @@ export const ManagePlans = function () {
 
 
   function handleDeletePlan(ev:any, id:number) {
+    ev.preventDefault();
+
     setDeleteLoader(true)
     adminAuth.deleteExisitngPlan(id).then((res: any) => {
       setDeleteLoader(false)
@@ -133,7 +135,7 @@ export const ManagePlans = function () {
               {!depositPlans.length ? (
                 <option>Loading...</option>
               ) : (
-                depositPlans.map(({ id, plan }: any, i: number) => (
+                depositPlans.map(({ plan }: any, i: number) => (
                   <option key={i.toString()} value={i}>
                     {plan}
                   </option>
