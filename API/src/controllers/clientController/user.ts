@@ -314,7 +314,8 @@ userController.setupKyc = async function (req, res, next) {
                 fullName: bodyData.fullName,
                 dob: bodyData.dob,
                 nationality: bodyData.nationality,
-                clientID: req.id
+                clientID: req.id,
+                userId: req.primaryKey
             }).then(() => {
                 // KYC data saved successfully
                 return res.status(200).json({ message: 'Personal Information Updated' });

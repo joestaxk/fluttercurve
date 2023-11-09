@@ -6,6 +6,7 @@ import Client from "../../models/Users/users";
 import templates from "../../utils/emailTemplates";
 import helpers from "../../utils/helpers";
 import adminNotification from "../../models/Users/adminNotifications";
+import userTransaction from "../../models/Users/transactions";
 
 interface handlerServiceInterface {
   // get the user wallet account
@@ -56,6 +57,12 @@ handleServices.successfulDepositCharge = async function (chargeID: string) {
       status: "SUCCESSFUL",
     },
   });
+  // transaction update
+  await userTransaction.update(
+    { status: "SUCCESSFUL", amount: res.investedAmt },
+    { where: { depositId: res.id, mode: res.type} }
+  );
+
   // whatever goes in here is existing plans
   if (checkForAnyExistingPlan) {
     // get the new invested amount and then add it to the old one.
@@ -89,7 +96,7 @@ handleServices.successfulDepositCharge = async function (chargeID: string) {
         },
       });
     }
-  }else {
+  } else {
     // Each time a new user wallet is created, that user just made some investment.
     await userDeposit.update({ status: "SUCCESSFUL" }, { where: { chargeID } });
   }

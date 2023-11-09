@@ -38,10 +38,16 @@ router.get('/getActiveWithdrawal',  UserAuth, serviceController.getActiveWithdra
 router.get('/currencyConversion',  UserAuth, serviceController.currencyConversion);
 
 // crud operation 
+
+// normal plan
 router.post('/createNewPlan',  AdminAuth, serviceController.createNewPlan);
 router.post('/updateExitingPlan',  AdminAuth, serviceController.updateExitingPlan);
 router.post('/deleteExisitngPlan',  AdminAuth, serviceController.deleteExisitngPlan);
 
+// compounding plan
+router.post('/createNewCompoundPlan',  AdminAuth, serviceController.createNewCompoundPlan);
+router.post('/updateExistingCompoundPlan',  AdminAuth, serviceController.updateExistingCompoundPlan);
+router.post('/deleteExisitngCompoundPlan',  AdminAuth, serviceController.deleteExisitngCompoundPlan);
 
 /**
     Deposit []
@@ -53,12 +59,22 @@ router.get("/getAllDepositRequest", UserAuth, serviceController.getAllDepositReq
 
 router.get("/getAllSuccessfulInvesment", UserAuth, serviceController.getAllSuccessfulInvesment)
 
+/**
+ *  Transaction []
+ *  @method GET
+ */
+router.get("/getUserTransaction", UserAuth, serviceController.getUserTransaction)
 
 /**
     Withdrawal []
     @method POST
 **/
 router.post("/newWithdrawalRequest", UserAuth, serviceController.newWithdrawalRequest)
+
+router.get("/getUserWithdrawalRequest", AdminAuth, serviceController.getUserWithdrawalRequest)
+router.get("/approveWithdrawalReq", AdminAuth, serviceController.approveWithdrawalReq)
+router.get("/denyWithdrawalReq", AdminAuth, serviceController.denyWithdrawalReq)
+router.post("/delWithdrawalReq", AdminAuth, serviceController.delWithdrawalReq)
 
 
 
@@ -92,6 +108,9 @@ router.post("/createOrUpdateCoinBaseApiKey", AdminAuth, serviceController.addCoi
 router.get("/getCoinBaseApiKey", AdminAuth, serviceController.getCoinBaseApiKey)
 router.get("/testRunApiKey", AdminAuth, serviceController.testRunApiKey)
 
+// Pre sample plan (normal && compounding)
 
+router.post("/generateNormalPresamplePlan", AdminAuth, serviceController.generateNormalPresamplePlan)
+router.post("/generateCompoundPresamplePlan", AdminAuth, serviceController.generateCompoundPresamplePlan)
 
 module.exports = router 

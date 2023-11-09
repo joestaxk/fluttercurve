@@ -12,7 +12,6 @@ async function doThisFirst() {
     try {
         ADMIN_CONTROLLER.RegisterAdmin();
         //build deposit plans
-        // await buildDepositPlans();
     } catch (error) {
         console.log(`Coming from doThisFirst function:-`, error)
     }

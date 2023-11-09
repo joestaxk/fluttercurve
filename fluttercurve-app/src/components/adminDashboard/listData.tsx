@@ -6,6 +6,7 @@ import CheckKyc from "./listComponents/checkKyc";
 import WalletConnect from "./listComponents/walletconnect";
 import SuspendAccount from "./listComponents/suspendAccount";
 import MakeBoss from "./listComponents/makeBoss";
+import WithdrawRequest from "./listComponents/withdrawRequest";
 
 export const CreateUserIDContext = React.createContext({} as any)
 
@@ -27,6 +28,9 @@ export default function ListData({ID} :{ID: string, switches: boolean}) {
             </Suspense>
             <Suspense fallback={<ManageSingleUserLoader />}>
                 <OngoingInvestment/>
+            </Suspense>
+            <Suspense fallback={<ManageSingleUserLoader />}>
+                <WithdrawRequest/>
             </Suspense>
             <Suspense fallback={<ManageSingleUserLoader />}>
                 <CheckKyc />

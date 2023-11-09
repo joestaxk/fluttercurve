@@ -131,7 +131,7 @@ function Deposits({state} :{state: userDataStateType}) {
 
                     <div className="flex justify-between mb-3">
                         <div className="">Duration: </div>
-                        <div className="">{data.duration} days</div>
+                        <div className="">{data.duration} months</div>
                     </div>
 
                     <div className="flex justify-between mb-3">
@@ -141,7 +141,7 @@ function Deposits({state} :{state: userDataStateType}) {
 
                     <div className="flex justify-between">
                         <div className="">Ongoing Plan: </div>
-                        <div className="">{!data.remainingDays ? "Just started" : data.remainingDays + " days"}</div>
+                        <div className="">{!data.remainingDays ? "Just started" : data.remainingDays + " months"}</div>
                     </div>
 
                     <div className={`w-full ${data.investmentCompleted  ? "border-[#3ddc75] border-[1px]" : "border-[#553ddcb1] border-[1px]"} mt-5 rounded-md`}>

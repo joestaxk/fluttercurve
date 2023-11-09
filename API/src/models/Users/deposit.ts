@@ -1,5 +1,6 @@
 import {DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../database/db';
+import userTransaction from './transactions';
 
 class userDeposit extends Model {}
 
@@ -72,6 +73,24 @@ userDeposit.init({
       updatedAt: 'updateTimestamp'
   })
 
+
+
+// user deposit
+userDeposit.hasOne(userTransaction, {
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE",
+    foreignKey: {
+      name: "depositId",
+      allowNull: false,
+    },
+  });
+
+  userTransaction.belongsTo(userDeposit, {
+    foreignKey: {
+      name: "depositId",
+      allowNull: false,
+    },
+  });
 
 export default userDeposit;
 

@@ -8,6 +8,9 @@ import Coinbase from "../../services/userServices/coinbase";
 import send_mail, { EmailTemplate } from "../../services/email-service";
 import helpers from "../../utils/helpers";
 import { buildCompondingPlans } from "../../services/buildDepositPlans";
+import userTransaction from "../../models/Users/transactions";
+import adminNotification from "../../models/Users/adminNotifications";
+import serviceController from "../serviceController";
 
 interface compoundongControllerInterface {
   getAllCompoundingSuccessfulInvesment: (
@@ -31,6 +34,16 @@ compoundingController.makeInvestment = async function (req, res, next) {
   const { compoundingPeriod, amount, id, currency } = req.body;
 
   try {
+    const getApiKey = await serviceController.getGeneralSettings();
+    if (!getApiKey?.coinBaseApiKey) {
+      adminNotification.create({
+        type: "ALERT",
+        message: "Please provide your Coinbase ApiKey. ASAP!!!"
+      })
+      throw new ApiError("Not ready", httpStatus[404], "Provide an Api Key");
+    }
+
+    
     if (!compoundingPeriod || !id || !amount || !currency)
       throw new ApiError(
         "Invalid Data",
@@ -88,13 +101,14 @@ compoundingController.makeInvestment = async function (req, res, next) {
 
     data = Object.assign(data, {
       clientId: req.id,
+      userId: req.primaryKey,
       chargeID: response.code,
       status: response.timeline[response.timeline.length - 1]?.status,
       expiresAt: response.expires_at,
       lastUpdated: Date.now(),
     });
 
-    const create = await compoundingDeposit.create(data);
+    const create:any = await compoundingDeposit.create(data);
 
     await create.save();
 
@@ -130,8 +144,28 @@ compoundingController.makeInvestment = async function (req, res, next) {
             .status(httpStatus.BAD_REQUEST)
             .send({ message: "Service unavailable" });
         }
+
+        // console.log(
+        //   {
+        //     userId: req.id,
+        //     depositId: create.id,
+        //     invoiceID: helpers.generateInvoiceId(),
+        //     amount,
+        //     type: "deposit",
+        //     mode: "compounding",
+        //   }
+        // )
+        // await userTransaction.create({
+        //   userId: req.id,
+        //   depositId: create.id,
+        //   invoiceID: helpers.generateInvoiceId(),
+        //   amount,
+        //   type: "deposit",
+        //   mode: "compounding",
+        // });
+
         res.send({
-          message: "Redirecting to Payment Gateway",
+          message: "Redirecting to Payment Gateway, Open My Investment if redirection didn't work.",
           next: data.chargeID,
         });
       }
@@ -144,10 +178,15 @@ compoundingController.makeInvestment = async function (req, res, next) {
 
 compoundingController.getCompoundingPlans = async function (req, res, next) {
   try {
-    buildCompondingPlans().then((res) => {});
-
     // create the first and data for the plans.
     const ifExist = await compoundingPlans.findAll();
+    if(!ifExist.length) {
+      adminNotification.create({
+        type: "ALERT",
+        message: "Please Generate a pre-sample for compounding plans.",
+
+      })
+    }
     if (ifExist.length) {
       return res.send(ifExist);
     }

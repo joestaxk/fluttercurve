@@ -52,30 +52,30 @@ function Dashboard({
 
   //@action functions
   function clearAllNotification() {
-    setLoadingCAN(true)
+    setLoadingCAN(true);
     adminAuth
       .deleteAllNotification()
       .then(({ data }: any) => {
-        setLoadingCAN(false)
+        setLoadingCAN(false);
         showAlert("success", data);
       })
-      .catch((err:any) => {
-        setLoadingCAN(false)
+      .catch((err: any) => {
+        setLoadingCAN(false);
         showAlert("error", err.response.data || "Something Went Wrong");
       });
   }
 
   function markAllNotificationAsRead() {
-    setLoadingMaar(true)
+    setLoadingMaar(true);
     adminAuth
       .markAllAsRead()
       .then(({ data }: any) => {
-        setLoadingMaar(false)
+        setLoadingMaar(false);
         showAlert("success", data);
       })
-      .catch((err:any) => {
-        setLoadingMaar(false)
-        showAlert("error",  err.response.data || "Something Went Wrong");
+      .catch((err: any) => {
+        setLoadingMaar(false);
+        showAlert("error", err.response.data || "Something Went Wrong");
       });
   }
 
@@ -303,14 +303,15 @@ function Dashboard({
                         userIp,
                         markAsRead,
                         depositType,
+                        message,
                         createdAt,
                       }: any,
                       i: number
                     ) => (
                       <div key={i.toString()}>
                         {type === "EXISTING" ? (
-                          <div className="w-full border  border-gray-300 p-3 pb-1 mb-3 rounded-lg">
-                            <div className="flex justify-between items-center border-b">
+                          <NotificationComponent
+                            HeaderComponent={
                               <h3
                                 className={`font-semibold text-sm ${
                                   markAsRead
@@ -320,24 +321,26 @@ function Dashboard({
                               >
                                 Login Alert
                               </h3>
-                              <small className="text-gray-500">
-                                {moment(createdAt).fromNow()}
-                              </small>
-                            </div>
-                            <p className="text-sm font-light mt-3">
-                              {fullName}@{" "}
-                              <i>
-                                <Link to={`manage-users?q=${fullName}`}>
-                                  {userIp}
-                                </Link>
-                                /
-                              </i>
-                              , just logged in.
-                            </p>
-                          </div>
+                            }
+                            SubjectComponent={
+                              <p className="text-sm font-light mt-3">
+                                {fullName}@{" "}
+                                <i>
+                                  <Link to={`manage-users?q=${fullName}`}>
+                                    {userIp}
+                                  </Link>
+                                  /
+                                </i>
+                                , just logged in.
+                              </p>
+                            }
+                            props={{
+                              createdAt,
+                            }}
+                          />
                         ) : type === "DEPOSIT" ? (
-                          <div className="w-full border border-[#e7e7e7] border-b-gray-300 p-3 mb-3 pb-1 rounded-lg">
-                            <div className="flex justify-between items-center border-b">
+                          <NotificationComponent
+                            HeaderComponent={
                               <h3
                                 className={`font-semibold text-sm ${
                                   markAsRead
@@ -347,16 +350,84 @@ function Dashboard({
                               >
                                 New Deposit
                               </h3>
-                              <small className="text-gray-500">
-                                {moment(createdAt).fromNow()}
-                              </small>
-                            </div>
-                            <p className="text-sm font-light mt-3">
-                              {fullName} just made a new{" "}
-                              <b className="font-semibold">{depositType}</b>{" "}
-                              deposit.
-                            </p>
-                          </div>
+                            }
+                            SubjectComponent={
+                              <p className="text-sm font-light mt-3">
+                                {fullName} just made a new{" "}
+                                <b className="font-semibold">{depositType}</b>{" "}
+                                deposit.
+                              </p>
+                            }
+                            props={{
+                              createdAt,
+                            }}
+                          />
+                        ) : type === "WITHDRAW" ? (
+                          <NotificationComponent
+                            HeaderComponent={
+                              <h3
+                                className={`font-semibold text-sm ${
+                                  markAsRead
+                                    ? "text-[#60f585]"
+                                    : "text-[#34c257]"
+                                }`}
+                              >
+                                New Withdrawal
+                              </h3>
+                            }
+                            SubjectComponent={
+                              <p className="text-sm font-light mt-3">
+                                {fullName} {", "} {message}
+                              </p>
+                            }
+                            props={{
+                              createdAt,
+                            }}
+                          />
+                        ) : type === "ALERT" ? (
+                          <NotificationComponent
+                            HeaderComponent={
+                              <h3
+                                className={`font-semibold text-sm ${
+                                  markAsRead
+                                    ? "text-[#f56060]"
+                                    : "text-[#c23434]"
+                                }`}
+                              >
+                                ALERT 🔥🔥🔥
+                              </h3>
+                            }
+                            SubjectComponent={
+                              <p className="text-sm font-light mt-3">
+                                {message}
+                              </p>
+                            }
+                            props={{
+                              createdAt,
+                            }}
+                          />
+                        ) : type === "ANY" ? (
+                          <NotificationComponent
+                            HeaderComponent={
+                              <h3
+                                className={`font-semibold text-sm ${
+                                  markAsRead
+                                    ? "text-[#8060f5]"
+                                    : "text-[#6634c2]"
+                                }`}
+                              >
+                                NOTIFICATION
+                              </h3>
+                            }
+                            SubjectComponent={
+                              <p className="text-sm font-light mt-3">
+                                {message}
+                              </p>
+                            }
+                            props={{
+                              createdAt,
+                            }}
+                          />
                         ) : (
                           ""
                         )}
@@ -372,9 +443,7 @@ function Dashboard({
                   disabled={!notifications.count}
                   className="border disabled:border-[#2121218a] disabled:text-[#2121218a] border-[#212121] text-[#212121c5] hover:text-[#212121] transition-all rounded-xl p-2 font-medium"
                 >
-                  
                   {loadingCAN ? "Clearing All..." : "Clear All Notification"}
-
                 </button>
                 <button
                   onClick={markAllNotificationAsRead}
@@ -490,3 +559,21 @@ function ProfileMenu() {
 }
 
 export default Dashboard;
+
+function NotificationComponent({
+  HeaderComponent,
+  SubjectComponent,
+  props,
+}: any) {
+  return (
+    <div className="w-full border border-[#e7e7e7] border-b-gray-300 p-3 mb-3 pb-1 rounded-lg">
+      <div className="flex justify-between items-center border-b">
+        {HeaderComponent}
+        <small className="text-gray-500">
+          {moment(props.createdAt).fromNow()}
+        </small>
+      </div>
+      <p className="text-sm font-light mt-3">{SubjectComponent}</p>
+    </div>
+  );
+}

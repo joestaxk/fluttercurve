@@ -35,7 +35,7 @@ cronService.depositService = async function() {
           return console.log("Keep waiting for Task For Deposit service 🚻🚻🚻🚻🚻🚻🚻 ")
         }
         for(let i = 0; i < deposit.length; ++i) {
-            Coinbase.updateById(userDeposit, deposit[i].chargeID, "normal", function(err) {
+            Coinbase.updateById(userDeposit, deposit[i].id, deposit[i].chargeID, "normal", function(err) {
                 console.log(err, "error occured during cron")
             })
         }
@@ -120,7 +120,7 @@ cronService.depositCompoundingService = async function() {
           return console.log("Keep waiting for Task For deposit compounding service 🚻🚻🚻🚻🚻🚻🚻")
         }
         for(let i = 0; i < deposit.length; ++i) {
-            Coinbase.updateById(compoundingDeposit, deposit[i].chargeID, "compounding", function(err) {
+            Coinbase.updateById(compoundingDeposit, deposit[i].id, deposit[i].chargeID, "compounding", function(err) {
                 console.log(err, "error occured during cron")
             })
         }

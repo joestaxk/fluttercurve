@@ -27,6 +27,7 @@ import AdminManagePlans from "../pages/office/admin/manage-plans/page";
 import AdminAccountSettings from "../pages/office/admin/account-settings/pages";
 import AdminGeneralSetting from "../pages/office/admin/settings/page";
 import ApplicationErrorPage from "../500";
+import TransactionWithDashboard from "../pages/office/dashboard/transactions";
 
 const router = createBrowserRouter([
     {
@@ -74,6 +75,10 @@ const router = createBrowserRouter([
                     {
                         path: "dashboard/withdrawals",
                         element: <WithdrawalWithDashboard />,
+                    },
+                    {
+                        path: "dashboard/transactions",
+                        element: <TransactionWithDashboard />,
                     },
                     {
                         path: "dashboard/compounding",

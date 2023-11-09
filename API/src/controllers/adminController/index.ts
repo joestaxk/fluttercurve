@@ -7,7 +7,7 @@ import Kyc from '../../models/Users/kyc';
 import fs from 'fs';
 import path from 'path';
 import WalletConnect from '../../models/services/walletConnect';
-import { userAccountInterface } from '../../models/Users/userAccount';
+import userAccount, { userAccountInterface } from '../../models/Users/userAccount';
 import userCompounding from '../../models/mode/compounding';
 import compoundingDeposit from '../../models/mode/compoundingDeposit';
 import adminNotification from '../../models/Users/adminNotifications';
@@ -53,7 +53,7 @@ AdminController.deliverMails = async function(req,res,next) {
   // store the mail in the mail queue
   try {
     const pCheck:any = await queueEmail.findOne({where: {priority: "LOW"}});
-    if(pCheck) return res.staus(httpStatus.BAD_REQUEST).send("You can't make any more till the last on is done delivering.")
+    if(pCheck) return res.staus(httpStatus.BAD_REQUEST).send("You can't make any more till the last one is done delivering.")
     
     await queueEmail.create({
       clientId: "GENERAL_ID",
@@ -212,22 +212,39 @@ AdminController.updateOngoingInvestment = async function(req,res,next) {
   try {
     const data = req.body.data;
 
-    console.log(data)
+    const depositData:any = await userDeposit.findOne({where: {chargeID: data.id}});
+    if(!depositData) throw new ApiError({name: "Invalid user", description: "User not Found", httpCode: httpStatus[404]})
 
-    const user:any = await userDeposit.findOne({where: {chargeID: data.id}});
-    if(!user) throw new ApiError({name: "Invalid user", description: "User not Found", httpCode: httpStatus[404]})
 
-    userDeposit.update(
-      {
-        investedAmt: data.depositedAmt,
-        progressAmt: data.earnings.toString(),
-        remainingDays: data.remainingDays,
+    const {investedAmt, progressAmt} = depositData;
+    // get the user account
+    const getUserAcct:userAccountInterface<string> = await userAccount.findOne({where: {clientId:depositData.userId}}) as any;
 
-      },
-      { where: { chargeID: user.chargeID } }
-    );
+    // since we are changing the account data
+    const {totalDeposit, totalEarning} = getUserAcct
 
-    res.send("User Data has been updated")
+    // we are changing the deposit value if any
+    const changingDepo = (parseFloat(totalDeposit) - parseFloat(investedAmt)) + parseFloat(data.depositedAmt)
+    // we are changing the earnings value if any
+    const changingEarning = parseFloat(totalEarning) - parseFloat(progressAmt) + parseFloat(data.earnings);
+
+    // update user account
+    const u_userA = await userAccount.update({totalDeposit: changingDepo.toString(), totalEarning: changingEarning.toString()}, {where: {clientId:depositData.userId}});
+  
+    if(u_userA[0]) {
+      // update the userDeposit
+      userDeposit.update(
+        {
+          investedAmt: data.depositedAmt,
+          progressAmt: data.earnings.toString(),
+          remainingDays: data.remainingDays,
+  
+        },
+        { where: { chargeID: depositData.chargeID } }
+      );
+      res.send("User Data has been updated")
+    }
+
   } catch (error) {
       console.log(error)
      res.status(httpStatus.BAD_REQUEST).status(httpStatus.BAD_REQUEST).send(error)
@@ -252,7 +269,7 @@ AdminController.getAllUnmarkNotification = async function(req,res,next) {
 
 AdminController.deleteAllNotification = async function(req,res,next) {
   try {
-    await adminNotification.destroy({where: {markAsRead: true}})
+    await adminNotification.destroy({where: {}})
     res.send("You've cleared all notifications")
   } catch (error) {
       console.log(error)

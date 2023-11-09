@@ -1,26 +1,30 @@
-import {DataTypes, Model } from 'sequelize';
+import Sequelize, { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../database/db';
 
-class adminNotification extends Model {}
+class adminNotification extends Sequelize.Model {}
 
 adminNotification.init({
     clientId: {
         type: DataTypes.UUID,
-        allowNull: false,
+        allowNull: true,
     },
     type: {
-        type: DataTypes.ENUM("EXISTING", "DEPOSIT"),
+        type: DataTypes.ENUM("EXISTING", "DEPOSIT", "WITHDRAW", "ALERT", "ANY"),
         allowNull: false
     },
     fullName: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     userIp: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     depositType: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    message: {
         type: DataTypes.STRING,
         allowNull: true,
     },

@@ -15,6 +15,10 @@ WalletConnect.init({
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4
     },
+    clientId:  {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     userId: {
         type: DataTypes.STRING,
         allowNull: false

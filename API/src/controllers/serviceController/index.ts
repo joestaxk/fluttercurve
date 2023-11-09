@@ -14,10 +14,25 @@ const fixerData = require("../../fixer");
 import send_mail, { EmailTemplate } from "../../services/email-service";
 import userCurrency from "../../models/Users/currencies";
 import { Op } from "sequelize";
-import buildDepositPlans from "../../services/buildDepositPlans";
-import generalSettings, { generalSettingsInterface } from "../../models/services/generalSettings";
+import generalSettings, {
+  generalSettingsInterface,
+} from "../../models/services/generalSettings";
+import adminNotification from "../../models/Users/adminNotifications";
+import templates from "../../utils/emailTemplates";
+import buildDepositPlans, { buildCompondingPlans } from "../../services/buildDepositPlans";
+import compoundingPlans from "../../models/services/compundingPlans";
 
 interface serviceControllerInterface {
+  deleteExisitngCompoundPlan: (req: any, res: any, next: any) => Promise<void>;
+  updateExistingCompoundPlan: (req: any, res: any, next: any) => Promise<void>;
+  createNewCompoundPlan: (req: any, res: any, next: any) => Promise<void>;
+  generateCompoundPresamplePlan: (req: any, res: any, next: any) => Promise<void>;
+  generateNormalPresamplePlan: (req: any, res: any, next: any) => Promise<void>;
+  getUserTransaction: (req: any, res: any, next: any) => Promise<void>;
+  delWithdrawalReq: (req: any, res: any, next: any) => Promise<void>;
+  denyWithdrawalReq: (req: any, res: any, next: any) => Promise<void>;
+  approveWithdrawalReq: (req: any, res: any, next: any) => Promise<void>;
+  getUserWithdrawalRequest(req: any, res: any, next: any): unknown;
   deleteExisitngPlan: (req: any, res: any, next: any) => Promise<void>;
   updateExitingPlan: (req: any, res: any, next: any) => Promise<void>;
   createNewPlan: (req: any, res: any, next: any) => Promise<void>;
@@ -63,10 +78,15 @@ serviceController.getCountryCode = async function (req, res, next) {
 
 serviceController.getDepositPlans = async function (req, res, next) {
   try {
-    // handle this
-    buildDepositPlans().then((res) => {});
     // create the first and data for the plans.
     const ifExist = await DepositPlan.findAll();
+    if(!ifExist.length) {
+      adminNotification.create({
+        type: "ALERT",
+        message: "Please Generate a pre-sample normal plans.",
+
+      })
+    }
     if (ifExist.length) {
       res.send(ifExist);
     }
@@ -110,15 +130,186 @@ serviceController.getActiveWithdrawal = async function (req, res, next) {
   }
 };
 
+// get all user withdrawal request
+serviceController.getUserWithdrawalRequest = async function (req, res, next) {
+  try {
+    const userId = req.query.userId;
+    const wReq = await userWithdrawal.findAll({ where: { userId } });
+
+    if (!wReq.length) {
+      throw new ApiError(
+        "notfound",
+        httpStatus.NOT_FOUND,
+        "No withdrawal Request."
+      );
+    }
+
+    res.send(wReq);
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+};
+
+// approve withdrawal req
+serviceController.approveWithdrawalReq = async function (req, res, next) {
+  
+  try {
+    const transactionId = req.query.transactionId;
+
+    const getUser: ClientInterface<string> = (await Client.findOne({
+      where: { uuid: req.id },
+    })) as any;
+
+    if (!getUser)
+      throw new ApiError(
+        "NOTFOUND",
+        httpStatus.NOT_FOUND,
+        "Transactions not Found, Please refresh the browser."
+      );
+
+    const uReq = await userWithdrawal.update(
+      { status: "SUCCESSFUL" },
+      { where: { id: transactionId } },
+    );
+
+    // update their transactions
+    await userTransaction.update(
+      { status: "SUCCESSFUL"},
+      { where: { withdrawalId: transactionId } }
+    );
+
+    if (!uReq[0]) {
+      throw new ApiError(
+        "NOTFOUND",
+        httpStatus.NOT_FOUND,
+        "Transactions not Found, Please refresh the browser."
+      );
+    }
+
+    templates.initQueueing(
+      req.id,
+      " Successful Withdrawal",
+      getUser.email,
+      getUser.userName,
+      `We are thrilled to inform you that your recent withdrawal request has been successfully processed and completed.
+     Your funds are now available in your designated account.
+     We understand that managing your finances is an essential part of your financial well-being, and we are committed to providing a seamless and secure experience for our valued customers like you.
+     Should you have any questions or require further assistance, please do not hesitate to contact our dedicated customer support team. We are here to assist you every step of the way.
+     Thank you for choosing Fluttercurve. We look forward to continuing to serve you with excellence.
+     `,
+      "HIGH"
+    );
+
+    res.send("Successful, An email is on it way to this user.");
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+};
+// deny withdrawal req
+serviceController.denyWithdrawalReq = async function (req, res, next) {
+  try {
+    const transactionId = req.query.transactionId;
+    const getUser: ClientInterface<string> = (await Client.findOne({
+      where: { uuid: req.id },
+    })) as any;
+
+    if (!getUser)
+      throw new ApiError(
+        "NOTFOUND",
+        httpStatus.NOT_FOUND,
+        "User not Found, Please refresh the browser."
+      );
+
+    const uReq = await userWithdrawal.update(
+      { status: "FAILED" },
+      { where: { id: transactionId } }
+    );
+
+    // update their transactions
+    await userTransaction.update(
+      { status: "FAILED" },
+      { where: { withdrawalId: transactionId } }
+    );
+
+    if (!uReq[0]) {
+      throw new ApiError(
+        "Id_diFF",
+        httpStatus.NOT_FOUND,
+        "Can't grant this request at the moment."
+      );
+    }
+
+    res.send("OK");
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+};
+
+// delete withdrawal req
+serviceController.delWithdrawalReq = async function (req, res, next) {
+  try {
+    const transactionId = req.body.transactionId;
+
+    const getUser = (await userWithdrawal.findOne({
+      where: { id: transactionId },
+    })) as any;
+
+    if (!getUser)
+      throw new ApiError(
+        "NOTFOUND",
+        httpStatus.NOT_FOUND,
+        "Transaction not Found, Please refresh the browser."
+      );
+
+    const uReq = await userWithdrawal.destroy({ where: { id: transactionId } });
+
+    // await userTransaction.destroy({ where: { withdrawalId: transactionId } });
+
+    if (!uReq) {
+      throw new ApiError(
+        "Id_diFF",
+        httpStatus.NOT_FOUND,
+        "Can't grant this request at the moment."
+      );
+    }
+
+    res.send("You just deleted this user's transaction request.");
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+};
+
+// get user transaction
+serviceController.getUserTransaction = async function (req, res, next) {
+  try {
+    const getTrans = await userTransaction.findAll({
+      where: { userId: req.id },
+    });
+
+    if (!getTrans) {
+      throw new ApiError(
+        "NOTFOUND",
+        httpStatus.NOT_FOUND,
+        "Somthing went wrong"
+      );
+    }
+
+    res.send(getTrans);
+  } catch (error: any) {
+    res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+};
+// query user
+
 serviceController.getAccountBalance = async function (req, res, next) {
   try {
     const { mode, amount } = req.query;
-    console.log(mode);
     // query DB for data
     const getAccount: ClientInterface<string> = (await Client.findOne({
       where: { uuid: req.id },
       include: ["userAccount", "userCompounding"],
     })) as any;
+
     const { userAccount, userCompounding }: any = (await getAccount) as any;
     const convertCurrency = helpers.calculateFixerData(
       getAccount.currency,
@@ -126,29 +317,49 @@ serviceController.getAccountBalance = async function (req, res, next) {
       amount
     );
 
+    if (mode ==="compounding" && !userCompounding) {
+      throw new ApiError("account balance", httpStatus.BAD_REQUEST, {
+        data: 0,
+        desc: "Insufficient funds.",
+      });
+    }
+    if (mode === "normal" && !userAccount) {
+      throw new ApiError("account balance", httpStatus.BAD_REQUEST, {
+        data: 0,
+        desc: "Insufficient funds.",
+      });
+    }
+
     if (mode === "compounding") {
-      let accountBal =
+      let accountBal = helpers.calculateFixerData(
+        getAccount.currency,
+        "USD",
         parseInt(userCompounding.totalDeposit) +
-        parseInt(userCompounding.totalEarning) -
-        parseInt(userCompounding.totalWithdrawal);
-      console.log(accountBal, convertCurrency);
+          parseInt(userCompounding.totalEarning || 0) -
+          parseInt(userCompounding.totalWithdrawal || 0)
+      );
 
       if (accountBal < convertCurrency) {
         throw new ApiError("account balance", httpStatus.BAD_REQUEST, {
           data: 0,
-          desc: "Use E-currency. insufficient funds.",
+          desc: "Insufficient funds.",
         });
       }
+
       return res.send({ accountBal });
     } else if (mode === "normal") {
-      let accountBal =
+      let accountBal = helpers.calculateFixerData(
+        getAccount.currency,
+        "USD",
         parseInt(userAccount.totalDeposit) +
-        parseInt(userAccount.totalEarning) -
-        parseInt(userAccount.totalWithdrawal);
+          parseInt(userAccount.totalEarning || 0) -
+          parseInt(userAccount.totalWithdrawal || 0)
+      );
+
       if (accountBal < convertCurrency) {
         throw new ApiError("account balance", httpStatus.BAD_REQUEST, {
           data: 0,
-          desc: "Use E-currency. insufficient funds.",
+          desc: "Insufficient funds.",
         });
       }
       return res.send({ accountBal });
@@ -162,8 +373,12 @@ serviceController.getAccountBalance = async function (req, res, next) {
 serviceController.newDepositRequest = async function (req, res, next) {
   try {
     const getApiKey = await serviceController.getGeneralSettings();
-    if(!getApiKey?.coinBaseApiKey) {
-      throw new ApiError("Not ready", httpStatus[404], "Provide an Api Key")
+    if (!getApiKey?.coinBaseApiKey) {
+      adminNotification.create({
+        type: "ALERT",
+        message: "Please provide your Coinbase ApiKey. ASAP!!!"
+      })
+      throw new ApiError("Not ready", httpStatus[404], "Provide an Api Key");
     }
 
     // we communicate with a third party api - Coinbase
@@ -212,7 +427,7 @@ serviceController.newDepositRequest = async function (req, res, next) {
       expiresAt: response.expires_at,
     };
 
-    const create = await userDeposit.create(createDepositRecord);
+    const create:any = await userDeposit.create(createDepositRecord);
 
     await create.save();
 
@@ -248,6 +463,15 @@ serviceController.newDepositRequest = async function (req, res, next) {
             .status(httpStatus.BAD_REQUEST)
             .send({ message: "Service unavailable" });
         }
+        // Transactions
+        await userTransaction.create({
+          userId: req.id,
+          depositId: 16,
+          invoiceID: helpers.generateInvoiceId(),
+          amount: chargeAPIData.local_price.amount,
+          type: "deposit",
+          mode: "normal",
+        });
         res.send({
           message: "Redirecting to Payment Gateway",
           data: { next: createDepositRecord.chargeID },
@@ -273,72 +497,159 @@ serviceController.getAllDepositRequest = async function (req, res, next) {
   }
 };
 
-
 // crud operations on deposit plan......................................................................
 
 // create
-serviceController.createNewPlan = async function(req,res,next) {
+serviceController.createNewPlan = async function (req, res, next) {
   try {
     const reqBody = req.body;
 
-    const data = {   
-        plan: reqBody.plan, 
-        minAmt: reqBody.minAmt,
-        maxAmt: reqBody.maxAmt,
-        duration: reqBody.duration,
-        guarantee: reqBody.guarantee,
-        dailyInterestRate: reqBody.interestRate,
-    }
+    const data = {
+      plan: reqBody.plan,
+      minAmt: reqBody.minAmt,
+      maxAmt: reqBody.maxAmt,
+      duration: reqBody.duration,
+      guarantee: reqBody.guarantee,
+      dailyInterestRate: reqBody.interestRate,
+    };
     await DepositPlan.create(data);
 
-    res.send(data.plan + " Plan creadted successfully")
+    res.send(data.plan + " Plan creadted successfully");
   } catch (error: any) {
-    res.status(httpStatus.BAD_REQUEST).send(error)
+    res.status(httpStatus.BAD_REQUEST).send(error);
   }
-}
-
+};
 
 // update
-serviceController.updateExitingPlan = async function(req,res,next) {
+serviceController.updateExitingPlan = async function (req, res, next) {
   try {
     const updatePlan = req.body;
 
-    const findPlanById:any = await DepositPlan.findByPk(updatePlan.id);
+    const findPlanById: any = await DepositPlan.findByPk(updatePlan.id);
 
-    if(!findPlanById) throw new ApiError("NotFound", httpStatus.NOT_FOUND, "Plan does not exist")
+    if (!findPlanById)
+      throw new ApiError(
+        "NotFound",
+        httpStatus.NOT_FOUND,
+        "Plan does not exist"
+      );
 
-    const u = await DepositPlan.update({...updatePlan.data}, {where: {id: findPlanById.id}})
+    const u = await DepositPlan.update(
+      { ...updatePlan.data },
+      { where: { id: findPlanById.id } }
+    );
 
-    if(u[0]) {
-      res.send(findPlanById.plan + " Plan updated successfully")
-    }else {
-      throw "Something Went Wrong"
+    if (u[0]) {
+      res.send(findPlanById.plan + " Plan updated successfully");
+    } else {
+      throw "Something Went Wrong";
     }
   } catch (error: any) {
-    res.status(httpStatus.BAD_REQUEST).send(error)
+    res.status(httpStatus.BAD_REQUEST).send(error);
   }
-  
-}
-
+};
 
 // delete
-serviceController.deleteExisitngPlan = async function(req,res,next) {
+serviceController.deleteExisitngPlan = async function (req, res, next) {
   try {
     const updatePlan = req.body;
 
-    const findPlanById:any = await DepositPlan.findByPk(updatePlan.id);
+    const findPlanById: any = await DepositPlan.findByPk(updatePlan.id);
 
-    if(!findPlanById) throw new ApiError("NotFound", httpStatus.NOT_FOUND, "Plan does not exist")
+    if (!findPlanById)
+      throw new ApiError(
+        "NotFound",
+        httpStatus.NOT_FOUND,
+        "Plan does not exist"
+      );
 
-    const u = await DepositPlan.destroy({where: {id: findPlanById.id}})
+    const u = await DepositPlan.destroy({ where: { id: findPlanById.id } });
 
-    res.send(findPlanById.plan + " Plan Deleted successfully")
+    res.send(findPlanById.plan + " Plan Deleted successfully");
   } catch (error: any) {
-    res.status(httpStatus.BAD_REQUEST).send(error)
+    res.status(httpStatus.BAD_REQUEST).send(error);
   }
-}
+};
 
 // .....................................................................................................
+
+// ********************************************************************************************************]
+// COMPOUNDING PLAN -CRUD OPERATION
+// @access Admin
+
+
+// create
+serviceController.createNewCompoundPlan = async function (req, res, next) {
+  try {
+    const reqBody = req.body;
+
+    const data = {
+      plan: reqBody.plan,
+      minAmt: reqBody.minAmt,
+      maxAmt: reqBody.maxAmt,
+      duration: reqBody.duration,
+      interestRate: reqBody.interestRate,
+    };
+    await compoundingPlans.create(data);
+
+    res.send(data.plan + " Plan creadted successfully");
+  } catch (error: any) {
+    res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+};
+
+// update
+serviceController.updateExistingCompoundPlan = async function (req, res, next) {
+  try {
+    const updatePlan = req.body;
+
+    const findPlanById: any = await compoundingPlans.findByPk(updatePlan.id);
+
+    if (!findPlanById)
+      throw new ApiError(
+        "NotFound",
+        httpStatus.NOT_FOUND,
+        "Plan does not exist"
+      );
+
+    const u = await compoundingPlans.update(
+      { ...updatePlan.data },
+      { where: { id: findPlanById.id } }
+    );
+
+    if (u[0]) {
+      res.send(findPlanById.plan + " Plan updated successfully");
+    } else {
+      throw "Something Went Wrong";
+    }
+  } catch (error: any) {
+    res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+};
+
+// delete
+serviceController.deleteExisitngCompoundPlan = async function (req, res, next) {
+  try {
+    const updatePlan = req.body;
+
+    const findPlanById: any = await compoundingPlans.findByPk(updatePlan.id);
+
+    if (!findPlanById)
+      throw new ApiError(
+        "NotFound",
+        httpStatus.NOT_FOUND,
+        "Plan does not exist"
+      );
+
+    const u = await compoundingPlans.destroy({ where: { id: findPlanById.id } });
+
+    res.send(findPlanById.plan + " Plan Deleted successfully");
+  } catch (error: any) {
+    res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+};
+
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 serviceController.getAllSuccessfulInvesment = async function (req, res, next) {
   try {
@@ -365,8 +676,9 @@ serviceController.newWithdrawalRequest = async function (req, res, next) {
         desc: "input contains invalid data",
       });
 
-    const create = await userWithdrawal.create({
+    const create: any = await userWithdrawal.create({
       userId: req.id,
+      clientId: req.primaryKey,
       amount,
       currency,
       mode,
@@ -376,16 +688,32 @@ serviceController.newWithdrawalRequest = async function (req, res, next) {
     // Transactions
     await userTransaction.create({
       userId: req.id,
+      withdrawalId: create?.id,
       invoiceID: helpers.generateInvoiceId(),
       amount,
       type: "withdrawal",
       mode,
     });
-    //send email.
+
+    const getUser: ClientInterface<String> = (await Client.findOne({
+      where: { uuid: req.id },
+    })) as any;
+
+    //send Notification to admin.
+    await adminNotification.create({
+      clientId: getUser.uuid,
+      message: `Requested a withdrawal of ${getUser?.currency} ${amount}`,
+      type: "WITHDRAW",
+      fullName: getUser.fullName,
+      userIp: req.clientIp,
+      depositType: null,
+    });
+
     res
       .status(httpStatus.CREATED)
       .send({ message: "Request was successful, Wait for approval." });
   } catch (error) {
+    console.log(error);
     res.status(httpStatus.BAD_REQUEST).send(error);
   }
 };
@@ -468,6 +796,12 @@ serviceController.addCurrency = async function (req, res, next) {
 serviceController.getCurrencies = async function (req, res, next) {
   try {
     const ifExist = await userCurrency.findAll({});
+    if(!ifExist.length){
+      adminNotification.create({
+        type: "ALERT",
+        message: "Go to general settings and add currencies for users.",
+      })
+    }
     // if(!ifExist.length) throw new Error("Can't fetch Currencies")
     res.send(ifExist);
   } catch (error) {
@@ -517,65 +851,96 @@ serviceController.currencyConversion = async function (req, res, next) {
 };
 
 // general data
-serviceController.getGeneralSettings = async function() {
-  if(!(await generalSettings.findAll({}))) return null
-  const getApiKey:generalSettingsInterface<string> = await generalSettings.findOne({where: {id: 1}}) as any;
+serviceController.getGeneralSettings = async function () {
+  if (!(await generalSettings.findAll({}))) return null;
+  const getApiKey: generalSettingsInterface<string> =
+    (await generalSettings.findOne({ where: { id: 1 } })) as any;
   // if(!getApiKey &&  !(
-    
+
   // ).length) {
   //   const data = {
   //     appName: "FlutterCurve",
-  //   }  
+  //   }
   // }
   return getApiKey;
-}
+};
 
 // Coinbase Api Key.
-serviceController.getCoinBaseApiKey = async function(req,res,next) {
+serviceController.getCoinBaseApiKey = async function (req, res, next) {
   try {
-    const getKey = await serviceController.getGeneralSettings()
-    res.send(getKey)
-  } catch (error:any) {
-    res.status(500).send(error)
+    const getKey = await serviceController.getGeneralSettings();
+    res.send(getKey);
+  } catch (error: any) {
+    res.status(500).send(error);
   }
-}
+};
 
-
-serviceController.addCoinbaseKey = async function(req,res,next) {
+serviceController.addCoinbaseKey = async function (req, res, next) {
   try {
     const settings = await serviceController.getGeneralSettings();
-    const {providedKey} = req.body;
+    const { providedKey } = req.body;
 
-    if(!providedKey || providedKey.length < 9) throw new ApiError("validation", httpStatus.BAD_REQUEST, "Empty or invalid field")
-    if(!settings?.coinBaseApiKey && providedKey) {
-      // create 
+    if (!providedKey || providedKey.length < 9)
+      throw new ApiError(
+        "validation",
+        httpStatus.BAD_REQUEST,
+        "Empty or invalid field"
+      );
+    if (!settings?.coinBaseApiKey && providedKey) {
+      // create
       await generalSettings.create({
-        coinBaseApiKey: providedKey
+        coinBaseApiKey: providedKey,
       });
-      return res.send({message: "New Coinbase Api key added successfully"})
+      return res.send({ message: "New Coinbase Api key added successfully" });
     }
 
-    const u = (await generalSettings.update({
-      coinBaseApiKey: providedKey
-    }, {where: {id: 1}}))[0];
+    const u = (
+      await generalSettings.update(
+        {
+          coinBaseApiKey: providedKey,
+        },
+        { where: { id: 1 } }
+      )
+    )[0];
 
-    if(u) {
-      return res.send({message: "Coinbase Api Key updated successfully"})
+    if (u) {
+      return res.send({ message: "Coinbase Api Key updated successfully" });
     }
   } catch (error) {
-    res.status(httpStatus.BAD_REQUEST).send(error)
+    res.status(httpStatus.BAD_REQUEST).send(error);
   }
-}
+};
 
-
-serviceController.testRunApiKey = async function (req,res,next) {
+serviceController.testRunApiKey = async function (req, res, next) {
   try {
-    const c = await (new Coinbase()).testRunApiKey();
-    res.send("OK")
+    const c = await new Coinbase().testRunApiKey();
+    res.send("OK");
   } catch (error) {
-    console.log(error)
-    res.status(httpStatus.BAD_REQUEST).send(error)
+    console.log(error);
+    res.status(httpStatus.BAD_REQUEST).send(error);
   }
-}
+};
+
+// normalPlan
+serviceController.generateNormalPresamplePlan = async function (req, res, next) {
+  try {
+    const c = await buildDepositPlans()
+    res.send("Pre sample generated successfully.");
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+};
+// compounding
+serviceController.generateCompoundPresamplePlan = async function (req, res, next) {
+  try {
+    const c = await buildCompondingPlans()
+    res.send("Pre sample generated successfully.");
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+};
+
 
 export default serviceController;

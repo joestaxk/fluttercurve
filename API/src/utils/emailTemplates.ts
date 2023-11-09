@@ -48,7 +48,7 @@ interface Paragraph {
   
 // SET TEMPLATES
   const templates = {
-    initQueueing: async function (id:string, header:string, recipient:string, username: string,  message: string) {
+    initQueueing: async function (id:string, header:string, recipient:string, username: string,  message: string, priority?:string) {
         try {
             await queueEmail.create({
                 clientId: id,
@@ -56,7 +56,7 @@ interface Paragraph {
                 recipient,
                 username,
                 message,
-                priority: "HIGH"
+                priority: priority || "HIGH"
             })
         } catch (error) {
             console.log(error)

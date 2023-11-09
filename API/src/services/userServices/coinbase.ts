@@ -4,6 +4,7 @@ import serviceController from "../../controllers/serviceController";
 import ApiError from "../../utils/ApiError";
 import handleCompoundingServices from "./handleCompoundingService";
 import handleServices from "./handleServices";
+import userTransaction from "../../models/Users/transactions";
   
 export interface chargeInterface<T> {
     description: T;
@@ -101,7 +102,7 @@ static async createCharge(data: chargeInterface<string>) {
     }
 }
 
-static async updateById(table: any, chargeID: string, type:string, cb:(arg0:any) => void) {
+static async updateById(table: any, depositId:number, chargeID: string, type:string, cb:(arg0:any) => void) {
     if(!chargeID) return false;
 
     try {
@@ -114,7 +115,12 @@ static async updateById(table: any, chargeID: string, type:string, cb:(arg0:any)
                 // update or delete data
                 switch (checkStatus.status.toUpperCase()) {
                     case "EXPIRED":
-                            table.destroy({where: {chargeID}}).catch((err:any) => cb(err))
+                                // update their transactions
+                                await userTransaction.update(
+                                    { status: "FAILED"},
+                                    { where: { depositId, mode:type} }
+                                );
+                                table.destroy({where: {chargeID}}).catch((err:any) => cb(err))
                             console.log(chargeID, "Deleted.")
                         break;
 

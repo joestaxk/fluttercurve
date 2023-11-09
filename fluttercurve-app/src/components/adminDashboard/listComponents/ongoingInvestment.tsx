@@ -235,7 +235,7 @@ export default function OngoingInvestment() {
                           </td>
                           <td className="p-3 font-medium text-slate-600">
                             <div className="">
-                              {remainingDays}/{duration} days
+                              {remainingDays}/{duration} {type == "normal" ? "days" : "months"}
                             </div>
                             {toggleUpdateState[chargeID] && (
                               <input

@@ -3,6 +3,15 @@ import instance from "./requestService";
 
 
 interface adminAuthInterface {
+    deleteExisitngCompoundPlan: any;
+    updateExistingCompoundPlan: any;
+    createNewCompoundPlan: any;
+    generateNormalPresamplePlan: any;
+    generateCompoundPresamplePlan: any;
+    delWithdrawalReq: any;
+    denyWithdrawalReq: any;
+    approveWithdrawalReq: any;
+    getUserWithdrawalRequest: any;
     deleteExisitngPlan: any;
     updateExitingPlan: any;
     createNewPlan: any;
@@ -55,9 +64,22 @@ adminAuth.getAllUserDeposit = async (id:string) => await instance.post(`/admin/g
 adminAuth.getAllActiveDeposit = async () => await instance.get(`/admin/getAllActiveDeposit`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 
 // crud operation
+// normalPlan
 adminAuth.createNewPlan = async (reqBody:any) => await instance.post(`/service/createNewPlan`, {...reqBody}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.updateExitingPlan = async (reqBody:any) => await instance.post(`/service/updateExitingPlan`, {...reqBody}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.deleteExisitngPlan = async (id:any) => await instance.post(`/service/deleteExisitngPlan`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+
+// compounding Plan
+adminAuth.createNewCompoundPlan = async (reqBody:any) => await instance.post(`/service/createNewCompoundPlan`, {...reqBody}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.updateExistingCompoundPlan = async (reqBody:any) => await instance.post(`/service/updateExistingCompoundPlan`, {...reqBody}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.deleteExisitngCompoundPlan = async (id:any) => await instance.post(`/service/deleteExisitngCompoundPlan`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+
+// @withdrawal request
+adminAuth.getUserWithdrawalRequest = async (id:string) => await instance.get(`/service/getUserWithdrawalRequest?userId=${id}`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.approveWithdrawalReq = async (id:string) => await instance.get(`/service/approveWithdrawalReq?transactionId=${id}`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.denyWithdrawalReq = async (id:string) => await instance.get(`/service/denyWithdrawalReq?transactionId=${id}`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.delWithdrawalReq = async (id:string) => await instance.post(`/service/delWithdrawalReq`, {transactionId: id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+
 
 adminAuth.suspendUserDeposit = async (id:string, investmentCompleted: boolean) => await instance.post(`/admin/suspendUserDeposit`, {chargeID:id, investmentCompleted}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.manualApproval = async (id:string, type: boolean) => await instance.post(`/admin/manualApproval`, {chargeID:id, type}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
@@ -82,7 +104,7 @@ adminAuth.createOrUpdateCoinBaseApiKey = async (data: any) => await instance.pos
 adminAuth.getCoinBaseApiKey = async () => await instance.get(`/service/getCoinBaseApiKey`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 // test coinbase key
 adminAuth.testRunApiKey = async () => await instance.get(`/service/testRunApiKey`, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
-
-
-
+// pre samples -plans
+adminAuth.generateNormalPresamplePlan = async () => await instance.post(`/service/generateNormalPresamplePlan`, {}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.generateCompoundPresamplePlan = async () => await instance.post(`/service/generateCompoundPresamplePlan`,{}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 export default adminAuth

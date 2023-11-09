@@ -12,6 +12,10 @@ export interface DepositInterface<T> {
 }
 
 userCompounding.init({
+    clientId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
     totalDeposit: {
         type: DataTypes.DECIMAL,
         defaultValue: 0

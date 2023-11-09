@@ -2,6 +2,7 @@ import instance from "./requestService";
 
 
 interface authInterface {
+    getUserTransaction: any;
     currencyConversion: any;
     getAllCompoundingSuccessfulInvesment: any;
     getMe: any;
@@ -98,7 +99,9 @@ auth.getAllCompoundingSuccessfulInvesment = async function(access_token: string)
     return await instance.get(`/compounding/getAllCompoundingSuccessfulInvesment`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
-
+auth.getUserTransaction = async function(access_token: string) {
+    return await instance.get(`/service/getUserTransaction`, {headers: {Authorization: `Bearer ${access_token}`}})
+}
 
 // SERVICE =========================================
 auth.getAllDepositRequest = async function(access_token: string) {

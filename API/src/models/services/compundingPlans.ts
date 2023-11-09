@@ -48,5 +48,6 @@ compoundingPlans.init({
       updatedAt: 'updateTimestamp'
   })
 
+
 export default compoundingPlans;
 

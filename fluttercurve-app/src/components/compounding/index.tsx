@@ -178,7 +178,7 @@ export default function Compounding({state}:{state: userDataStateType}) {
 
                                   { data.status == "SUCCESSFUL" &&  <div className="flex justify-between flex-grow">
                                       <div className="">Duration: </div>
-                                      <div className="">{data.duration}days</div>
+                                      <div className="">{data.duration} Months</div>
                                   </div>}
 
 

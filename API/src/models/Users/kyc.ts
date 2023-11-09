@@ -18,6 +18,14 @@ export interface KycInterface<T> {
 }
 
 Kyc.init({
+    clientId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
     uuid: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -57,10 +65,6 @@ Kyc.init({
     isKyc: {
         type: DataTypes.ENUM("PENDING", "APPROVED", "DECLINED"),
         defaultValue: "PENDING"
-    },
-    clientID: {
-        type: DataTypes.STRING,
-        allowNull: false,
     },
   },
   {

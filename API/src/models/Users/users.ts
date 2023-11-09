@@ -7,6 +7,8 @@ import userAccount from './userAccount';
 import Referral from './referrals';
 import userCompounding from '../mode/compounding';
 import userDeposit from './deposit';
+import userWithdrawal from './withdrawal';
+import Kyc from './kyc';
 
 
 class Client extends Sequelize.Model {}
@@ -152,6 +154,8 @@ Client.beforeCreate(
 )
 
 Client.hasOne(userAccount, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
     foreignKey: {
       name: 'clientId',
       allowNull: false,
@@ -165,7 +169,11 @@ Client.hasOne(userAccount, {
     },
   });
 
-  Client.hasOne(userDeposit, {
+
+// user deposit
+ Client.hasOne(userDeposit, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
     foreignKey: {
       name: 'userId',
       allowNull: false,
@@ -179,7 +187,9 @@ Client.hasOne(userAccount, {
   });
 
 
-Client.hasOne(userCompounding, {
+ Client.hasOne(userCompounding, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
     foreignKey: {
       name: 'clientId',
       allowNull: false,
@@ -191,7 +201,24 @@ userCompounding.belongsTo(Client, {
       name: 'clientId',
       allowNull: false,
     },
+});
+
+Client.hasOne(userWithdrawal, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    foreignKey: {
+      name: 'clientId',
+      allowNull: false,
+    },
   });
+  
+userWithdrawal.belongsTo(Client, {
+    foreignKey: {
+      name: 'clientId',
+      allowNull: false,
+    },
+});
+
 
 
 Client.hasMany(Referral, {
@@ -199,10 +226,21 @@ Client.hasMany(Referral, {
 });
 Referral.belongsTo(Client)
 
-// Client.hasOne(Kyc)
-// Kyc.belongsTo(Client)
 
-
+Client.hasOne(Kyc,  {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    foreignKey: {
+        name: "userId",
+        allowNull: false
+    }
+})
+Kyc.belongsTo(Client, {
+    foreignKey: {
+        name: 'userId',
+        allowNull: false,
+    }
+})
 
 export default Client;
 

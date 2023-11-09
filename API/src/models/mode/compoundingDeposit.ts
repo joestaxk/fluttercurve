@@ -1,5 +1,6 @@
 import {DataTypes, Model } from 'sequelize';
 import { sequelize } from '../../database/db';
+import userTransaction from '../Users/transactions';
 
 class  compoundingDeposit extends Model {}
 
@@ -14,6 +15,10 @@ export interface DepositInterface<T> {
  compoundingDeposit.init({
     clientId: {
         type: DataTypes.UUID,
+        allowNull: false,
+    },
+    userId: {
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     chargeID: {
@@ -67,6 +72,22 @@ export interface DepositInterface<T> {
       timestamps: true,
       updatedAt: 'updateTimestamp'
   })
+
+//   compoundingDeposit.hasOne(userTransaction, {
+//     onDelete: "CASCADE",
+//     onUpdate: "CASCADE",
+//     foreignKey: {
+//       name: "depositId",
+//       allowNull: false,
+//     },
+//   });
+
+//   userTransaction.belongsTo(compoundingDeposit, {
+//     foreignKey: {
+//       name: "depositId",
+//       allowNull: false,
+//     },
+//   });
 
 
 export default  compoundingDeposit;
