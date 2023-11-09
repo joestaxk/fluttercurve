@@ -6,7 +6,6 @@ import { userDataStateType } from "../../../../rState/initialStates";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import Withdrawal from "../../../../components/dashboard/Withdrawals";
 import Transactions from "../../../../components/dashboard/transactions";
 
 function Page({state}:{state: userDataStateType}) {
@@ -27,7 +26,7 @@ function Page({state}:{state: userDataStateType}) {
 
 
   const [cookies] = useCookies();
-  const [activeWithdraw, setActiveWithdraw] = useState(0);
+  const [, setActiveWithdraw] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
