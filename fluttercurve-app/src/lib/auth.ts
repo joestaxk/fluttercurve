@@ -28,7 +28,8 @@ interface authInterface {
     isAuthenticated: (access_token: string) => Promise<Response>;
     checkVerifedUser: (token: string) => Promise<Response>;
     getAllDepositRequest: (token: string) => Promise<Response>;
-    newDepositRequest: (token: string, chargeData: any) => Promise<Response>;
+    newDepositRequest: (token: string, depoInfoData: any) => Promise<Response>;
+    newDepositRequestFromBalance: (access_token: string, chargeAPIData: any) => Promise<Response>;
 }
 var auth = {} as authInterface;
 
@@ -114,6 +115,11 @@ auth.getAllSuccessfulInvesment = async function(access_token: string) {
 
 auth.newDepositRequest = async function(access_token: string, chargeAPIData:any) {
     return await instance.post(`/service/newDepositRequest`, chargeAPIData, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
+auth.newDepositRequestFromBalance = async function(access_token: string, depoInfoData) {
+    console.log(access_token)
+    return await instance.post(`/service/newDepositRequestFromBalance`, depoInfoData, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
 auth.newWithdrawalRequest = async function(access_token: string, data:any) {
