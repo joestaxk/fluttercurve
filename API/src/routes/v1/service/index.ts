@@ -55,6 +55,8 @@ router.post('/deleteExisitngCompoundPlan',  AdminAuth, serviceController.deleteE
 **/
 router.post("/newDepositRequest", UserAuth, serviceController.newDepositRequest)
 
+router.post("/newDepositRequestFromBalance", UserAuth, serviceController.newDepositRequestFromBalance)
+
 router.get("/getAllDepositRequest", UserAuth, serviceController.getAllDepositRequest)
 
 router.get("/getAllSuccessfulInvesment", UserAuth, serviceController.getAllSuccessfulInvesment)

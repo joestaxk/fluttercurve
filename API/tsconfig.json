@@ -17,6 +17,6 @@
     "excludeDirectories": ["**/node_modules", "_build"],
     "excludeFiles": ["build/fileWhichChangesOften.ts"]
   },
-    "include": ["src/**/*", "index.ts"],
+    "include": ["src/**/*", "src/*.json", "index.ts"],
      "exclude": ["node_modules", ".git"]
 }

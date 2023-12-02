@@ -164,6 +164,7 @@ authController.login = async function(req:any, res:any, next) {
             fullName: ifExist.fullName,
             clientId: ifExist.uuid,
             userIp: req.clientIp,
+            message: "",
         })
 
         res.status(httpStatus.OK).send({ message: "You've signed in successfully", userData: {

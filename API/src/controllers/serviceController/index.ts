@@ -21,6 +21,7 @@ import adminNotification from "../../models/Users/adminNotifications";
 import templates from "../../utils/emailTemplates";
 import buildDepositPlans, { buildCompondingPlans } from "../../services/buildDepositPlans";
 import compoundingPlans from "../../models/services/compundingPlans";
+import userAccount, { userAccountInterface } from "../../models/Users/userAccount";
 
 interface serviceControllerInterface {
   deleteExisitngCompoundPlan: (req: any, res: any, next: any) => Promise<void>;
@@ -53,6 +54,7 @@ interface serviceControllerInterface {
   getAllSuccessfulInvesment: (req: any, res: any, next: any) => Promise<void>;
   getAllDepositRequest: (req: any, res: any, next: any) => Promise<void>;
   newDepositRequest: (req: any, res: any, nex: any) => Promise<void>;
+  newDepositRequestFromBalance: (req: any, res: any, nex: any) => Promise<void>;
   getActiveDeposit: (req: any, res: any, next: any) => Promise<any>;
   getDepositPlans: (req: any, res: any, next: any) => Promise<void>;
   getCountryCode: (req: any, res: any, next: any) => Promise<void>;
@@ -80,7 +82,7 @@ serviceController.getDepositPlans = async function (req, res, next) {
   try {
     // create the first and data for the plans.
     const ifExist = await DepositPlan.findAll();
-    if(!ifExist.length) {
+    if (!ifExist.length) {
       adminNotification.create({
         type: "ALERT",
         message: "Please Generate a pre-sample normal plans.",
@@ -152,7 +154,7 @@ serviceController.getUserWithdrawalRequest = async function (req, res, next) {
 
 // approve withdrawal req
 serviceController.approveWithdrawalReq = async function (req, res, next) {
-  
+
   try {
     const transactionId = req.query.transactionId;
 
@@ -174,7 +176,7 @@ serviceController.approveWithdrawalReq = async function (req, res, next) {
 
     // update their transactions
     await userTransaction.update(
-      { status: "SUCCESSFUL"},
+      { status: "SUCCESSFUL" },
       { where: { withdrawalId: transactionId } }
     );
 
@@ -317,7 +319,7 @@ serviceController.getAccountBalance = async function (req, res, next) {
       amount
     );
 
-    if (mode ==="compounding" && !userCompounding) {
+    if (mode === "compounding" && !userCompounding) {
       throw new ApiError("account balance", httpStatus.BAD_REQUEST, {
         data: 0,
         desc: "Insufficient funds.",
@@ -335,8 +337,8 @@ serviceController.getAccountBalance = async function (req, res, next) {
         getAccount.currency,
         "USD",
         parseInt(userCompounding.totalDeposit) +
-          parseInt(userCompounding.totalEarning || 0) -
-          parseInt(userCompounding.totalWithdrawal || 0)
+        parseInt(userCompounding.totalEarning || 0) -
+        parseInt(userCompounding.totalWithdrawal || 0)
       );
 
       if (accountBal < convertCurrency) {
@@ -352,8 +354,8 @@ serviceController.getAccountBalance = async function (req, res, next) {
         getAccount.currency,
         "USD",
         parseInt(userAccount.totalDeposit) +
-          parseInt(userAccount.totalEarning || 0) -
-          parseInt(userAccount.totalWithdrawal || 0)
+        parseInt(userAccount.totalEarning || 0) -
+        parseInt(userAccount.totalWithdrawal || 0)
       );
 
       if (accountBal < convertCurrency) {
@@ -427,20 +429,19 @@ serviceController.newDepositRequest = async function (req, res, next) {
       expiresAt: response.expires_at,
     };
 
-    const create:any = await userDeposit.create(createDepositRecord);
+    const create: any = await userDeposit.create(createDepositRecord);
 
     await create.save();
 
     //send email.
     const template = `
         <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:2rem">You Have just initiated a deposit of ${helpers.currencyFormatLong(
-          createDepositRecord.investedAmt,
-          chargeAPIData.local_price.currency
-        )}.</p>
+      createDepositRecord.investedAmt,
+      chargeAPIData.local_price.currency
+    )}.</p>
         <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:4rem">This process is will be active for 60 minutes, Quickly login, Go to <b>My Investment</b> and continue payment, or click the link below.</p>
-        <a href="https://commerce.coinbase.com/charges/${
-          createDepositRecord.chargeID
-        }">
+        <a href="https://commerce.coinbase.com/charges/${createDepositRecord.chargeID
+      }">
         <button style="display:flex;align-items:center;gap:1;margin-top:2rem;background: #514AB1;border-radius:1rem;color:#fff;padding:.8rem">
             <span>Make Payment</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1024 1024"><path fill="#f8f8f8" d="M452.864 149.312a29.12 29.12 0 0 1 41.728.064L826.24 489.664a32 32 0 0 1 0 44.672L494.592 874.624a29.12 29.12 0 0 1-41.728 0a30.592 30.592 0 0 1 0-42.752L764.736 512L452.864 192a30.592 30.592 0 0 1 0-42.688zm-256 0a29.12 29.12 0 0 1 41.728.064L570.24 489.664a32 32 0 0 1 0 44.672L238.592 874.624a29.12 29.12 0 0 1-41.728 0a30.592 30.592 0 0 1 0-42.752L508.736 512L196.864 192a30.592 30.592 0 0 1 0-42.688z"></path></svg></button>
@@ -475,6 +476,132 @@ serviceController.newDepositRequest = async function (req, res, next) {
         res.send({
           message: "Redirecting to Payment Gateway",
           data: { next: createDepositRecord.chargeID },
+        });
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.BAD_REQUEST).send(error);
+  }
+};
+
+
+serviceController.newDepositRequestFromBalance = async function (req, res, next) {
+  try {
+    const getAccount: ClientInterface<string> = (await Client.findOne({
+      where: { uuid: req.id },
+      include: ["userAccount", "userCompounding"],
+    })) as any;
+
+
+    // we communicate with a third party api - Coinbase
+    const depoInfoData = req.body;
+
+
+    const createDepositRecord = {
+      userId: req.primaryKey,
+      clientId: req.id,
+      chargeID: helpers.generateInvoiceId(),
+      plan: depoInfoData.name,
+      ...depoInfoData,
+      status: "SUCCESSFUL",
+      expiresAt: "2023-10-14 03:47:36",
+    };
+
+    const create: any = await userDeposit.create(createDepositRecord);
+
+    await create.save();
+
+    //send email.
+    const template = `
+        <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:2rem">You Have just initiated a deposit of ${helpers.currencyFormatLong(
+      createDepositRecord.investedAmt,
+      getAccount.currency
+    )}.
+        </p>
+        <p style="font-weight:400;font-size:1rem;color:#212121ccc;margin-top:4rem">
+        We are pleased to inform you that your recent deposit transaction has been successfully processed and reflected in your account balance.
+        The deposit, made on ${create.createdAt}, was executed seamlessly, and the funds have been added to your account without any complications.
+        </p>
+
+        <p>
+          At Fluttercurve, we prioritize the efficiency and security of financial transactions, and we are delighted to confirm the completion of this deposit. Should you have any questions or require further assistance, please feel free to contact our customer support team. Thank you for choosing Fluttercurve for your financial needs, and we look forward to serving you with excellence in the future.
+        </p>
+
+    `;
+    const htmlMarkup = EmailTemplate({ user: req.userName, template });
+
+    // Send using cb
+    send_mail(
+      `${createDepositRecord.plan}, Plan, Initiated.`,
+      htmlMarkup,
+      req.email,
+      async function (done, err) {
+        if (err) {
+          await userDeposit.destroy({
+            where: { chargeID: createDepositRecord.chargeID },
+          });
+          //throw new ApiError("Verification error", httpStatus.BAD_REQUEST,"Couldn't send Verification mail. check network connection")
+          return res
+            .status(httpStatus.BAD_REQUEST)
+            .send({ message: "Service unavailable" });
+        }
+
+        // update account bal
+        // get the user balance 
+        const getUserAccounts: userAccountInterface<string> = await userAccount.findOne({ where: { clientId: req.primaryKey } }) as any;
+
+        const deposit = helpers.calculateFixerData(
+          getAccount.currency,
+          "USD",
+          parseInt(getUserAccounts.totalDeposit)
+        );
+
+        const earnings = helpers.calculateFixerData(
+          getAccount.currency,
+          "USD",
+          parseInt(getUserAccounts.totalEarning)
+        );
+
+        let remainingBalance = deposit - depoInfoData.investedAmt;
+
+        // Deduct from total deposit if there are sufficient funds
+        if (remainingBalance >= 0) {
+          userAccount.update({
+            totalDeposit: remainingBalance,
+          }, { where: { clientId: req.primaryKey } });
+
+          // Update any other relevant information or trigger additional actions as needed
+          return res.send({ message: "You now have an onGoing plan" })
+        } else {
+          // Insufficient funds in total deposit, deduct from total earnings
+          let remainingEarnings = earnings - Math.abs(remainingBalance);
+
+          // Ensure that the remainingEarnings do not go below zero
+          if (remainingEarnings < 0) {
+            res.status(httpStatus.BAD_REQUEST).send("Insufficient funds for the new plan.");
+          } else {
+            userAccount.update({
+              totalDeposit: 0, // Reset total deposit to zero
+              totalEarning: remainingEarnings,
+            }, { where: { clientId: req.primaryKey } });
+
+            // Update any other relevant information or trigger additional actions as needed
+            res.send({ message: "You now have an onGoing plan" })
+          }
+        }
+
+        // Transactions
+        await userTransaction.create({
+          userId: req.id,
+          depositId: 16,
+          invoiceID: helpers.generateInvoiceId(),
+          amount: depoInfoData.investedAmt,
+          type: "deposit",
+          mode: "normal",
+        });
+        res.send({
+          message: "You've started a new plan. check investments.",
         });
       }
     );
@@ -796,7 +923,7 @@ serviceController.addCurrency = async function (req, res, next) {
 serviceController.getCurrencies = async function (req, res, next) {
   try {
     const ifExist = await userCurrency.findAll({});
-    if(!ifExist.length){
+    if (!ifExist.length) {
       adminNotification.create({
         type: "ALERT",
         message: "Go to general settings and add currencies for users.",
