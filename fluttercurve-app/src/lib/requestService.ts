@@ -12,7 +12,7 @@ export const MAIN_APP_URL = "https://app.fluttercurve.com";
 export const BASE_URI = "https://api.fluttercurve.com/v1";
 
 // dev
-// export const BASE_URI = "http://localhost:3001/v1";
+// export const BASE_URI = "http://localhost:3000/v1";
 
 const instance = axios.create({
     baseURL: BASE_URI,

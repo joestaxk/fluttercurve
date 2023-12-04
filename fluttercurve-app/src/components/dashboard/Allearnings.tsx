@@ -5,11 +5,14 @@ import { motion } from "framer-motion";
 
 import auth from "../../lib/auth";
 import { userDataStateType } from "../../rState/initialStates";
+import useAlert from "../../hooks/alert";
 
 export default function AllEarning({ state }: { state: userDataStateType }) {
   const [cookies] = useCookies();
   const [data, setData] = useState([]);
-
+  const [reload, setReload] = useState(false);
+  
+  const { showAlert, AlertComponent } = useAlert()
   useEffect(() => {
     async function fetchData() {
       try {
@@ -18,14 +21,42 @@ export default function AllEarning({ state }: { state: userDataStateType }) {
         );
         if (data.length) {
           setData(data as any);
-          //   console.log(data)
         }
       } catch (error) {
         console.log(error);
       }
     }
     fetchData();
-  }, []);
+  }, [reload]);
+
+  function getDaysAgo(timestamp: string) {
+    // Convert strings to Date objects
+    const providedDate: any = new Date(timestamp);
+
+    // Get the current date
+    const currentDate: any = new Date();
+
+    // Calculate the difference in milliseconds
+    const timeDifference = currentDate - providedDate;
+
+    // Convert the difference to days
+    const daysAgo = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    return daysAgo;
+  }
+
+  async function endInvestment(id: number) {
+    try {
+      let { data } = await auth.endInvestment(
+        cookies["xat"],
+        { investmentId: id }
+      );
+      setReload(!reload)
+      showAlert("success", data)
+    } catch (error: any) {
+      showAlert("error", error.response.data.description)
+      console.log(error);
+    }
+  }
 
   return (
     <div className="pb-6 p-3">
@@ -42,14 +73,29 @@ export default function AllEarning({ state }: { state: userDataStateType }) {
               <div
                 key={i.toString()}
                 style={{
-                  borderImage: `linear-gradient(${
-                    data.investmentCompleted
-                      ? "100deg, #transparent,#3ddc75,transparent"
-                      : "20deg, #2626b0df,#2626b0a0,transparent"
-                  }) 1 / 1 / 0 stretch`,
+                  borderImage: `linear-gradient(${data.investmentCompleted
+                    ? "100deg, #transparent,#3ddc75,transparent"
+                    : "20deg, #2626b0df,#2626b0a0,transparent"
+                    }) 1 / 1 / 0 stretch`,
                 }}
-                className="w-[380px] p-3 border-[1px] rounded-lg bg-[#e8e8e830] border-[#ccc] min-h-[350px]"
+                className="w-[380px] p-3 border-[1px] rounded-lg bg-[#e8e8e830] border-[#ccc] min-h relative"
               >
+
+
+                {!data.investmentCompleted && data.plan.toLowerCase().includes("eth staking") && <div className="absolute right-2">
+                  <button onClick={() => endInvestment(data.id)} className="disabled:opacity-50 text-red-700 border disabled:cursor-not-allowed hover:bg-red-600 hover:text-white transition-colors duration-300 bg-gray-200 p-2 rounded-md">End Investment</button>
+                </div>
+                }
+                {(!data.investmentCompleted && !data.plan.toLowerCase().includes("eth staking")) && <div className="absolute right-2 group">
+                  <button onClick={() => endInvestment(data.id)} className="disabled:opacity-50 text-red-700 border disabled:cursor-not-allowed hover:bg-red-600 hover:text-white transition-colors duration-300 bg-gray-200 p-2 rounded-md" disabled={getDaysAgo(data.createdAt) < data.duration}>End Investment</button>
+
+                  {getDaysAgo(data.createdAt) < data.duration ? <p className="absolute opacity-0 pointer-events-none group-hover:opacity-100 duration-700 bg-white w-[400px] border border-gray-300/60 p-4 rounded-md">
+                    You're not eligible to end the transaction at the moment.
+                    Transaction should have lasted up to 2-3weeks before you can take your money and earnings.
+                  </p> : <></>}
+                </div>
+                }
+
                 {data.investmentCompleted ? (
                   <div className="">
                     <div className="text-md mb2 text-[#212121cc] flex gap-1 items-center">
@@ -129,38 +175,35 @@ export default function AllEarning({ state }: { state: userDataStateType }) {
                   </div>
                 </div>
 
-                <div className="flex justify-between">
+                {!data.investmentCompleted && <div className="flex justify-between">
                   <div className="">Ongoing Plan: </div>
                   <div className="">
                     {!data.remainingDays
                       ? "Just started"
                       : data.remainingDays + " days"}
                   </div>
-                </div>
+                </div>}
 
-                <div
-                  className={`w-full ${
-                    data.investmentCompleted
-                      ? "border-[#3ddc75] border-[1px]"
-                      : "border-[#553ddcb1] border-[1px]"
-                  } mt-5 rounded-md`}
+                {!data.investmentCompleted && <div
+                  className={`w-full ${data.investmentCompleted
+                    ? "border-[#3ddc75] border-[1px]"
+                    : "border-[#553ddcb1] border-[1px]"
+                    } mt-5 rounded-md`}
                 >
                   <div
                     style={{
-                      background: `${
-                        data.investmentCompleted
-                          ? "linear-gradient(20deg,#3ddc75,#3ddc75)"
-                          : "linear-gradient(40deg,#3d3ddc80,#25258d)"
-                      }`,
-                      width: `${
-                        (parseInt(data.remainingDays) /
-                          parseInt(data.duration)) *
+                      background: `${data.investmentCompleted
+                        ? "linear-gradient(20deg,#3ddc75,#3ddc75)"
+                        : "linear-gradient(40deg,#3d3ddc80,#25258d)"
+                        }`,
+                      width: `${(parseInt(data.remainingDays) /
+                        parseInt(data.duration)) *
                         100
-                      }%`,
+                        }%`,
                     }}
                     className="h-4  transition-all duration-300"
                   ></div>
-                </div>
+                </div>}
 
                 {!data.investmentCompleted ? (
                   <div className="w-full flex justify-center mt-8 text-[#eee] font-bold">
@@ -193,6 +236,7 @@ export default function AllEarning({ state }: { state: userDataStateType }) {
           </div>
         )}
       </div>
+      {AlertComponent}
     </div>
   );
 }

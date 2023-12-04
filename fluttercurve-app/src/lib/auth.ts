@@ -2,6 +2,7 @@ import instance from "./requestService";
 
 
 interface authInterface {
+    endInvestment: any;
     getUserTransaction: any;
     currencyConversion: any;
     getAllCompoundingSuccessfulInvesment: any;
@@ -116,6 +117,11 @@ auth.getAllSuccessfulInvesment = async function(access_token: string) {
 auth.newDepositRequest = async function(access_token: string, chargeAPIData:any) {
     return await instance.post(`/service/newDepositRequest`, chargeAPIData, {headers: {Authorization: `Bearer ${access_token}`}})
 }
+
+auth.endInvestment = async function(access_token: string, data:any) {
+    return await instance.post(`/service/endInvestment`, data, {headers: {Authorization: `Bearer ${access_token}`}})
+}
+
 
 auth.newDepositRequestFromBalance = async function(access_token: string, depoInfoData) {
     console.log(access_token)
