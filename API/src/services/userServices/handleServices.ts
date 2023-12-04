@@ -113,7 +113,7 @@ handleServices.successfulDepositCharge = async function (chargeID: string) {
   if (!ifAny) {
     // create new account for the user
     await userAccount.create({
-      totalDeposit: parseInt(res.investedAmt),
+      totalDeposit: 0,
       totalWithdrawal: 0,
       totalEarning: 0,
       clientId: id,
@@ -122,12 +122,12 @@ handleServices.successfulDepositCharge = async function (chargeID: string) {
   }
 
   // why this line: this is because a user can only have 1 account, so we update this incase of any new deposit.
-  await userAccount.increment("totalDeposit", {
-    by: parseInt(res.investedAmt),
-    where: {
-      clientId: id,
-    },
-  });
+  // await userAccount.increment("totalDeposit", { // no longer needed DEC 4TH 2022
+  //   by: parseInt(res.investedAmt),
+  //   where: {
+  //     clientId: id,
+  //   },
+  // });
 
   // STORE A EMAIL and send later
   await templates.successfulChargeMailTemplate(
@@ -216,17 +216,18 @@ handleServices.updateEarning = async function ({
     { where: { chargeID } }
   );
 
-  const getUserId = (await Client.findOne({
-    where: { uuid: clientId },
-  })) as any;
-  if (getUserId)
-    // console.log(getUserId)
-    await userAccount.increment("totalEarning", {
-      by: earnings,
-      where: {
-        clientId: getUserId.id,
-      },
-    });
+  // don't update the user account
+  // const getUserId = (await Client.findOne({
+  //   where: { uuid: clientId },
+  // })) as any;
+  // if (getUserId)
+  //   // console.log(getUserId)
+  //   await userAccount.increment("totalEarning", {
+  //     by: earnings,
+  //     where: {
+  //       clientId: getUserId.id,
+  //     },
+  //   });
 };
 
 function calculateEarnings(

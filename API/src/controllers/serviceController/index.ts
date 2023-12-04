@@ -2,7 +2,7 @@ import httpStatus from "http-status";
 import ApiError from "../../utils/ApiError";
 import helpers from "../../utils/helpers";
 import DepositPlan from "../../models/services/depositPlans";
-import userDeposit from "../../models/Users/deposit";
+import userDeposit, { DepositInterface } from "../../models/Users/deposit";
 import Coinbase, {
   chargeInterface,
 } from "../../services/userServices/coinbase";
@@ -24,6 +24,7 @@ import compoundingPlans from "../../models/services/compundingPlans";
 import userAccount, { userAccountInterface } from "../../models/Users/userAccount";
 
 interface serviceControllerInterface {
+  endInvestment: (req: any, res: any, next: any) => Promise<void>;
   deleteExisitngCompoundPlan: (req: any, res: any, next: any) => Promise<void>;
   updateExistingCompoundPlan: (req: any, res: any, next: any) => Promise<void>;
   createNewCompoundPlan: (req: any, res: any, next: any) => Promise<void>;
@@ -96,6 +97,50 @@ serviceController.getDepositPlans = async function (req, res, next) {
     res.status(httpStatus.BAD_REQUEST).send(error);
   }
 };
+
+// THRESHOLD AND END INVESTMENT
+serviceController.endInvestment = async function(req,res,next) {
+  try {
+    const investmentId = req.body.investmentId;
+
+    // get the deposit data
+    const getDepoData:DepositInterface<string> = await userDeposit.findOne({
+      where: {id: investmentId}
+    }) as any
+    
+    if(!getDepoData) throw new ApiError("NOTFOUND", httpStatus.NOT_FOUND, "Something went wrong. reload page.");
+    
+    if(getDepoData.investmentCompleted){
+      throw new ApiError("NOTFOUND", httpStatus.BAD_REQUEST, "We won't process this request. reload page.");
+    } 
+    const {investedAmt, progressAmt}:any = getDepoData;
+    
+    const nInvestAmt = parseInt(investedAmt);
+    const nProgressAmt = parseInt(progressAmt)
+
+    // update the user account.
+    await userAccount.increment("totalDeposit", {
+      by: nInvestAmt,
+      where: {
+        clientId: req.primaryKey,
+      },
+    });
+
+    await userAccount.increment("totalEarning", {
+      by: nProgressAmt,
+      where: {
+        clientId: req.primaryKey,
+      },
+    });
+
+    // update plan as completed
+    userDeposit.update({investmentCompleted: true, expiresAt: "3023-10-14 03:47:36", progressAmt: 0}, {where: {id: getDepoData.id}})
+
+    res.send("Congratulation you have successfully end this investment. check balance now.")
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
 
 serviceController.getActiveDeposit = async function (req, res, next) {
   try {
@@ -285,7 +330,7 @@ serviceController.delWithdrawalReq = async function (req, res, next) {
 serviceController.getUserTransaction = async function (req, res, next) {
   try {
     const getTrans = await userTransaction.findAll({
-      where: { userId: req.id },
+      where: { userId: req.primaryKey },
     });
 
     if (!getTrans) {
@@ -466,8 +511,8 @@ serviceController.newDepositRequest = async function (req, res, next) {
         }
         // Transactions
         await userTransaction.create({
-          userId: req.id,
-          depositId: 16,
+          userId: req.primaryKey,
+          depositId: create.id,
           invoiceID: helpers.generateInvoiceId(),
           amount: chargeAPIData.local_price.amount,
           type: "deposit",
@@ -590,19 +635,6 @@ serviceController.newDepositRequestFromBalance = async function (req, res, next)
             res.send({ message: "You now have an onGoing plan" })
           }
         }
-
-        // Transactions
-        await userTransaction.create({
-          userId: req.id,
-          depositId: 16,
-          invoiceID: helpers.generateInvoiceId(),
-          amount: depoInfoData.investedAmt,
-          type: "deposit",
-          mode: "normal",
-        });
-        res.send({
-          message: "You've started a new plan. check investments.",
-        });
       }
     );
   } catch (error) {

@@ -9,7 +9,8 @@ export interface DepositInterface<T> {
     userId: T,
     plan: T,
     amount: T,
-    status: T
+    status: T,
+    investmentCompleted: boolean
 }
 
 userDeposit.init({

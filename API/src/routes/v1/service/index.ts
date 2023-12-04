@@ -61,6 +61,9 @@ router.get("/getAllDepositRequest", UserAuth, serviceController.getAllDepositReq
 
 router.get("/getAllSuccessfulInvesment", UserAuth, serviceController.getAllSuccessfulInvesment)
 
+// this is when we end investment
+router.post('/endInvestment', UserAuth, serviceController.endInvestment)
+
 /**
  *  Transaction []
  *  @method GET
