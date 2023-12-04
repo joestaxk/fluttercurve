@@ -651,6 +651,7 @@ serviceController.createNewPlan = async function (req, res, next) {
 serviceController.updateExitingPlan = async function (req, res, next) {
   try {
     const updatePlan = req.body;
+    console.log(updatePlan)
 
     const findPlanById: any = await DepositPlan.findByPk(updatePlan.id);
 
@@ -662,10 +663,9 @@ serviceController.updateExitingPlan = async function (req, res, next) {
       );
 
     const u = await DepositPlan.update(
-      { ...updatePlan.data },
+      {...updatePlan.data},
       { where: { id: findPlanById.id } }
     );
-
     if (u[0]) {
       res.send(findPlanById.plan + " Plan updated successfully");
     } else {
