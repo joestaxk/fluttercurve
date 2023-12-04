@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import auth from "../../../lib/auth";
 import adminAuth from "../../../lib/adminAuth";
-import { DeposkelentonLoader } from "../../dashboard/depositInvest";
 import helpers from "../../../helpers";
 import ButtonSpinner from "../../utils/buttonSpinner";
 import useAlert from "../../../hooks/alert";
 
 export const ManageNormalPlans = function () {
-  const { showAlert } = useAlert();
+  const { showAlert, AlertComponent } = useAlert();
   const [cookies] = useCookies();
   const [depositPlans, setDepositPlans] = useState([]);
   const [currentPlan, setCurPlan] = useState({} as any);
@@ -83,7 +82,7 @@ export const ManageNormalPlans = function () {
       id,
       data: {
         plan: tar.plan.value,
-        interestRate: tar.interestRate.value,
+        dailyInterestRate: tar.interestRate.value,
         minAmt: tar.minAmt.value,
         maxAmt: tar.maxAmt.value,
         guarantee: 100,
@@ -91,11 +90,11 @@ export const ManageNormalPlans = function () {
       },
     };
 
-    setUpdateLoader(true);
     // create this data
     adminAuth
       .updateExitingPlan(data)
       .then((res: any) => {
+        console.log(res)
         setUpdateLoader(false);
         setReqPlan(false);
         setEditor(false);
@@ -274,7 +273,7 @@ export const ManageNormalPlans = function () {
 
         <>
           {!currentPlan?.id ? (
-            <DeposkelentonLoader />
+           <ButtonSpinner />
           ) : (
             <form
               onSubmit={(ev) => handleUpdatePlan(ev, currentPlan.id)}
@@ -426,6 +425,7 @@ export const ManageNormalPlans = function () {
               </div>
             </form>
           )}
+        {AlertComponent}
         </>
       </div>
     </>
