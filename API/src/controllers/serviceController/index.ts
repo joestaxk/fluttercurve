@@ -845,7 +845,7 @@ serviceController.newWithdrawalRequest = async function (req, res, next) {
 
     // Transactions
     await userTransaction.create({
-      userId: req.id,
+      userId: req.primaryKey,
       withdrawalId: create?.id,
       invoiceID: helpers.generateInvoiceId(),
       amount,
