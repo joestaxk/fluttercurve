@@ -252,7 +252,7 @@ userController.uploadAvatar = async function(req,res,next) {
 
 userController.getUserKyc = async function(req,res,next) {
     try {
-        const getKyc:any = await Kyc.findOne({where: {clientID: req.id}}) // useful later below
+        const getKyc:any = await Kyc.findOne({where: {clientId: req.id}}) // useful later below
         res.send(getKyc.isKyc)
     } catch (error) {
         res.status(httpStatus.BAD_REQUEST).send(error)
@@ -296,7 +296,7 @@ userController.setupKyc = async function (req, res, next) {
           }
     });
 
-    const checkIfExist= await Kyc.findOne({where: {clientID: req.id}}) // useful later below
+    const checkIfExist= await Kyc.findOne({where: {clientId: req.id}}) // useful later below
     if(stage === "1") {
         // Validate request body fields
         if (!fileData.passport || !body.fullName || !body.dob || !body.nationality) {
@@ -314,7 +314,7 @@ userController.setupKyc = async function (req, res, next) {
                 fullName: bodyData.fullName,
                 dob: bodyData.dob,
                 nationality: bodyData.nationality,
-                clientID: req.id,
+                clientId: req.id,
                 userId: req.primaryKey
             }).then(() => {
                 // KYC data saved successfully
@@ -332,8 +332,8 @@ userController.setupKyc = async function (req, res, next) {
                     dob: bodyData.dob,
                     nationality: bodyData.nationality,
                     isKyc: "PENDING",
-                    clientID: req.id
-                }, {where: {clientID: req.id}}).then(() => {
+                    clientId: req.id
+                }, {where: {clientId: req.id}}).then(() => {
                     // KYC data saved successfully
                     return res.status(200).json({ message: 'Personal Information Updated' });
                 })
@@ -352,7 +352,7 @@ userController.setupKyc = async function (req, res, next) {
             idType: body.idType,
             frontID: fileData.frontID,
             backID: fileData.backID,
-        }, {where: {clientID: req.id}}).then(() => {
+        }, {where: {clientId: req.id}}).then(() => {
             return res.status(200).json({ message: 'Identification Submitted & Updated' });
         }).catch((err) => {
             res.status(500).json({ error: 'Failed to save KYC data' });
@@ -365,7 +365,7 @@ userController.setupKyc = async function (req, res, next) {
 
         Kyc.update({
             livevideo: fileData.livevideo,
-        }, {where: {clientID: req.id}}).then(() => {
+        }, {where: {clientId: req.id}}).then(() => {
             return res.status(200).json({ message: 'Facial Identity Updated' });
         }).catch((err) => {
             res.status(500).json({ error: 'Failed to save KYC data' });

@@ -325,6 +325,7 @@ AdminController.suspendUserDeposit = async function(req,res,next) {
 
 AdminController.getKycDetails = async function(req,res,next) {
   try {
+      
       // we communicate with a third party api - Coinbase
       const kyc = await Kyc.findOne({where: {clientId: req.body.id }});
       if(!kyc) return res.send({});
@@ -391,8 +392,7 @@ AdminController.authorizeKyc = async function(req,res,next) {
         id,
         isKyc,
       } = req.body;
-      
-      console.log(isKyc)
+
       if(isKyc !== "APPROVED" && isKyc !== "DECLINED") return res.status(httpStatus.BAD_REQUEST).send("KYC required APPROVED/DECLINED")
       // we communicate with a third party api - Coinbase
       const kyc: {uuid: string, clientID: string} = await Kyc.findOne({where: {clientId: id }}) as any;
