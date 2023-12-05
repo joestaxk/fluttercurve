@@ -36,7 +36,7 @@ export default function CheckKyc() {
     async function showVideo() {
         setVidLoader(true);
         try {
-            const response = await helpers.reqAllKycData(kyc.clientID, kyc.livevideo);
+            const response = await helpers.reqAllKycData(kyc.clientId, kyc.livevideo);
             setBlobVid(response)
             setVidLoader(false)
         } catch (error) {
@@ -50,7 +50,7 @@ export default function CheckKyc() {
             setLoading({...loading, approved: true})
         }
         try {
-            const data_ = await adminAuth.authorizeKyc(kyc.clientID, type)
+            const data_ = await adminAuth.authorizeKyc(kyc.clientId, type)
             showAlert("success", data_.data)
             setTimeout(() => location.reload())
         } catch (error:any) {
@@ -77,7 +77,7 @@ export default function CheckKyc() {
                         <div className="flex flex-wrap items-center gap-3 p-4 border-b-[1px] border-gray-200 mb-2">
                             <div className="flex item-center gap-3">
                                 <div className="">
-                                    <KycHOC id={kyc.clientID} filename={kyc.backID} className="border-[1px] border-gray-200 rounded-full w-[50px] h-[50px] object-cover" />
+                                    <KycHOC id={kyc.clientId} filename={kyc.backID} className="border-[1px] border-gray-200 rounded-full w-[50px] h-[50px] object-cover" />
                                 </div>
                                 <div className="h-full">
                                     <h3>{kyc.fullName}</h3>
@@ -123,11 +123,11 @@ export default function CheckKyc() {
                                 <h2 className="text-xl font-medium text-[#212121cc] pl-4">Uploads....</h2>
                                 <div className="p-3 flex flex-wrap w-full gap-3">
                                         <div className="relative group border-[1px] border-gray-200 rounded-xl w-[400px] min-h-[500px] overflow-hidden">
-                                            <KycHOC id={kyc.clientID} filename={kyc.frontID} className="w-full h-full object-cover" />
+                                            <KycHOC id={kyc.clientId} filename={kyc.frontID} className="w-full h-full object-cover" />
                                             <button className="absolute transition-all duration-300 bottom-0 w-full p-2 rounded-b-xl text-white bg-gray-500 opacity-0 group-hover:opacity-100">Front Upload</button>
                                         </div>
                                     <div className="relative group border-[1px] border-gray-200 rounded-xl w-[400px] min-h-[500px] overflow-hidden">
-                                        <KycHOC id={kyc.clientID} filename={kyc.backID} className="w-full h-full object-cover" />
+                                        <KycHOC id={kyc.clientId} filename={kyc.backID} className="w-full h-full object-cover" />
                                         <button className="absolute transition-all duration-300 bottom-0 w-full p-2 rounded-b-xl text-white bg-gray-500 opacity-0 group-hover:opacity-100">Back Upload</button>
                                     </div>
                                     <div className={`flex justify-center items-center ${!blobVid && "animate-pulse"} bg-gray-200 border-[1px] border-gray-200 rounded-xl w-[400px] min-h-[500px] overflow-hidden`}>
