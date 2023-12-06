@@ -25,6 +25,7 @@ import userAccount, { userAccountInterface } from "../../models/Users/userAccoun
 
 interface serviceControllerInterface {
   endInvestment: (req: any, res: any, next: any) => Promise<void>;
+  calculateEarningsAndDeposit: (req: any, res: any, next: any) => Promise<void>;
   deleteExisitngCompoundPlan: (req: any, res: any, next: any) => Promise<void>;
   updateExistingCompoundPlan: (req: any, res: any, next: any) => Promise<void>;
   createNewCompoundPlan: (req: any, res: any, next: any) => Promise<void>;
@@ -79,6 +80,28 @@ serviceController.getCountryCode = async function (req, res, next) {
   }
 };
 
+serviceController.calculateEarningsAndDeposit = async (req, res, next) => {
+  try {
+    const data = await userDeposit.findAll({ where: { clientId: req.id } });
+
+    let investedAmt = data.map(({ investedAmt }: any) => parseInt(investedAmt));
+    let progressAmt = data.map(({ progressAmt }: any) => parseInt(progressAmt));
+
+    investedAmt = !investedAmt.length ? [0] : investedAmt
+    progressAmt = !progressAmt.length ? [0] : progressAmt
+
+    const calculationRes = {
+      investedAmt: investedAmt.reduce((acc, cur) => acc + cur, 0),
+      progressAmt: progressAmt.reduce((acc, cur) => acc + cur, 0)
+    }
+
+    res.send(calculationRes)
+
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
 serviceController.getDepositPlans = async function (req, res, next) {
   try {
     // create the first and data for the plans.
@@ -99,22 +122,35 @@ serviceController.getDepositPlans = async function (req, res, next) {
 };
 
 // THRESHOLD AND END INVESTMENT
-serviceController.endInvestment = async function(req,res,next) {
+serviceController.endInvestment = async function (req,res,next) {
   try {
     const investmentId = req.body.investmentId;
 
     // get the deposit data
-    const getDepoData:DepositInterface<string> = await userDeposit.findOne({
-      where: {id: investmentId}
+    const getDepoData: DepositInterface<string> = await userDeposit.findOne({
+      where: { id: investmentId }
     }) as any
-    
-    if(!getDepoData) throw new ApiError("NOTFOUND", httpStatus.NOT_FOUND, "Something went wrong. reload page.");
-    
-    if(getDepoData.investmentCompleted){
+
+    if (!getDepoData) throw new ApiError("NOTFOUND", httpStatus.NOT_FOUND, "Something went wrong. reload page.");
+
+    if (getDepoData.investmentCompleted) {
       throw new ApiError("NOTFOUND", httpStatus.BAD_REQUEST, "We won't process this request. reload page.");
-    } 
-    const {investedAmt, progressAmt}:any = getDepoData;
-    
+    }
+
+
+    const ifAny = await userAccount.findOne({ where: { clientId: req.primaryKey } });
+    if (!ifAny) {
+      // create new account for the user
+      await userAccount.create({
+        totalDeposit: 0,
+        totalWithdrawal: 0,
+        totalEarning: 0,
+        clientId: req.primaryKey,
+      });
+    }
+
+    const { investedAmt, progressAmt }: any = getDepoData;
+
     const nInvestAmt = parseInt(investedAmt);
     const nProgressAmt = parseInt(progressAmt)
 
@@ -134,7 +170,7 @@ serviceController.endInvestment = async function(req,res,next) {
     });
 
     // update plan as completed
-    userDeposit.update({investmentCompleted: true, expiresAt: "3023-10-14 03:47:36", progressAmt: 0}, {where: {id: getDepoData.id}})
+    userDeposit.update({ investmentCompleted: true, expiresAt: "3023-10-14 03:47:36" }, { where: { id: getDepoData.id } })
 
     res.send("Congratulation you have successfully end this investment. check balance now.")
   } catch (error) {
@@ -694,7 +730,7 @@ serviceController.updateExitingPlan = async function (req, res, next) {
       );
 
     const u = await DepositPlan.update(
-      {...updatePlan.data},
+      { ...updatePlan.data },
       { where: { id: findPlanById.id } }
     );
     if (u[0]) {

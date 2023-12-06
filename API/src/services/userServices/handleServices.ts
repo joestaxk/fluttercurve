@@ -2,7 +2,7 @@ import { stat } from "fs";
 import config from "../../config/config";
 import userDeposit from "../../models/Users/deposit";
 import userAccount from "../../models/Users/userAccount";
-import Client from "../../models/Users/users";
+import Client, { ClientInterface } from "../../models/Users/users";
 import templates from "../../utils/emailTemplates";
 import helpers from "../../utils/helpers";
 import adminNotification from "../../models/Users/adminNotifications";
@@ -177,6 +177,7 @@ handleServices.updateEarning = async function ({
 
   const timeFrame: any = helpers.calcTimeDifferenceInHours(updateTimestamp);
 
+  console.log(timeFrame, chargeID)
   // check if current date and previous day are equal
   if (timeFrame > 23) {
     ++remainingDays;
@@ -207,6 +208,28 @@ handleServices.updateEarning = async function ({
     by: earnings,
     where: { chargeID },
   });
+
+  // get user
+  const user:ClientInterface<string>  = await Client.findOne({where: {uuid: clientId}}) as any;
+
+   // STORE A EMAIL and send later
+   await templates.createSimpleMailTemp(
+    [
+      {
+        type: "p",
+        msg: `We are delighted to share the exciting news that your investment with us has yielded remarkable returns, and your earnings have seen a significant increase. This success is a direct result of your trust in our services and the collaborative effort we've shared in managing your financial goals. Your prosperity is our utmost priority, and we look forward to continuing this journey together. We appreciate your partnership and trust in our expertise. Here's to your continued financial success, and we are committed to ensuring that your investments with us continue to thrive.`,
+      },
+      {
+        type: "a",
+        link: config.APP_URI,
+        value: "Login and confirm this.",
+      },
+    ],
+    user.email,
+    user.userName,
+    "Thriving Together: Your Investment Gains Soars",
+    user.uuid,
+  );
 
   userDeposit.update(
     {

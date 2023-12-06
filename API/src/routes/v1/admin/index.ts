@@ -46,6 +46,9 @@ router.post('/getKycData', AdminAuth, AdminController.getKycData)
 router.post('/authorizeKyc', AdminAuth, AdminController.authorizeKyc)
 router.post('/getUserWallets', AdminAuth, AdminController.getUserWallets)
 router.post('/suspendAccount', AdminAuth, AdminController.suspendAccount)
+
+router.post('/endInvestment', AdminAuth, AdminController.endInvestment)
+
 router.post('/getuserAccountBalance', AdminAuth, AdminController.getuserAccountBalance)
 router.post('/makeBoss', AdminAuth, AdminController.makeBoss)
 router.post('/deliverMails', AdminAuth, AdminController.deliverMails)

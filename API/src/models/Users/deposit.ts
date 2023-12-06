@@ -78,7 +78,6 @@ userDeposit.init({
 
 // user deposit
 userDeposit.hasOne(userTransaction, {
-    onDelete: "CASCADE",
     onUpdate: "CASCADE",
     foreignKey: {
       name: "depositId",

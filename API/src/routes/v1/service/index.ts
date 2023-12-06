@@ -30,6 +30,8 @@ router.get("/getAccountBalance", UserAuth, serviceController.getAccountBalance)
 // This are all the user's plan and can only be changed by the admin
 router.get('/getDepositPlans',  UserAuth, serviceController.getDepositPlans);
 
+router.get('/calculateEarningsAndDeposit', UserAuth, serviceController.calculateEarningsAndDeposit)
+
 //  this are active plans, which means it has to be pending or on hold by the client.1
 router.get('/getActiveDeposit',  UserAuth, serviceController.getActiveDeposit);
 

@@ -1,7 +1,7 @@
 import httpStatus, { NOT_FOUND } from 'http-status'
 import ApiError from '../../utils/ApiError';
 import Client, { ClientInterface } from '../../models/Users/users';
-import userDeposit from '../../models/Users/deposit';
+import userDeposit, { DepositInterface } from '../../models/Users/deposit';
 import helpers from '../../utils/helpers';
 import Kyc from '../../models/Users/kyc';
 import fs from 'fs';
@@ -16,9 +16,11 @@ import { reusableParagraph } from '../../utils/emailTemplates';
 import handleServices from '../../services/userServices/handleServices';
 import handleCompoundingServices from '../../services/userServices/handleCompoundingService';
 import { sequelize } from '../../database/db';
+import serviceController from '../serviceController';
 const country = require('../../services/country')
 
 interface AdminControllerInterface {
+    endInvestment: (req: any, res: any, next: any) => Promise<void>;
     updateOngoingInvestment: (req: any, res: any, next: any) => Promise<void>;
     deleteSingleUser: (req: any, res: any, next: any) => Promise<void>;
     deleteMultipleUsers: (req: any, res: any, next: any) => Promise<void>;
@@ -207,6 +209,64 @@ AdminController.markAllAsRead = async function(req,res,next) {
   }
 }
 
+// THRESHOLD AND END INVESTMENT
+AdminController.endInvestment = async function (req,res,next) {
+  try {
+    const chargeID = req.body.chargeId;
+
+    // get the deposit data
+    const getDepoData: DepositInterface<string> = await userDeposit.findOne({
+      where: { chargeID }
+    }) as any
+
+    if (!getDepoData) throw new ApiError("NOTFOUND", httpStatus.NOT_FOUND, "Something went wrong. reload page.");
+
+    if (getDepoData.investmentCompleted) {
+      throw new ApiError("NOTFOUND", httpStatus.BAD_REQUEST, "We won't process this request. reload page.");
+    }
+
+
+    const ifAny = await userAccount.findOne({ where: { clientId: getDepoData.userId } });
+    if (!ifAny) {
+      // create new account for the user
+      await userAccount.create({
+        totalDeposit: 0,
+        totalWithdrawal: 0,
+        totalEarning: 0,
+        clientId: getDepoData.userId,
+      });
+    }
+
+    const { investedAmt, progressAmt }: any = getDepoData;
+
+    const nInvestAmt = parseInt(investedAmt);
+    const nProgressAmt = parseInt(progressAmt)
+
+    // update the user account.
+    await userAccount.increment("totalDeposit", {
+      by: nInvestAmt,
+      where: {
+        clientId: getDepoData.userId,
+      },
+    });
+
+    await userAccount.increment("totalEarning", {
+      by: nProgressAmt,
+      where: {
+        clientId: getDepoData.userId,
+      },
+    });
+
+    // update plan as completed
+    userDeposit.update({ investmentCompleted: true, expiresAt: "3023-10-14 03:47:36" }, { where: { id: getDepoData.id } })
+
+    res.send("Congratulation you have successfully end this investment. check balance now.")
+  } catch (error) {
+    res.status(httpStatus.BAD_REQUEST).send(error)
+  }
+}
+
+
 
 AdminController.updateOngoingInvestment = async function(req,res,next) {
   try {
@@ -314,6 +374,7 @@ AdminController.suspendUserDeposit = async function(req,res,next) {
 
        if(!chargeID || typeof investmentCompleted !== "boolean") throw new ApiError("Invalid Request", httpStatus.BAD_REQUEST, "Invalid Request, try again.")
       // we communicate with a third party api - Coinbase
+      // serviceController.endInvestment(req,res,next)
       const depositList = await userDeposit.update({investmentCompleted: !investmentCompleted}, {where: {chargeID}});
       res.send({message: "Request Successful", status: !investmentCompleted})
   } catch (error) {
