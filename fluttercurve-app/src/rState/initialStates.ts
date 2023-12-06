@@ -11,6 +11,8 @@ export type userDataStateType = {
     phoneNumber: "",
     referral:"",     
     avatar :"",
+    investedAmt: number,
+    progressAmt: number,
     userAccount: {
         totalDeposit: any
         totalWithdrawal: any,

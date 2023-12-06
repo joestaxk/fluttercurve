@@ -89,7 +89,7 @@ export default function AllEarning({ state }: { state: userDataStateType }) {
                 {(!data.investmentCompleted && !data.plan.toLowerCase().includes("eth staking")) && <div className="absolute right-2 group">
                   <button onClick={() => endInvestment(data.id)} className="disabled:opacity-50 text-red-700 border disabled:cursor-not-allowed hover:bg-red-600 hover:text-white transition-colors duration-300 bg-gray-200 p-2 rounded-md" disabled={getDaysAgo(data.createdAt) < data.duration}>End Investment</button>
 
-                  {getDaysAgo(data.createdAt) < data.duration ? <p className="absolute opacity-0 pointer-events-none group-hover:opacity-100 duration-700 bg-white w-[400px] border border-gray-300/60 p-4 rounded-md">
+                  {getDaysAgo(data.createdAt) < data.duration ? <p className="absolute right-0 z-[10] opacity-0 pointer-events-none group-hover:opacity-100 duration-700 bg-white w-[400px] border border-gray-300/60 p-4 rounded-md">
                     You're not eligible to end the transaction at the moment.
                     Transaction should have lasted up to 2-3weeks before you can take your money and earnings.
                   </p> : <></>}

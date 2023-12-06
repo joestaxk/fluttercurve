@@ -11,6 +11,7 @@ export default function OngoingInvestment() {
   const [data, setData] = useState<any>([]);
   const { showAlert, AlertComponent } = useAlert();
   const [suspendLoading, setSuspendLoad] = useState(false);
+  const [endLoading, setEndLoad] = useState(false);
   const [approvalLoading, setApprovalLoad] = useState(false);
   const context = useContext(CreateUserIDContext);
 
@@ -26,12 +27,25 @@ export default function OngoingInvestment() {
       .catch((error: any) => {
         console.log(error);
       });
-  }, [context.ID, ongoingUpdateLoader, suspendLoading, approvalLoading]);
+  }, [context.ID, ongoingUpdateLoader, suspendLoading, endLoading, approvalLoading]);
 
   useEffect(() => {
     if (!user.length) return;
     setData(user);
   }, [user]);
+
+  function endInvestment(chargeID:string) {
+    adminAuth
+      .endInvestment(chargeID)
+      .then((res: any) => {
+        setEndLoad(false);
+        showAlert("success", res.data);
+      })
+      .catch((err: any) => {
+        setEndLoad(false);
+        showAlert("error", err.response.data.description);
+      });
+  }
 
   function suspendData({
     chargeID,
@@ -124,6 +138,7 @@ export default function OngoingInvestment() {
                     <th className="p-3 font-medium">Earnings</th>
                     <th className="p-3 font-medium">Progress</th>
                     <th className="p-3 font-medium">Suspend</th>
+                    <th className="p-3 font-medium">End plan</th>
                     <th
                       className="p-3 font-medium"
                       title="Use this when the user complains that the payment is taking time."
@@ -185,7 +200,8 @@ export default function OngoingInvestment() {
                                   : `text-gray-600`
                               }
                             >
-                              {status}
+                              {!investmentCompleted && status}
+                              {investmentCompleted && "Completed"}
                             </div>
                           </td>
                           <td className="p-3 font-medium text-slate-600">
@@ -260,6 +276,18 @@ export default function OngoingInvestment() {
                             >
                               {suspendLoading && <ButtonSpinner />}
                               <span>Suspend</span>
+                            </button>
+                          </td>
+
+                          <td className="p-3 font-medium">
+                            <button
+                              type="button"
+                              onClick={endInvestment.bind(null, chargeID)}
+                              className="bg-red-700 p-2 rounded-lg flex gap-1 items-center text-gray-100 disabled:opacity-60 disabled:cursor-not-allowed"
+                              disabled={investmentCompleted}
+                            >
+                              {endLoading && <ButtonSpinner />}
+                              <span>End Plan</span>
                             </button>
                           </td>
 

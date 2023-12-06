@@ -148,6 +148,8 @@ export default function DepositInvesment({ state }: { state: userDataStateType }
       const constrURI = `https://commerce.coinbase.com/charges/${data.data.next}`
       ahref.current.href = constrURI;
       ahref.current.click();
+
+      location.reload()
     }).catch((err) => {
       ahref.current.click();
       setLoadingState(false)

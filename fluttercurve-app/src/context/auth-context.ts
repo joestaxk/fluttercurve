@@ -10,4 +10,4 @@ export const user = {
     updateContext: () => {}
 } as contextInterface
 
-export const AuthContext = React.createContext(user)
+export const  AuthContext = React.createContext(user)

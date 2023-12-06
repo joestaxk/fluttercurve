@@ -63,7 +63,7 @@ function Page({state}:{state: userDataStateType}) {
             <motion.div variants={item} className="bg-[url('/dashboard-bg.jpg')] bg-no-repeat bg-cover bg-center shadow lg:w-[23%] n:w-[48%] w-full rounded-lg h-[150px] p-4 flex items-center justify-between">
               <div className="">
                 <h3 className="text-lg text-[#3c3c3c]">Total Deposits</h3>
-                <h1 className="text-2xl font-semibold text-[#514AB1]">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency,(state.userAccount?.totalDeposit || "0.00")), state.currency)}</h1>
+                <h1 className="text-2xl font-semibold text-[#514AB1]">{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency,(state.investedAmt || 0)), state.currency)}</h1>
               </div>
 
               <img className="" src={`/${state.currency}.png`} width={50} height={50} alt="money"/>

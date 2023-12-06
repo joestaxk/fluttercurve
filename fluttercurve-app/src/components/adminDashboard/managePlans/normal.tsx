@@ -94,7 +94,6 @@ export const ManageNormalPlans = function () {
     adminAuth
       .updateExitingPlan(data)
       .then((res: any) => {
-        console.log(res)
         setUpdateLoader(false);
         setReqPlan(false);
         setEditor(false);
@@ -304,7 +303,7 @@ export const ManageNormalPlans = function () {
                       />
                     ) : (
                       <div className="text-[#199878] font-medium">
-                        {parseInt(currentPlan?.dailyInterestRate) / 100}%
+                        {(currentPlan?.dailyInterestRate).toString()}%
                       </div>
                     )}
                     <div className="text-[#212121cc]">everyday</div>

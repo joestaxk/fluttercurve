@@ -2,6 +2,7 @@ import instance from "./requestService";
 
 
 interface authInterface {
+    calculateEarningsAndDeposit: any;
     endInvestment: any;
     getUserTransaction: any;
     currencyConversion: any;
@@ -85,6 +86,7 @@ auth.makeInvestment = async function(access_token: string, data: any) {
     return await instance.post(`/compounding/makeInvestment`, data, {headers: {Authorization: `Bearer ${access_token}`}})
 }
 
+
 auth.getCompoundingPlans = async function(access_token: string) {
     return await instance.get(`/compounding/getCompoundingPlans`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
@@ -106,6 +108,10 @@ auth.getUserTransaction = async function(access_token: string) {
 }
 
 // SERVICE =========================================
+
+auth.calculateEarningsAndDeposit = async function(access_token: string) {
+    return await instance.get(`/service/calculateEarningsAndDeposit`, {headers: {Authorization: `Bearer ${access_token}`}})
+}
 auth.getAllDepositRequest = async function(access_token: string) {
     return await instance.get(`/service/getAllDepositRequest`, {headers: {Authorization: `Bearer ${access_token}`}})
 }
