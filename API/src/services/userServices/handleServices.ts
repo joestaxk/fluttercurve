@@ -50,52 +50,59 @@ handleServices.successfulDepositCharge = async function (chargeID: string) {
 
   // Before we set a new deposit as "SUCCESSFUL", lets make sure the plan is just updating an existig plan
   // with same plan name
-  const checkForAnyExistingPlan: any = await userDeposit.findOne({
+  const checkForAnyExistingPlan: any = await userDeposit.findAll({
     where: {
       clientID: uuid,
       plan: res?.plan,
       status: "SUCCESSFUL",
+      investmentCompleted: false,
+      suspended: false
     },
   });
+
+
+
   // transaction update
   await userTransaction.update(
     { status: "SUCCESSFUL", amount: res.investedAmt },
-    { where: { depositId: res.id, mode: res.type} }
+    { where: { depositId: res.id, mode: res.type } }
   );
 
   // whatever goes in here is existing plans
-  if (checkForAnyExistingPlan) {
-    // get the new invested amount and then add it to the old one.
-    const newInvestedAmt = (
-      parseFloat(res.investedAmt) +
-      parseFloat(checkForAnyExistingPlan.investedAmt)
-    ).toString();
+  if (checkForAnyExistingPlan.length) {
+    checkForAnyExistingPlan.map(async (res_: any) => {
+      // get the new invested amount and then add it to the old one.
+      const newInvestedAmt = (
+        parseFloat(res.investedAmt) +
+        parseFloat(res_.investedAmt)
+      ).toString();
 
-    const newProgressAmt = (
-      parseFloat(res.progressAmt) +
-      parseFloat(checkForAnyExistingPlan.progressAmt)
-    ).toString();
+      const newProgressAmt = (
+        parseFloat(res.progressAmt) +
+        parseFloat(res_.progressAmt)
+      ).toString();
 
-    // update the existing one
-    const u = (
-      await userDeposit.update(
-        {
-          investedAmt: newInvestedAmt,
-          progressAmt: newProgressAmt,
-          clientID: res.chargeID,
-        },
-        { where: { chargeID: checkForAnyExistingPlan.chargeID } }
-      )
-    )[0];
+      // update the existing one
+      const u = (
+        await userDeposit.update(
+          {
+            investedAmt: newInvestedAmt,
+            progressAmt: newProgressAmt,
+            clientID: res.chargeID,
+          },
+          { where: { chargeID: res_.chargeID } }
+        )
+      )[0];
 
-    if (u) {
-      // destroy the new investment record
-      userDeposit.destroy({
-        where: {
-          chargeID: res.chargeID,
-        },
-      });
-    }
+      if (u) {
+        // destroy the new investment record
+        userDeposit.destroy({
+          where: {
+            chargeID: res.chargeID,
+          },
+        });
+      }
+    })
   } else {
     // Each time a new user wallet is created, that user just made some investment.
     await userDeposit.update({ status: "SUCCESSFUL" }, { where: { chargeID } });
@@ -138,9 +145,8 @@ handleServices.successfulDepositCharge = async function (chargeID: string) {
         msg: `Congratulations. Your Deposit of ${helpers.currencyFormatLong(
           res?.investedAmt,
           currency
-        )}, has been credited to wallet successfully. Your ${
-          res.plan
-        } Investment Plan, starts from today.
+        )}, has been credited to wallet successfully. Your ${res.plan
+          } Investment Plan, starts from today.
                 Login into your account to keep track of what's going on.`,
       },
       {
@@ -177,7 +183,6 @@ handleServices.updateEarning = async function ({
 
   const timeFrame: any = helpers.calcTimeDifferenceInHours(updateTimestamp);
 
-  console.log(timeFrame, chargeID)
   // check if current date and previous day are equal
   if (timeFrame > 23) {
     ++remainingDays;
@@ -210,10 +215,10 @@ handleServices.updateEarning = async function ({
   });
 
   // get user
-  const user:ClientInterface<string>  = await Client.findOne({where: {uuid: clientId}}) as any;
+  const user: ClientInterface<string> = await Client.findOne({ where: { uuid: clientId } }) as any;
 
-   // STORE A EMAIL and send later
-   await templates.createSimpleMailTemp(
+  // STORE A EMAIL and send later
+  await templates.createSimpleMailTemp(
     [
       {
         type: "p",

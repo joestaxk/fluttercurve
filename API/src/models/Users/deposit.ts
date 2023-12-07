@@ -50,11 +50,16 @@ userDeposit.init({
         type: DataTypes.DECIMAL,
         defaultValue: "0"
     },
+    
     remainingDays: {
         type: DataTypes.DECIMAL,
         defaultValue: "1"
     },
     investmentCompleted :{
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    suspended :{
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },

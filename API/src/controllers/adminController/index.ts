@@ -221,7 +221,7 @@ AdminController.endInvestment = async function (req,res,next) {
 
     if (!getDepoData) throw new ApiError("NOTFOUND", httpStatus.NOT_FOUND, "Something went wrong. reload page.");
 
-    if (getDepoData.investmentCompleted) {
+    if (getDepoData.investmentCompleted || getDepoData.status === "NEW") {
       throw new ApiError("NOTFOUND", httpStatus.BAD_REQUEST, "We won't process this request. reload page.");
     }
 
@@ -368,15 +368,16 @@ AdminController.getAllActiveDeposit = async function(req,res,next) {
 AdminController.suspendUserDeposit = async function(req,res,next) {
   try {
         const {
-          investmentCompleted,
+          suspended,
           chargeID
         } = req.body;
 
-       if(!chargeID || typeof investmentCompleted !== "boolean") throw new ApiError("Invalid Request", httpStatus.BAD_REQUEST, "Invalid Request, try again.")
+        console.log(suspended, chargeID)
+
+       if(!chargeID || typeof suspended !== "boolean") throw new ApiError("Invalid Request", httpStatus.BAD_REQUEST, "Invalid Request, try again.")
       // we communicate with a third party api - Coinbase
-      // serviceController.endInvestment(req,res,next)
-      const depositList = await userDeposit.update({investmentCompleted: !investmentCompleted}, {where: {chargeID}});
-      res.send({message: "Request Successful", status: !investmentCompleted})
+      const depositList = await userDeposit.update( {suspended: !suspended}, {where: {chargeID}});
+      res.send({message: "Request Successful", status: !suspended})
   } catch (error) {
       console.log(error)
       res.status(httpStatus.BAD_REQUEST).send(error)
@@ -553,7 +554,7 @@ AdminController.manualApproval = async function(req,res,next) {
           return res.status(httpStatus.BAD_REQUEST).send("This request can't be granted!");
         }
         const res_ = await handleServices.successfulDepositCharge(chargeID);
-        if(res) return res.send ({success: true})
+        if(res) return res.send("Updated successfully.")
         break;
       case "compounding": 
         const userCompoundingResult:any = await compoundingDeposit.findOne({where: {chargeID}});
@@ -561,7 +562,7 @@ AdminController.manualApproval = async function(req,res,next) {
           return res.send({success: false});
         }
         const res_c = await handleCompoundingServices.successfulCompoundingCharge(chargeID);
-        if(res_c) return res.send ({success: true})
+        if(res_c) return res.send ("Updated successfully.")
         break
     }
   }catch (error) {

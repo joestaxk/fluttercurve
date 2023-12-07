@@ -82,7 +82,7 @@ serviceController.getCountryCode = async function (req, res, next) {
 
 serviceController.calculateEarningsAndDeposit = async (req, res, next) => {
   try {
-    const data = await userDeposit.findAll({ where: { clientId: req.id } });
+    const data = await userDeposit.findAll({ where: { clientId: req.id, status: "SUCCESSFUL" } });
 
     let investedAmt = data.map(({ investedAmt }: any) => parseInt(investedAmt));
     let progressAmt = data.map(({ progressAmt }: any) => parseInt(progressAmt));
