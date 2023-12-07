@@ -76,7 +76,8 @@ export default function MyInvestment({ state }: any) {
 
                                 <div
                                     key={data.id.toString()}
-                                    style={{ borderImage: "linear-gradient(100deg,#transparent,#3ddc75,transparent) 1 / 1 / 0 stretch" }}
+                                    title={data.suspended ? "Volatility in the market for this particular trade is too high, check back soon!" : ""}
+                                    style={{ borderImage: "linear-gradient(100deg,#transparent,#3ddc75,transparent) 1 / 1 / 0 stretch", opacity: data.suspended ? ".3" : "1"}}
                                     className="w-[380px] p-3 border-[1px] rounded-lg bg-[#e5e5e530] border-[#ccc] min-h-[350px] flex flex-col">
                                     <div className="">
                                         <div className={`text-4xl ${data.status === "SUCCESSFUL" ? "text-[#56c87f]" : "text-[#437053]"} font-bold`}>{helpers.currencyFormatLong(helpers.calculateFixerData("USD", state.currency, data.investedAmt), state.currency)}</div>
@@ -109,6 +110,8 @@ export default function MyInvestment({ state }: any) {
                                         <div className="">Duration: </div>
                                         <div className="">7days</div>
                                     </div>}
+
+                                    {data.suspended && <p className="mt-5 font-bold">Volatility in the market for this particular trade is too high, check back soon!</p>}
 
 
                                     <div className="w-full flex flex-col gap-2 justify-center mt-8 text-[#eee] font-bold">

@@ -49,14 +49,14 @@ export default function OngoingInvestment() {
 
   function suspendData({
     chargeID,
-    investmentCompleted,
+    suspended,
   }: {
     chargeID: string;
-    investmentCompleted: string;
+    suspended: string;
   }) {
     setSuspendLoad(true);
     adminAuth
-      .suspendUserDeposit(chargeID, investmentCompleted)
+      .suspendUserDeposit(chargeID, suspended)
       .then((res: any) => {
         setSuspendLoad(false);
         showAlert("success", res.data.message);
@@ -78,7 +78,8 @@ export default function OngoingInvestment() {
       .manualApproval(chargeID, type)
       .then((res: any) => {
         setApprovalLoad(false);
-        showAlert("success", res.data.message);
+        
+        showAlert("success", res.data);
       })
       .catch((err: any) => {
         setApprovalLoad(false);
@@ -172,6 +173,7 @@ export default function OngoingInvestment() {
                         duration,
                         remainingDays,
                         investmentCompleted,
+                        suspended
                       }: any) => {
                         if(status === "RESOLVED") return;
                         return (
@@ -269,13 +271,13 @@ export default function OngoingInvestment() {
                               type="button"
                               onClick={suspendData.bind(null, {
                                 chargeID,
-                                investmentCompleted,
+                                suspended
                               })}
+                              disabled={status === "NEW"}
                               className="bg-gray-700 p-2 rounded-lg flex gap-1 items-center text-gray-100 disabled:opacity-60 disabled:cursor-not-allowed"
-                              disabled={investmentCompleted}
                             >
                               {suspendLoading && <ButtonSpinner />}
-                              <span>Suspend</span>
+                              <span>{suspended ? "unsuspend" : "suspend"}</span>
                             </button>
                           </td>
 
@@ -284,7 +286,7 @@ export default function OngoingInvestment() {
                               type="button"
                               onClick={endInvestment.bind(null, chargeID)}
                               className="bg-red-700 p-2 rounded-lg flex gap-1 items-center text-gray-100 disabled:opacity-60 disabled:cursor-not-allowed"
-                              disabled={investmentCompleted}
+                              disabled={investmentCompleted || status === "NEW"}
                             >
                               {endLoading && <ButtonSpinner />}
                               <span>End Plan</span>
@@ -293,6 +295,7 @@ export default function OngoingInvestment() {
 
                           <td className="p-3 font-medium">
                             <button
+                              title="Approve a new plan"
                               type="button"
                               onClick={manualApproval.bind(null, {
                                 chargeID,

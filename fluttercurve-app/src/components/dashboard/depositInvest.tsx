@@ -111,6 +111,7 @@ export default function DepositInvesment({ state }: { state: userDataStateType }
           const res:any = await auth.newDepositRequestFromBalance(cookies['xat'], depoInfoData);
           setLoadingState(false)
           showAlert("success", res.data.message);
+          location.reload()
         }
       } catch (error: any) {
         console.log(error)

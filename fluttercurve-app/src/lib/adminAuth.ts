@@ -82,7 +82,7 @@ adminAuth.denyWithdrawalReq = async (id:string) => await instance.get(`/service/
 adminAuth.delWithdrawalReq = async (id:string) => await instance.post(`/service/delWithdrawalReq`, {transactionId: id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 
 
-adminAuth.suspendUserDeposit = async (id:string, investmentCompleted: boolean) => await instance.post(`/admin/suspendUserDeposit`, {chargeID:id, investmentCompleted}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
+adminAuth.suspendUserDeposit = async (id:string, suspended: boolean) => await instance.post(`/admin/suspendUserDeposit`, {chargeID:id, suspended}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.manualApproval = async (id:string, type: boolean) => await instance.post(`/admin/manualApproval`, {chargeID:id, type}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.getKycDetails = async (id:string) => await instance.post(`/admin/getKycDetails`, {id}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
 adminAuth.authorizeKyc = async (id:string, isKyc:string) => await instance.post(`/admin/authorizeKyc`, {id, isKyc}, {headers: {Authorization: `Bearer ${helpers.getCookie('xat')}`}})
